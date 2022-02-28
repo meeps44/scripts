@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+mkdir ~/raw
 mkdir -p ~/logs/$HOSTNAME
 mkdir ~/git
 cd ~/git
