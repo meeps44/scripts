@@ -46,14 +46,15 @@ with open(file, "r") as my_file:
     for item in re.finditer(pattern, data):
         # print(item.group())
         ip = (item.group()[24:72].replace(" ", "")).replace("\n", "")
+        ipv6_addr = ipaddress.ip_address(int(ip, 16))
         fl = item.group()[151:158].replace(" ", "")
         #print(ip)
         #print(fl)
-        tuple = (str(ip), fl)
+        tuple = (str(ipv6_addr), fl)
         flow_label_list.append(tuple)
     
     # create and populate list of returned flow-labels as a (ipv6-address, returned_flow_label) tuple
-    flow_labels = ["".join(x) for x in re.findall(pattern, data)]
+    #flow_labels = ["".join(x) for x in re.findall(pattern, data)]
 
     #print(flow_labels)
 
@@ -72,7 +73,8 @@ with open(file, "r") as my_file:
     
     ## remove duplicate items from flow_label_list
     flow_label_list = list(dict.fromkeys(flow_label_list))
-    print(flow_label_list)
+    #print(len(flow_label_list))
+    #print(flow_label_list)
 
     ## create hop-list (list of ipv6_addresses in path)
     hop_list = re.findall(IPV6ADDR, data) 
@@ -81,8 +83,8 @@ with open(file, "r") as my_file:
     ## Remove first item in the list (the destination address) and add it as separate dictionary element
     dest = hop_list.pop(0)
 
-    print("Hop list:")
-    print(hop_list)
+    #print("Hop list:")
+    #print(hop_list)
 
     ## Create top-level dictionary
     #my_dict = {}
@@ -96,16 +98,20 @@ with open(file, "r") as my_file:
     #count = 0 # in case items is empty and you need it after the loop
 
     ## Initialize hop dictionary
-    #hop_dictionary = { index : {"ipv6_address" : address, "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
+    hop_dictionary = { index : {"ipv6_address" : address, "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
 
     #index = 0
+    for index, address in enumerate(hop_list):
+        if flow_label_list[index][0] == address:
+            hop_dictionary[index+1]["returned_flow_label"] = int(flow_label_list[index][1], 16)
+        #index = index + 1
     #for item in hop_list:
         #if hop_dictionary[index+1]["ipv6_address"] == item:
             #hop_dictionary[index+1]["returned_flow_label"] = int(flow_label_list[index][1], 16)
         #index = index + 1
 
-    #print("Hop dictionary:")
-    #print(hop_dictionary)
+    print("Hop dictionary:")
+    print(hop_dictionary)
 
 #my_dict["hops"] = hop_dictionary
 #print("Complete dictionary:")
