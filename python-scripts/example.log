@@ -1,0 +1,2 @@
+DEBUG:root:This message should be written to the log file
+INFO:root:Routes in file /Users/admin/git/terraform-config/bash-scripts/script-output/ubuntu-lon1-0-07-14-25-58-f15438.json and /Users/admin/git/terraform-config/bash-scripts/script-output/ubuntu-lon1-0-07-14-26-15-f15438.json are not equal!
