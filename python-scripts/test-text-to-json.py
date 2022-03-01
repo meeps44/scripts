@@ -116,3 +116,15 @@ with open(file, "r") as my_file:
 my_dict["hops"] = hop_dictionary
 print("Complete dictionary:")
 print(my_dict)
+
+json_file = args.file
+if json_file.endswith('.txt'):
+    json_file = json_file[:-4]
+
+json_file = json_file + ".json"
+
+path = f'/root/logs/{args.hostname}/' + os.path.basename(json_file)
+
+with open(path, 'w') as fp:
+    json.dump(my_dict, fp, indent=4)
+    print(f"File {path} successfully saved to disk")
