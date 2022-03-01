@@ -110,12 +110,12 @@ with open(file, "r") as my_file:
             #hop_dictionary[index+1]["returned_flow_label"] = int(flow_label_list[index][1], 16)
         #index = index + 1
 
-    print("Hop dictionary:")
-    print(hop_dictionary)
+    #print("Hop dictionary:")
+    #print(hop_dictionary)
 
 my_dict["hops"] = hop_dictionary
-print("Complete dictionary:")
-print(my_dict)
+#print("Complete dictionary:")
+#print(my_dict)
 
 json_file = args.file
 if json_file.endswith('.txt'):
