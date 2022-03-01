@@ -87,13 +87,13 @@ with open(file, "r") as my_file:
     #print(hop_list)
 
     ## Create top-level dictionary
-    #my_dict = {}
+    my_dict = {}
 
-    #my_dict["outgoing_tcp_port"] = args.tcp_port
-    #my_dict["flow_label"] = args.flow_label
-    #my_dict["timestamp"] = str(datetime.datetime.now())
-    #my_dict["source"] = args.source_ip
-    #my_dict["destination"] = dest
+    my_dict["outgoing_tcp_port"] = args.tcp_port
+    my_dict["flow_label"] = args.flow_label
+    my_dict["timestamp"] = str(datetime.datetime.now())
+    my_dict["source"] = args.source_ip
+    my_dict["destination"] = dest
 
     #count = 0 # in case items is empty and you need it after the loop
 
@@ -113,6 +113,6 @@ with open(file, "r") as my_file:
     print("Hop dictionary:")
     print(hop_dictionary)
 
-#my_dict["hops"] = hop_dictionary
-#print("Complete dictionary:")
-#print(my_dict)
+my_dict["hops"] = hop_dictionary
+print("Complete dictionary:")
+print(my_dict)
