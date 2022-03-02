@@ -101,13 +101,19 @@ with open(file, "r") as my_file:
     hop_dictionary = { index : {"ipv6_address" : address, "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
 
     ## Erlend test:
-    for index, address in enumerate(flow_label_list):
-        hop_dictionary[index+1]["returned_flow_label"] = flow_label_list[index][0]
+    #for index, address in enumerate(flow_label_list):
+        #hop_dictionary[index+1]["returned_flow_label"] = flow_label_list[index][0]
+    
+    print("Hop list:")
+    print(hop_list)
+    print("Flow label list")
+    for item in flow_label_list:
+        print(item[0])
 
     #index = 0
-    #for index, address in enumerate(hop_list):
-        #if flow_label_list[index][0] == address:
-            #hop_dictionary[index+1]["returned_flow_label"] = int(flow_label_list[index][1], 16)
+    for index, address in enumerate(hop_list):
+        if flow_label_list[index][0] == address:
+            hop_dictionary[index+1]["returned_flow_label"] = int(flow_label_list[index][1], 16)
         #index = index + 1
 
     ## Use this one if Erlend test doesn't work
