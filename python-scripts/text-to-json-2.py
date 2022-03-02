@@ -80,12 +80,13 @@ with open(file, "r") as my_file:
         #tuple = (str(ipv6_addr), fl)
         #flow_label_list.append(tuple)
 
-        for item in hop_list:
+        for index, item in enumerate(hop_list):
             print(item)
             print(ipv6_addr)
             print(int(fl, 16))
             if (str(item).replace(" ", "")).replace("\n", "") == (str(ipv6_addr).replace(" ", "")).replace("\n", ""):
                 print("hop_list item and ipv6_addr are equal")
+                hop_dictionary[index+1]["returned_flow_label"] = int(fl, 16)
 
 
         #for index, address in enumerate(hop_list):
