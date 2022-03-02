@@ -66,6 +66,8 @@ with open(file, "r") as my_file:
 
     print("Hop dictionary before comparsion:")
     print(hop_dictionary)
+    print("Hop list: ")
+    print(hop_list)
 
     # Find and append returned flow labels to the hop-dictionary
     for item in re.finditer(pattern, data):
@@ -77,21 +79,32 @@ with open(file, "r") as my_file:
         #print(fl)
         #tuple = (str(ipv6_addr), fl)
         #flow_label_list.append(tuple)
-        for index, address in enumerate(hop_list):
+
+        for item in hop_list:
+            print(item)
+            print(ipv6_addr)
+            print(int(fl, 16))
+            if item == ipv6_addr:
+                print("hop_list item and ipv6_addr found in packet are equal")
+
+
+        #for index, address in enumerate(hop_list):
+
             #print("Returned flow label:")
             #print(int(fl, 16))
-            print("Performing comparison...")
+            #print("Performing comparison...")
             #if ipv6_addr == hop_dictionary[index+1]["ipv6_address"]:
-            if ipv6_addr == address:
-                print("Ipv6 address found in packet:")
-                print(ipv6_addr)
-                print("Ipv6 address in hop list: ")
-                print(address)
-                print(f"Ipv6 address in dictionary at index {index}")
-                print(hop_dictionary[index+1]["ipv6_address"])
-                print("Flow label: ")
-                print(int(fl, 16))
-                hop_dictionary[index+1]["returned_flow_label"] = int(fl, 16)
+
+            #if ipv6_addr == address:
+                #print("Ipv6 address found in packet:")
+                #print(ipv6_addr)
+                #print("Ipv6 address in hop list: ")
+                #print(address)
+                #print(f"Ipv6 address in dictionary at index {index}")
+                #print(hop_dictionary[index+1]["ipv6_address"])
+                #print("Flow label: ")
+                #print(int(fl, 16))
+                #hop_dictionary[index+1]["returned_flow_label"] = int(fl, 16)
                 #flow_label_list.append(fl)
         
     print("Hop dictionary after comparison: ")
