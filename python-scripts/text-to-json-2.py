@@ -84,8 +84,8 @@ with open(file, "r") as my_file:
             print(item)
             print(ipv6_addr)
             print(int(fl, 16))
-            if item == ipv6_addr:
-                print("hop_list item and ipv6_addr found in packet are equal")
+            if (str(item).replace(" ", "")).replace("\n", "") == (str(ipv6_addr).replace(" ", "")).replace("\n", ""):
+                print("hop_list item and ipv6_addr are equal")
 
 
         #for index, address in enumerate(hop_list):
