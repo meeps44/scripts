@@ -45,13 +45,14 @@ with open(file, "r") as my_file:
 
     for item in re.finditer(pattern, data):
         # print(item.group())
-        ip = (item.group()[24:72].replace(" ", "")).replace("\n", "")
-        ipv6_addr = ipaddress.ip_address(int(ip, 16))
+        #ip = (item.group()[24:72].replace(" ", "")).replace("\n", "")
+        #ipv6_addr = ipaddress.ip_address(int(ip, 16))
         fl = item.group()[151:158].replace(" ", "")
         #print(ip)
         #print(fl)
-        tuple = (str(ipv6_addr), fl)
-        flow_label_list.append(tuple)
+        #tuple = (str(ipv6_addr), fl)
+        #flow_label_list.append(tuple)
+        flow_label_list.append(fl)
     
     # create and populate list of returned flow-labels as a (ipv6-address, returned_flow_label) tuple
     #flow_labels = ["".join(x) for x in re.findall(pattern, data)]
@@ -72,7 +73,8 @@ with open(file, "r") as my_file:
         #flow_label_list.append(tuple)
     
     ## remove duplicate items from flow_label_list
-    flow_label_list = list(dict.fromkeys(flow_label_list))
+    #flow_label_list = list(dict.fromkeys(flow_label_list))
+
     #print(len(flow_label_list))
     #print(flow_label_list)
 
@@ -107,16 +109,15 @@ with open(file, "r") as my_file:
     print("Hop list:")
     print(hop_list)
     print("Flow label list")
-    for item in flow_label_list:
-        print("Returned IPv6 address:")
-        print(item[0])
-        print("Returned flow label:")
-        print(item[1])
+    print(flow_label_list)
+
+    for index, address in enumerate(hop_list):
+        hop_dictionary[index+1]["returned_flow_label"] = flow_label_list[index]
 
     #index = 0
-    for index, address in enumerate(hop_list):
-        if flow_label_list[index][0] == address:
-            hop_dictionary[index+1]["returned_flow_label"] = int(flow_label_list[index][1], 16)
+    #for index, address in enumerate(hop_list):
+        #if flow_label_list[index][0] == address:
+            #hop_dictionary[index+1]["returned_flow_label"] = int(flow_label_list[index][1], 16)
         #index = index + 1
 
     ## Use this one if Erlend test doesn't work
