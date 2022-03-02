@@ -108,7 +108,10 @@ with open(file, "r") as my_file:
     print(hop_list)
     print("Flow label list")
     for item in flow_label_list:
+        print("Returned IPv6 address:")
         print(item[0])
+        print("Returned flow label:")
+        print(item[1])
 
     #index = 0
     for index, address in enumerate(hop_list):
