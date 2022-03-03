@@ -26,4 +26,4 @@ for filename in ${directory}*.json; do
     python3 /root/git/scripts/python-scripts/route-compare-3.py "$comparator" "$filename"
 done
 
-echo "Route comparison complete. Results written to logfile:    /root/logs/comparison_output.log"
+echo "Route comparison complete. Results written to logfile:    /root/logs/route_comparison_output.log"
