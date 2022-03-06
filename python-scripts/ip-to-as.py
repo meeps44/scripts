@@ -1,9 +1,12 @@
 import urllib.request
 
-# goes through a list of IP-addresses and gets which AS (Autonomous System)
-# the prefix belongs to
+# matches a prefix with an IP-address.
+# the result, along with the AS advertising this specifix prefix is logged
+# to a key-value dictionary.
 
-# the end result is saved in a dictionary
+# goes through a list of IP-addresses and gets which AS (Autonomous System)
+# the IP-address belongs to, up to a maximum of 35000 ASes. 
+# the script will get one IP-address per AS.
 
 # file = "/root/git/scripts/text-files/responsive-addresses-test.txt"
 file = "/home/erlend/git/scripts/text-files/responsive-addresses-test.txt"
