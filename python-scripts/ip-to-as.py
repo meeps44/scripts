@@ -5,17 +5,16 @@ import urllib.request
 
 # the end result is saved in a dictionary
 
-file = "/root/git/scripts/text-files/responsive-addresses-test.txt"
+# file = "/root/git/scripts/text-files/responsive-addresses-test.txt"
+file = "/home/erlend/git/scripts/text-files/responsive-addresses-test.txt"
 url = r"https://api.hackertarget.com/aslookup/?q="
 
 with open(file, "r") as my_file:
 	data = my_file.readlines()
-
-for line in data:
-	print(line)
-	with urllib.request.urlopen(f"{url}{line}") as response:
-		body = response.read()
-		print(body)
+	for line in data:
+		with urllib.request.urlopen(f"{url}{line}") as response:
+			body = response.read()
+			print(body)
 
 #dict = {
 	#"asn":2549,
