@@ -4,9 +4,12 @@ ASNMAP="$HOME/git/scripts/text-files/asnmap.txt"
 
 END=3
 
-# Iterates from 1 up to and including $END
+# Iterates through ASNs from 1 to $END and logs the advertised IPv6 prefixes
 for i in $(seq 1 $END); do 
-	echo $i 
+	#echo $i 
+	#echo "IP: $i ASN: $(asn -n $i | grep ASN)" >> $ASNMAP
+	echo "ASN: $i" >> test.txt
+	asn $i | sed -n '/ IPv6 /,$p' >> test.txt
 done
 
 # Iterates through each line in a text file and gets the ASN using WHOIS
