@@ -23,5 +23,5 @@ done
 # https://github.com/nitefood/asn
 cat /home/erlend/python-programming/ipv6-addresses-test.txt | while read line; do
 	# echo $i 
-	echo "IP: $line ASN: $(asn $line | grep ASN)" >> $ASNMAP
+	echo "IP: $line ASN: $(asn -n $line | grep ASN)" >> $ASNMAP
 done
