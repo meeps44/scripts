@@ -28,3 +28,8 @@ cat $HOME/git/scripts/text-files/ipv6-addresses-test.txt | while read line; do
 	# echo $i 
 	echo "IP: $line ASN: $(asn -n $line | grep ASN)" >> $ASNMAP
 done
+
+# Using the prefix WHOIS-project (https://pwhois.org/webquery.who)
+cat $HOME/git/scripts/text-files/ipv6-addresses-test.txt | while read line; do
+	whois -h whois.pwhois.org $line | grep -E 'ASN|origin-as' >> $ASNMAP
+done
