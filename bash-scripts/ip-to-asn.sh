@@ -1,6 +1,6 @@
 #! /usr/bin/bash
 
-ASNMAP="/root/git/scripts/text-files/asnmap.txt"
+ASNMAP="$HOME/git/scripts/text-files/asnmap.txt"
 
 END=3
 
