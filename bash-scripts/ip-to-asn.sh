@@ -14,5 +14,5 @@ cat /home/erlend/python-programming/ipv6-addresses-test.txt | while read line; d
 	echo $(whois $line | grep origin)
 	
 	# grep multiple patterns:
-	echo $(whois $line | grep -E 'origin|route6')
+	echo $(whois $line | grep -E 'origin|route6|Origin')
 done
