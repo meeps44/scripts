@@ -37,17 +37,16 @@ def main():
     tree = fill_tree(tree, args.prefix_file)
 
     # Set up outputfile
-    filename = f"{str(Path.home())}/python-programming/subnettree-output.txt"
+    # filename = f"{str(Path.home())}/python-programming/subnettree-output.txt"
 
     # Read IP address file, match each address to longest prefix and print output
-    with open(filename, "a") as file:
-        for line in args.ip_address_file:
-            line = line.strip()
-            try:
-                print(line + "," + tree[line])
-                file.write(line + "," + tree[line])
-            except KeyError as e:
-                print("Skipped line '" + line + "'", file=sys.stderr)
+    for line in args.ip_address_file:
+        line = line.strip()
+        try:
+            print(line + "," + tree[line])
+            #file.write(line + "," + tree[line])
+        except KeyError as e:
+            print("Skipped line '" + line + "'", file=sys.stderr)
 
 if __name__ == "__main__":
     main()
