@@ -16,7 +16,8 @@ FLOW_LABEL_MID_1=277
 FLOW_LABEL_MID_2=131071
 FLOW_LABEL_MAX=1048575
 
-flow_labels=($FLOW_LABEL_MIN)
+#flow_labels=($FLOW_LABEL_MIN)
+flow_labels=($FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
 #flow_labels=($FLOW_LABEL_MIN $FLOW_LABEL_MID_1 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
 destination_ports=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT) # get destination tcp-port from input args
 # destination_port=$1 # get destination tcp-port from input args
