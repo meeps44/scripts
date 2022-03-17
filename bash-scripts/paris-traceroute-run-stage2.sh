@@ -25,7 +25,7 @@ host_ip=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|(
 
 for destination_port in "${destination_ports[@]}"; do
     for flow_label in "${flow_labels[@]}"; do
-        cat /root/git/scripts/text-files/ipv6-address-list-full.txt | while read line; do
+        cat /root/git/scripts/text-files/ipv6-address-list-pruned.txt | while read line; do
         #cat /root/git/scripts/text-files/ipv6-address-list-pruned.txt | while read line; do
         #cat /root/git/scripts/python-scripts/ipv6-address-list-new.txt | while read line; do
             destination_address=$line
