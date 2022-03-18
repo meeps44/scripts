@@ -62,19 +62,18 @@ host_ip=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|(
 for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
     for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
         while [ $N -lt $LIST_LENGTH ]; do
-        readarray -t my_array < <(sed -n "${N},${M}p" $LIST)
-            for ADDRESS in ${my_array[@]}; do
-                #echo $ELEMENT
-                #pt_run "$ELEMENT" &
-                pt_test "$DESINATION_PORT $FLOW_LABEL $ADDRESS" &
-            done
-        let N=$N+10
-        let M=$N+9
-        wait
-        #echo "N: $N"
-        #echo "M: $M"
+            readarray -t my_array < <(sed -n "${N},${M}p" $LIST)
+                for ADDRESS in ${my_array[@]}; do
+                    #echo $ELEMENT
+                    #pt_run "$ELEMENT" &
+                    pt_test "$DESINATION_PORT $FLOW_LABEL $ADDRESS" &
+                done
+            let N=$N+10
+            let M=$N+9
+            wait
+            #echo "N: $N"
+            #echo "M: $M"
         done
-
     done
 done
 
