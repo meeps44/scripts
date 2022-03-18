@@ -8,6 +8,7 @@ LIST_LENGTH=$(wc -l < $LIST) # get the number of lines in file
 
 pt_test()
 {
+    echo "Hello from pt_test()"
     local l_DESTINATION_PORT=$1
     local l_FLOW_LABEL=$2
     local l_DESTINATION_ADDR=$3
@@ -19,7 +20,8 @@ pt_test()
     local l_FILEPATH="/root/raw/"
     local l_FILENAME="$l_HOSTNAME-${l_SHORT}-${l_DATE}.txt"
     #echo $l_FILEPATH$l_FILENAME $l_HOSTNAME ${l_DESTINATION_PORT} ${l_HOST_IP} ${l_FLOW_LABEL} > "/root/test/$l_FILENAME"
-    tracepath -m 8 $l_DESTINATION_ADDR > "/root/test/$l_FILENAME"
+    echo "Executing tracepath. Dst addr: $l_DESTINATION_ADDR"
+    #tracepath -m 8 $l_DESTINATION_ADDR > "/root/test/$l_FILENAME"
 }
 
 #pt_run()
