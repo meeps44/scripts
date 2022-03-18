@@ -8,9 +8,9 @@ LIST_LENGTH=$(wc -l < $LIST) # get the number of lines in file
 
 pt_test()
 {
-    local l_DESTINATION_PORT="$1"
-    local l_FLOW_LABEL="$2"
-    local l_DESTINATION_ADDR="$3"
+    local l_DESTINATION_ADDR="$1"
+    local l_DESTINATION_PORT="$2"
+    local l_FLOW_LABEL="$3"
     local l_HASH=$(echo -n ${l_DESTINATION_ADDR} | md5sum | awk '{print $1}')
     local l_SHORT="${l_HASH:0:6}"
     local l_DATE=$(date '+%d-%H-%M-%S')
@@ -20,6 +20,7 @@ pt_test()
     echo "waffle ${l_DESTINATION_ADDR}"
     #echo $l_DESTINATION_PORT $l_FLOW_LABEL $l_DESTINATION_ADDR
     echo "tracepath -m 8 ${l_DESTINATION_PORT} ${l_FLOW_LABEL} ${l_DESTINATION_ADDR}"
+    echo "tracepath -m 8 ${l_DESTINATION_ADDR}"
     #tracepath -m 8 $l_DESTINATION_ADDR > "/root/test/$l_FILENAME"
 }
 
@@ -72,7 +73,8 @@ for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
                     #echo "$DESTINATION_PORT $FLOW_LABEL $ADDRESS"
                     #echo $ELEMENT
                     #pt_run "$ELEMENT" &
-                    pt_test "$DESTINATION_PORT $FLOW_LABEL $ADDRESS" &
+                    pt_test "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
+                    #pt_test "$DESTINATION_PORT $FLOW_LABEL $ADDRESS" &
                 done
             let N=$N+10
             let M=$N+9
