@@ -16,12 +16,8 @@ pt_test()
     local l_DATE=$(date '+%d-%H-%M-%S')
     local l_FILEPATH="/root/raw/"
     local l_FILENAME="$l_HOSTNAME-${l_SHORT}-${l_DATE}.txt"
-    #echo $l_FILEPATH$l_FILENAME $l_HOSTNAME ${l_DESTINATION_PORT} ${l_HOST_IP} ${l_FLOW_LABEL} > "/root/test/$l_FILENAME"
-    echo "waffle ${l_DESTINATION_ADDR}"
-    #echo $l_DESTINATION_PORT $l_FLOW_LABEL $l_DESTINATION_ADDR
-    echo "tracepath -m 8 ${l_DESTINATION_PORT} ${l_FLOW_LABEL} ${l_DESTINATION_ADDR}"
-    echo "tracepath -m 8 ${l_DESTINATION_ADDR}"
-    #tracepath -m 8 $l_DESTINATION_ADDR > "/root/test/$l_FILENAME"
+
+    tracepath -m 8 $l_DESTINATION_ADDR > "/root/test/$l_FILENAME"
 }
 
 #pt_run()
@@ -70,11 +66,8 @@ for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
         while [ $N -lt $LIST_LENGTH ]; do
             readarray -t my_array < <(sed -n "${N},${M}p" $LIST)
                 for ADDRESS in ${my_array[@]}; do
-                    #echo "$DESTINATION_PORT $FLOW_LABEL $ADDRESS"
-                    #echo $ELEMENT
                     #pt_run "$ELEMENT" &
                     pt_test "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
-                    #pt_test "$DESTINATION_PORT $FLOW_LABEL $ADDRESS" &
                 done
             let N=$N+10
             let M=$N+9
