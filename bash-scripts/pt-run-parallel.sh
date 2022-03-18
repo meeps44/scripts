@@ -19,8 +19,7 @@ pt_test()
     #echo $l_FILEPATH$l_FILENAME $l_HOSTNAME ${l_DESTINATION_PORT} ${l_HOST_IP} ${l_FLOW_LABEL} > "/root/test/$l_FILENAME"
     echo "waffle ${l_DESTINATION_ADDR}"
     #echo $l_DESTINATION_PORT $l_FLOW_LABEL $l_DESTINATION_ADDR
-    echo "${l_FLOW_LABEL} ${l_DESTINATION_ADDR}"
-    echo "tracepath -m 8 ${l_DESTINATION_ADDR}"
+    echo "tracepath -m 8 ${l_DESTINATION_PORT} ${l_FLOW_LABEL} ${l_DESTINATION_ADDR}"
     #tracepath -m 8 $l_DESTINATION_ADDR > "/root/test/$l_FILENAME"
 }
 
