@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+HOST_IP=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
 LIST="/root/git/scripts/text-files/ipv6-address-list-pruned-2.txt"
 LIST_LENGTH=$(wc -l < $LIST) # get the number of lines in file
 #echo "$LIST_LENGTH"
@@ -15,9 +16,13 @@ pt_test()
     local l_SHORT="${l_HASH:0:6}"
     local l_DATE=$(date '+%d-%H-%M-%S')
     local l_FILEPATH="/root/raw/"
-    local l_FILENAME="$l_HOSTNAME-${l_SHORT}-${l_DATE}.txt"
+    local l_FILENAME="$HOSTNAME-${l_SHORT}-${l_DATE}.txt"
 
-    tracepath -m 8 $l_DESTINATION_ADDR > "/root/test/$l_FILENAME"
+    echo "Starting paris-traceroute"
+    sudo paris-traceroute -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
+    echo "paris-traceroute finished. Output saved in $l_FILENAME."
+    echo "Converting to JSON..."
+    python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${destination_port} ${HOST_IP} ${l_FLOW_LABEL}
 }
 
 #pt_run()
