@@ -70,10 +70,10 @@ for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
         while [ $N -lt $LIST_LENGTH ]; do
             readarray -t my_array < <(sed -n "${N},${M}p" $LIST)
                 for ADDRESS in ${my_array[@]}; do
-                    echo "$DESINATION_PORT $FLOW_LABEL $ADDRESS"
+                    #echo "$DESTINATION_PORT $FLOW_LABEL $ADDRESS"
                     #echo $ELEMENT
                     #pt_run "$ELEMENT" &
-                    pt_test "$DESINATION_PORT $FLOW_LABEL $ADDRESS" &
+                    pt_test "$DESTINATION_PORT $FLOW_LABEL $ADDRESS" &
                 done
             let N=$N+10
             let M=$N+9
