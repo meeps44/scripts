@@ -13,14 +13,16 @@ pt_test()
     local l_FLOW_LABEL=$2
     local l_DESTINATION_ADDR=$3
     echo $l_DESTINATION_PORT $l_FLOW_LABEL $l_DESTINATION_ADDR
+    #echo "Executing tracepath. Dst addr: ${l_DESTINATION_ADDR}"
 
     local l_HASH=$(echo -n ${l_DESTINATION_ADDR} | md5sum | awk '{print $1}')
+    echo "Hash: $l_HASH"
     local l_SHORT="${l_HASH:0:6}"
     local l_DATE=$(date '+%d-%H-%M-%S')
     local l_FILEPATH="/root/raw/"
     local l_FILENAME="$l_HOSTNAME-${l_SHORT}-${l_DATE}.txt"
     #echo $l_FILEPATH$l_FILENAME $l_HOSTNAME ${l_DESTINATION_PORT} ${l_HOST_IP} ${l_FLOW_LABEL} > "/root/test/$l_FILENAME"
-    echo "Executing tracepath. Dst addr: ${l_DESTINATION_ADDR}"
+    echo "Executing tracepath. Dst addr: $3"
     #tracepath -m 8 $l_DESTINATION_ADDR > "/root/test/$l_FILENAME"
 }
 
