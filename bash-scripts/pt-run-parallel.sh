@@ -8,13 +8,17 @@ let M=$N+9
 
 pt_test()
 {
-    destination_address=$line
-    hash=$(echo -n ${destination_address} | md5sum | awk '{print $1}')
-    short="${hash:0:6}"
-    date=$(date '+%d-%H-%M-%S')
-    filepath="/root/raw/"
-    filename="$HOSTNAME-${short}-${date}.txt"
-    echo $filepath$filename $HOSTNAME ${destination_port} ${host_ip} ${flow_label} > "/root/test/$filename"
+    local l_DESTINATION_PORT=$1
+    local l_FLOW_LABEL=$2
+    local l_DESTINATION_ADDR=$3
+
+    local l_HASH=$(echo -n ${l_DESTINATION_ADDR} | md5sum | awk '{print $1}')
+    local l_SHORT="${l_HASH:0:6}"
+    local l_DATE=$(date '+%d-%H-%M-%S')
+    local l_FILEPATH="/root/raw/"
+    local l_FILENAME="$l_HOSTNAME-${l_SHORT}-${l_DATE}.txt"
+    #echo $l_FILEPATH$l_FILENAME $l_HOSTNAME ${l_DESTINATION_PORT} ${l_HOST_IP} ${l_FLOW_LABEL} > "/root/test/$l_FILENAME"
+    tracepath -m $l_DESTINATION_ADDR > "/root/test/$l_FILENAME"
 }
 
 pt_run()
@@ -55,14 +59,14 @@ destination_ports=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT) # 
 # destination_port=$1 # get destination tcp-port from input args
 host_ip=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
 
-for destination_port in "${destination_ports[@]}"; do
-    for flow_label in "${flow_labels[@]}"; do
+for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+    for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
         while [ $N -lt $LIST_LENGTH ]; do
         readarray -t my_array < <(sed -n "${N},${M}p" $LIST)
-            for ELEMENT in ${my_array[@]}; do
+            for ADDRESS in ${my_array[@]}; do
                 #echo $ELEMENT
                 #pt_run "$ELEMENT" &
-                pt_test "$ELEMENT" &
+                pt_test "$DESINATION_PORT $FLOW_LABEL $ADDRESS" &
             done
         let N=$N+10
         let M=$N+9
