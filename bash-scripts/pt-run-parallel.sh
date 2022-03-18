@@ -8,9 +8,9 @@ LIST_LENGTH=$(wc -l < $LIST) # get the number of lines in file
 
 pt_test()
 {
-    local l_DESTINATION_PORT=$1
-    local l_FLOW_LABEL=$2
-    local l_DESTINATION_ADDR=$3
+    local l_DESTINATION_PORT="$1"
+    local l_FLOW_LABEL="$2"
+    local l_DESTINATION_ADDR="$3"
     local l_HASH=$(echo -n ${l_DESTINATION_ADDR} | md5sum | awk '{print $1}')
     local l_SHORT="${l_HASH:0:6}"
     local l_DATE=$(date '+%d-%H-%M-%S')
