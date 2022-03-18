@@ -11,12 +11,10 @@ pt_test()
     local l_DESTINATION_PORT=$1
     local l_FLOW_LABEL=$2
     local l_DESTINATION_ADDR=$3
-    #echo $l_DESTINATION_PORT $l_FLOW_LABEL $l_DESTINATION_ADDR
+    echo $l_DESTINATION_PORT $l_FLOW_LABEL $l_DESTINATION_ADDR
     #echo "Executing tracepath. Dst addr: ${l_DESTINATION_ADDR}"
-
     echo "before hash. Dst addr $l_DESTINATION_ADDR"
     local l_HASH=$(echo -n ${l_DESTINATION_ADDR} | md5sum | awk '{print $1}')
-    echo "after hash. Dst addr $l_DESTINATION_ADDR"
     local l_SHORT="${l_HASH:0:6}"
     local l_DATE=$(date '+%d-%H-%M-%S')
     local l_FILEPATH="/root/raw/"
