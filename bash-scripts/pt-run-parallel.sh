@@ -11,6 +11,7 @@ pt_test()
     local l_DESTINATION_PORT=$1
     local l_FLOW_LABEL=$2
     local l_DESTINATION_ADDR=$3
+    echo $l_DESTINATION_PORT $l_FLOW_LABEL $l_DESTINATION_ADDR
 
     local l_HASH=$(echo -n ${l_DESTINATION_ADDR} | md5sum | awk '{print $1}')
     local l_SHORT="${l_HASH:0:6}"
@@ -67,6 +68,7 @@ for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
         while [ $N -lt $LIST_LENGTH ]; do
             readarray -t my_array < <(sed -n "${N},${M}p" $LIST)
                 for ADDRESS in ${my_array[@]}; do
+                    echo "$DESINATION_PORT $FLOW_LABEL $ADDRESS"
                     #echo $ELEMENT
                     #pt_run "$ELEMENT" &
                     pt_test "$DESINATION_PORT $FLOW_LABEL $ADDRESS" &
