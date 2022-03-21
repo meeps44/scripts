@@ -45,7 +45,7 @@ for filename in os.listdir(os.path.dirname(args.file)):
     # only open filenames containing the tag
     if tag in filename:
         print(f"Tag {tag} found in filename {filename}")
-        with open(filename, "r") as file:
+        with open(os.path.join(os.path.dirname(args.file), filename), "r") as file:
             # returns JSON object as a dictionary
             data = json.load(file)
             source_ip = data['source']
