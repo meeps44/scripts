@@ -86,6 +86,14 @@ print(f"Number of unique outgoing flow-labels used: {len(unique(flow_labels))}")
 print(path_and_flow_label_list)
 print(len(path_and_flow_label_list))
 
+for index, item in enumerate(paths):
+    path_counter = 0
+    current_path = item
+    for object in len(paths):
+        if item == object:
+            path_counter = path_counter + 1
+    print(f"Number of traceroutes to path number {index} (based on all paths): {path_counter}")
+
 # tuple composition: item[0]: flow-label, item[1]: list of ip-addresses
 # for each path, do:
 for idx, item in path_and_flow_label_list:
@@ -98,7 +106,6 @@ for idx, item in path_and_flow_label_list:
         if item == path_and_flow_label_list[index]:
             path_and_flow_counter = path_and_flow_counter + 1
 
-    print(f"Total number of tracerouts to path number {idx}: {path_counter}")
     print(f"Number of traceroutes to path number {idx} with flow-label {}: {}")
     
 
