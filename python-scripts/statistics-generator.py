@@ -23,7 +23,7 @@ number_of_paths = 0
 number_of_flow_labels = 0
 path_flow_set = {}
 
-tag = p.findall(args.file)
+tag = str(p.findall(args.file))
 print(f"Tag: {tag}")
 print(f"Input Directory: {os.path.dirname(args.file)}")
 
