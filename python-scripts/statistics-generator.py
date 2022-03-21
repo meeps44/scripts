@@ -83,6 +83,7 @@ print(f"Number of unique paths discovered: {unique_path_counter}")
 print(f"List of all outgoing flow-labels used: {flow_labels}")
 print(f"Number of unique outgoing flow-labels used: {len(unique(flow_labels))}")
 
+print(f"Total number of tracerouts to path number {path}: {}")
 print(f"Number of traceroutes to path number {path} with flow-label {}: {}")
 
 
