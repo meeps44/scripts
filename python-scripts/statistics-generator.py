@@ -1,5 +1,13 @@
 import argparse, json, logging, os, re
 
+# function to count the number of paths with a particular flow-label
+def count_path(pathlist):
+    counter = 0
+    for item in pathlist:
+        print("do something")
+    return counter
+
+
 # function to get unique values
 def unique(list1):
     # insert the list to the set
@@ -24,12 +32,14 @@ parser.add_argument('-v', '-V', '--v', '--V', action='store_true')
 # action='store_true' implies default=False. Conversely, you could have action='store_false', which implies default=True.
 args = parser.parse_args()
 
-iteration = 0
+scan_counter = 0
+destinations = []
 paths = [] # list of lists containing all paths found
 path_counter = 0 # total number of paths found
 unique_path_counter = 0 # number of unique paths found
 flow_label_counter = 0 # number of unique flow-labels found
 flow_labels = []
+path_and_flow_label_list = []
 
 tags = p.findall(args.file)
 tag = tags[0] # we are assuming that the filename will not contain more than one tag, 
@@ -48,69 +58,45 @@ for filename in os.listdir(os.path.dirname(args.file)):
             # returns JSON object as a dictionary
             data = json.load(file)
             source_ip = data['source']
-            destination_ip = data['destination']
+            destinations.append(data['destination'])
             tcp_port = data['outgoing_tcp_port']
-            flow_label = data['flow_label']
+            flow_labels.append(data['flow_label'])
             #returned_flow_label_1 = data1['hops']
 
-            flow_labels.append(flow_label)
 
             for key, value in data['hops'].items():
                 elements.append(value)
                 ip_addresses.append(data['hops'][key]['ipv6_address'])
             
+            my_tuple = (data['flow_label'], ip_addresses)
+            path_and_flow_label_list.append(my_tuple)
             #print(elements)
             #print(ip_addresses)
             paths.append(ip_addresses)
 
+print(f"Scanned {scan_counter} traceroute documents to destination {destinations[0]}")
 print(f"All paths:\n{paths}")
 path_counter = len(paths)
 print(f"Total number of paths: {path_counter}")
 unique_path_counter = len(unique(paths))
 print(f"Number of unique paths discovered: {unique_path_counter}")
-print(f"List of all flow-labels used: {flow_labels}")
-print(f"Number of unique flow-labels used for sending packets: {len(unique(flow_labels))}")
+print(f"List of all outgoing flow-labels used: {flow_labels}")
+print(f"Number of unique outgoing flow-labels used: {len(unique(flow_labels))}")
 
-print("Number of traceroutes to path {} with flow-label {}: {}")
+print(f"Number of traceroutes to path number {path} with flow-label {}: {}")
 
-#with open(args.file, "r") as file:
-    ## returns JSON object as a dictionary
-    #data1 = json.load(file)
 
-    #source_ip_1 = data1['source']
-    #destination_ip_1 = data1['destination']
-    #tcp_port_1 = data1['outgoing_tcp_port']
-    #flow_label_1 = data1['flow_label']
-    ##returned_flow_label_1 = data1['hops']
+#class Path:
+    #def __init__(self, ip_addresses, flow_label, path_number):
+        #self.path = ip_addresses
+        #self.flow_label = flow_label
+        #self.path_number = path_number
 
-    #for key, value in data1['hops'].items():
-        #elements.append(value)
-        #ip_addresses.append(data1['hops'][key]['ipv6_address'])
+    #def get_path(self):
+        #return self.path
     
+    #def get_path_length(self):
+        #return len(self.path)
 
-    #print(elements)
-    #print(ip_addresses)
-
-#print(f"From {source_ip_1}")
-#print(f"To {destination_ip_1}")
-#print(f"Scanned {iteration} number of documents to destination {destination_ip_1}")
-#print(f"Number of paths discovered: {number_of_paths}")
-#print(f"Number of flow-labels used: {number_of_flow_labels}")
-
-#for item in path_flow_set:
-    #print(f"Number of traceroutes traversing path {path} with flow-label {flow_label}: {}")
-
-
-
-
-
-
-        #try:
-            #if (data1['hops'][key]['ipv6_address'] != data2['hops'][key]['ipv6_address']):
-                #result = False
-                #break
-            #result = data1['hops'][key]['ipv6_address'] == data2['hops'][key]['ipv6_address']
-        #except KeyError:
-            #print("KeyError")
-            #result = False
-            #break
+    #def get_flow_label(self):
+        #return self.flow_label
