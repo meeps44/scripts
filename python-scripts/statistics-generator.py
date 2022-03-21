@@ -2,12 +2,8 @@ import argparse, json, logging, os, re
 
 # function to get unique values
 def unique(list1):
-    print(f"Unique list1: {list1}")
-    print(type(list1) is list)
-     
     # insert the list to the set
     list_set = set(frozenset(item) for item in list1)
-    # list_set = set(list1)
 
     # convert the set to the list
     unique_list = (list(list_set))
@@ -33,7 +29,7 @@ paths = [] # list of lists containing all paths found
 path_counter = 0 # total number of paths found
 unique_path_counter = 0 # number of unique paths found
 flow_label_counter = 0 # number of unique flow-labels found
-path_flow_set = {}
+flow_labels = []
 
 tags = p.findall(args.file)
 tag = tags[0] # we are assuming that the filename will not contain more than one tag, 
@@ -57,6 +53,8 @@ for filename in os.listdir(os.path.dirname(args.file)):
             flow_label = data['flow_label']
             #returned_flow_label_1 = data1['hops']
 
+            flow_labels.append(flow_label)
+
             for key, value in data['hops'].items():
                 elements.append(value)
                 ip_addresses.append(data['hops'][key]['ipv6_address'])
@@ -65,11 +63,15 @@ for filename in os.listdir(os.path.dirname(args.file)):
             #print(ip_addresses)
             paths.append(ip_addresses)
 
-print(paths)
+print(f"All paths:\n{paths}")
 path_counter = len(paths)
-print(f"Path counter: {path_counter}")
+print(f"Total number of paths: {path_counter}")
 unique_path_counter = len(unique(paths))
-print(f"Unique path counter: {unique_path_counter}")
+print(f"Number of unique paths discovered: {unique_path_counter}")
+print(f"List of all flow-labels used: {flow_labels}")
+print(f"Number of unique flow-labels used for sending packets: {len(unique(flow_labels))}")
+
+print("Number of traceroutes to path {} with flow-label {}: {}")
 
 #with open(args.file, "r") as file:
     ## returns JSON object as a dictionary
