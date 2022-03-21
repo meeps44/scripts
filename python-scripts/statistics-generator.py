@@ -30,6 +30,7 @@ print(f"Input Directory: {os.path.dirname(args.file)}")
 # open all files in a directory
 for filename in os.listdir(os.path.dirname(args.file)):
     # only open filenames containing the tag
+    print(filename)
     if tag in filename:
         print(f"Tag {tag} found in filename {filename}")
         #with open(args.file, "r") as file:
