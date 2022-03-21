@@ -1,5 +1,14 @@
 import argparse, json, logging, os, re
 
+# function to get unique values
+def unique(list1):
+     
+    # insert the list to the set
+    list_set = set(list1)
+    # convert the set to the list
+    unique_list = (list(list_set))
+    return unique_list
+
 p = re.compile('[0-9a-f]{6}')
 
 # initialize logging:
@@ -19,7 +28,9 @@ args = parser.parse_args()
 elements = []
 ip_addresses = []
 iteration = 0
-path_counter = 0 # number of unique paths found
+paths = [] # list of lists containing all paths found
+path_counter = 0 # total number of paths found
+unique_path_counter = 0 # number of unique paths found
 flow_label_counter = 0 # number of unique flow-labels found
 path_flow_set = {}
 
@@ -34,10 +45,9 @@ for filename in os.listdir(os.path.dirname(args.file)):
     # only open filenames containing the tag
     if tag in filename:
         print(f"Tag {tag} found in filename {filename}")
-        with open(args.file, "r") as file:
+        with open(filename, "r") as file:
             # returns JSON object as a dictionary
             data = json.load(file)
-
             source_ip = data['source']
             destination_ip = data['destination']
             tcp_port = data['outgoing_tcp_port']
@@ -50,6 +60,13 @@ for filename in os.listdir(os.path.dirname(args.file)):
             
             print(elements)
             print(ip_addresses)
+            paths.append(ip_addresses)
+
+print(paths)
+path_counter = len(paths)
+print(f"Path counter: {path_counter}")
+unique_path_counter = len(unique(paths))
+print(f"Unique path counter: {unique_path_counter}")
 
 #with open(args.file, "r") as file:
     ## returns JSON object as a dictionary
