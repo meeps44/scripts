@@ -24,15 +24,15 @@ number_of_flow_labels = 0
 path_flow_set = {}
 
 tag = str(p.findall(args.file))
-print(f"Tag: {tag}")
+first_tag = tag[0]
+print(f"Tag: {first_tag}")
 print(f"Input Directory: {os.path.dirname(args.file)}")
 
 # open all files in a directory
 for filename in os.listdir(os.path.dirname(args.file)):
     # only open filenames containing the tag
-    print(filename)
-    if tag in filename:
-        print(f"Tag {tag} found in filename {filename}")
+    if first_tag in filename:
+        print(f"Tag {first_tag} found in filename {filename}")
         #with open(args.file, "r") as file:
             ## returns JSON object as a dictionary
             #data = json.load(file)
