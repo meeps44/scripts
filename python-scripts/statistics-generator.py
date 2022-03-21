@@ -2,6 +2,8 @@ import argparse, json, logging, os, re
 
 # function to get unique values
 def unique(list1):
+    print(f"Unique list1: {list1}")
+    print(type(list1) is list)
      
     # insert the list to the set
     list_set = set(list1)
@@ -65,7 +67,7 @@ for filename in os.listdir(os.path.dirname(args.file)):
 print(paths)
 path_counter = len(paths)
 print(f"Path counter: {path_counter}")
-unique_path_counter = len(unique(tuple(paths)))
+unique_path_counter = len(unique(paths))
 print(f"Unique path counter: {unique_path_counter}")
 
 #with open(args.file, "r") as file:
