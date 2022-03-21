@@ -58,14 +58,14 @@ for filename in os.listdir(os.path.dirname(args.file)):
                 elements.append(value)
                 ip_addresses.append(data['hops'][key]['ipv6_address'])
             
-            print(elements)
-            print(ip_addresses)
+            #print(elements)
+            #print(ip_addresses)
             paths.append(ip_addresses)
 
 print(paths)
 path_counter = len(paths)
 print(f"Path counter: {path_counter}")
-unique_path_counter = len(unique(paths))
+unique_path_counter = len(unique(tuple(paths)))
 print(f"Unique path counter: {unique_path_counter}")
 
 #with open(args.file, "r") as file:
