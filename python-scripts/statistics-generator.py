@@ -6,7 +6,9 @@ def unique(list1):
     print(type(list1) is list)
      
     # insert the list to the set
-    list_set = set(list1)
+    list_set = set(frozenset(item) for item in list1)
+    # list_set = set(list1)
+
     # convert the set to the list
     unique_list = (list(list_set))
     return unique_list
@@ -26,9 +28,6 @@ parser.add_argument('-v', '-V', '--v', '--V', action='store_true')
 # action='store_true' implies default=False. Conversely, you could have action='store_false', which implies default=True.
 args = parser.parse_args()
 
-
-elements = []
-ip_addresses = []
 iteration = 0
 paths = [] # list of lists containing all paths found
 path_counter = 0 # total number of paths found
@@ -48,6 +47,8 @@ for filename in os.listdir(os.path.dirname(args.file)):
     if tag in filename:
         print(f"Tag {tag} found in filename {filename}")
         with open(os.path.join(os.path.dirname(args.file), filename), "r") as file:
+            elements = []
+            ip_addresses = []
             # returns JSON object as a dictionary
             data = json.load(file)
             source_ip = data['source']
