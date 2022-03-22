@@ -15,9 +15,9 @@ def unique(my_list):
 
 # get unique list-of-lists values
 def unique_list_of_lists(my_list):
-    #print("Calling the unique function")
+    print("Entering the unique_list_of_lists function")
     # convert list of lists to set of sets
-    #print(f"Original list: {list1}")
+    print(f"Original list: {my_list}")
     #(print(f"Original list item: {item}\n") for item in list1)
 
     list_set = set(frozenset(item) for item in my_list)
@@ -26,7 +26,6 @@ def unique_list_of_lists(my_list):
 
     # convert set back to list
     unique_list = list(list(item) for item in list_set)
-    #unique_list = list(list_set)
     print(f"Unique list: {unique_list}")
     return unique_list
 
