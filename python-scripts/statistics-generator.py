@@ -20,14 +20,27 @@ def unique_list_of_lists(my_list):
     print(f"Original list: {my_list}")
     #(print(f"Original list item: {item}\n") for item in list1)
 
-    list_set = set(frozenset(item) for item in my_list)
-    #print(f"List set: {list_set}")
-    #list_set = set(list1)
-
-    # convert set back to list
-    unique_list = list(list(item) for item in list_set)
+    unique_list = my_list
+    for item in my_list:
+        eq_counter = 0
+        index = 0
+        while index < len(my_list):
+            if item == my_list[index]:
+                eq_counter = eq_counter + 1
+                if eq_counter > 1:
+                    unique_list.pop(index)
+                    eq_counter = eq_counter - 1
+            index = index + 1
     print(f"Unique list: {unique_list}")
     return unique_list
+
+
+    #list_set = set(frozenset(item) for item in my_list)
+
+    ## convert set back to list
+    #unique_list = list(list(item) for item in list_set)
+    #print(f"Unique list: {unique_list}")
+    #return unique_list
 
 p = re.compile('[0-9a-f]{6}')
 
