@@ -7,16 +7,21 @@ def count_path(pathlist):
         print("do something")
     return counter
 
+# get unique list values
+def unique(list):
+    list_set = set(list)
+    unique_list = list(list_set)
+    return unique_list
 
-# function to get unique values
-def unique(list1):
-    print("Calling the unique function")
+# get unique list-of-lists values
+def unique_list_of_lists(list1):
+    #print("Calling the unique function")
     # convert list of lists to set of sets
-    print(f"Original list: {list1}")
-    (print(f"Original list item: {item}\n") for item in list1)
+    #print(f"Original list: {list1}")
+    #(print(f"Original list item: {item}\n") for item in list1)
 
     list_set = set(frozenset(item) for item in list1)
-    print(f"List set: {list_set}")
+    #print(f"List set: {list_set}")
     #list_set = set(list1)
 
     # convert set back to list
@@ -89,7 +94,7 @@ print(f"Scanned {scan_counter} traceroute-logs to destination {destinations[0]}"
 #print(f"All paths:\n{paths}")
 path_counter = len(paths)
 print(f"Total number of paths discovered: {path_counter}")
-unique_paths = unique(paths)
+unique_paths = unique_list_of_lists(paths)
 unique_path_counter = len(unique_paths)
 print(f"Number of unique paths discovered: {unique_path_counter}")
 print(f"List of all outgoing flow-labels used: {flow_labels}")
