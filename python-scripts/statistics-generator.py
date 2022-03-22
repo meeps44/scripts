@@ -8,19 +8,19 @@ def count_path(pathlist):
     return counter
 
 # get unique list values
-def unique(list):
-    list_set = set(list)
+def unique(my_list):
+    list_set = set(my_list)
     unique_list = list(list_set)
     return unique_list
 
 # get unique list-of-lists values
-def unique_list_of_lists(list1):
+def unique_list_of_lists(my_list):
     #print("Calling the unique function")
     # convert list of lists to set of sets
     #print(f"Original list: {list1}")
     #(print(f"Original list item: {item}\n") for item in list1)
 
-    list_set = set(frozenset(item) for item in list1)
+    list_set = set(frozenset(item) for item in my_list)
     #print(f"List set: {list_set}")
     #list_set = set(list1)
 
