@@ -1,11 +1,10 @@
 import argparse, json, logging, os, re
 
-# function to count the number of paths with a particular flow-label
-def count_path(pathlist):
-    counter = 0
-    for item in pathlist:
-        print("do something")
-    return counter
+# initialize logging:
+logging.basicConfig(filename='/root/logs/statistics-output.log',
+format='%(asctime)s %(levelname)-8s %(message)s',
+level=logging.INFO,
+datefmt='%Y-%m-%d %H:%M:%S')
 
 # get unique list values
 def unique(my_list):
@@ -28,12 +27,6 @@ def unique_list_of_lists(my_list):
     return unique_list
 
 p = re.compile('[0-9a-f]{6}')
-
-# initialize logging:
-#logging.basicConfig(filename='/root/logs/route_comparison_output.log',
-#format='%(asctime)s %(levelname)-8s %(message)s',
-#level=logging.INFO,
-#datefmt='%Y-%m-%d %H:%M:%S')
 
 parser = argparse.ArgumentParser()
 parser.add_argument("file")
