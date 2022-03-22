@@ -100,7 +100,7 @@ for number, unique_path in enumerate(unique_paths):
         if unique_path == path:
             path_counter = path_counter + 1
     print(f"Number of traceroutes to path number {number} (any flow-label): {path_counter}")
-    print(f"Ratio: {path_counter / len(paths)}")
+    print(f"Ratio: {0:.0f}%".format(path_counter / len(paths)))
     #print(f"Traceroutes to path number {number} to total number of unique paths ratio: {path_counter / unique_path_counter}")
 
 # tuple composition: item[0]: flow-label, item[1]: list of ip-addresses
