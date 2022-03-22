@@ -106,8 +106,8 @@ print(f"Number of unique outgoing flow-labels used: {len(unique(flow_labels))}")
 for index, unique_path in enumerate(unique_paths):
     path_counter = 0
     for path in paths:
-        #print(f"Unique path: {unique_path}")
-        #print(f"Path: {path}")
+        print(f"Unique path: {unique_path}")
+        print(f"Path: {path}")
         if unique_path == path:
             path_counter = path_counter + 1
     print(f"Number of traceroutes to path number {index}: {path_counter}")
