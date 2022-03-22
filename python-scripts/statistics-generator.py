@@ -15,27 +15,6 @@ def unique(my_list):
 
 # get unique list-of-lists values
 def unique_list_of_lists(my_list):
-    #print("Entering the unique_list_of_lists function")
-    # convert list of lists to set of sets
-    #print(f"Original list: {my_list}")
-    #(print(f"Original list item: {item}\n") for item in list1)
-
-    #unique_list = my_list.copy()
-    #for item in my_list:
-        #eq_counter = 0
-        #index = 0
-        #length = len(my_list)
-        #while index < length:
-            #if item == unique_list[index]:
-                #eq_counter = eq_counter + 1
-                #if eq_counter > 1:
-                    #length = length - 1
-                    #unique_list.remove(item) # removes the first object in the list matching "item"
-                    ##unique_list.pop(index) # problem!
-                    #eq_counter = eq_counter - 1
-            #index = index + 1
-    #print(f"Unique list: {unique_list}")
-
     unique_list = my_list.copy()
     for item in my_list:
         eq_counter = 0
@@ -45,27 +24,8 @@ def unique_list_of_lists(my_list):
                 if eq_counter > 1:
                     unique_list.remove(item) # removes the first object in the list matching "item"
                     eq_counter = eq_counter - 1
-
-        #while index < length:
-            #if item == unique_list[index]:
-                #eq_counter = eq_counter + 1
-                #if eq_counter > 1:
-                    #length = length - 1
-                    #unique_list.remove(item) # removes the first object in the list matching "item"
-                    #eq_counter = eq_counter - 1
-            #index = index + 1
     #print(f"Unique list: {unique_list}")
-
-    print(f"Unique list: {unique_list}")
     return unique_list
-
-
-    #list_set = set(frozenset(item) for item in my_list)
-
-    ## convert set back to list
-    #unique_list = list(list(item) for item in list_set)
-    #print(f"Unique list: {unique_list}")
-    #return unique_list
 
 p = re.compile('[0-9a-f]{6}')
 
@@ -103,7 +63,6 @@ print(f"Input Directory: {os.path.dirname(args.file)}")
 for filename in os.listdir(os.path.dirname(args.file)):
     # only open filenames containing the tag
     if tag in filename:
-        #print(f"Tag {tag} found in filename {filename}")
         with open(os.path.join(os.path.dirname(args.file), filename), "r") as file:
             scan_counter = scan_counter + 1
             elements = []
@@ -115,7 +74,6 @@ for filename in os.listdir(os.path.dirname(args.file)):
             tcp_port = data['outgoing_tcp_port']
             flow_labels.append(data['flow_label'])
             #returned_flow_label_1 = data1['hops']
-
 
             for key, value in data['hops'].items():
                 elements.append(value)
@@ -130,9 +88,7 @@ for filename in os.listdir(os.path.dirname(args.file)):
 print(f"Scanned {scan_counter} traceroute-logs to destination {destinations[0]}")
 path_counter = len(paths)
 print(f"Total number of paths discovered: {path_counter}")
-print(f"Paths length before calling unique: {len(paths)}")
 unique_paths = unique_list_of_lists(paths)
-print(f"Paths length after calling unique: {len(paths)}")
 unique_path_counter = len(unique_paths)
 print(f"Number of unique paths discovered: {unique_path_counter}")
 print(f"Total number of source flow-labels: {flow_labels}")
@@ -140,13 +96,8 @@ print(f"Number of unique source flow-labels: {len(unique(flow_labels))}")
 
 for number, unique_path in enumerate(unique_paths):
     path_counter = 0
-    print(f"Paths length in 1st for-loop: {len(paths)}")
     for path in paths:
-        print(f"Paths length in for path in paths: {len(paths)}")
-        #print(f"Unique path: {unique_path}")
-        print(f"Path: {path}")
         if unique_path == path:
-            print("Match!")
             path_counter = path_counter + 1
     print(f"Number of traceroutes to path number {number} (any flow-label): {path_counter}")
 
