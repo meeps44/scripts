@@ -33,14 +33,15 @@ parser.add_argument('-v', '-V', '--v', '--V', action='store_true')
 args = parser.parse_args()
 
 scan_counter = 0
-destinations = []
+destinations = [] # list of all destination IPs found
+flow_labels = [] # list of all source flow-labels found
 paths = [] # list of lists containing all paths found
 unique_paths = [] # subset of list paths, containing only the unique paths
+path_and_flow_label_list = [] # list of all paths and their corresponding flow-labels. each 
+# entry is saved as a tuple of the two.
 path_counter = 0 # total number of paths found
 unique_path_counter = 0 # number of unique paths found
 flow_label_counter = 0 # number of unique flow-labels found
-flow_labels = []
-path_and_flow_label_list = []
 
 tags = p.findall(args.file)
 tag = tags[0] # we are assuming that the filename will not contain more than one tag, 
@@ -85,8 +86,8 @@ print(f"Number of unique paths discovered: {unique_path_counter}")
 print(f"List of all outgoing flow-labels used: {flow_labels}")
 print(f"Number of unique outgoing flow-labels used: {len(unique(flow_labels))}")
 
-print(path_and_flow_label_list)
-print(len(path_and_flow_label_list))
+#print(path_and_flow_label_list)
+#print(len(path_and_flow_label_list))
 
 for index, unique_path in enumerate(unique_paths):
     path_counter = 0
@@ -95,19 +96,31 @@ for index, unique_path in enumerate(unique_paths):
             path_counter = path_counter + 1
     print(f"Number of traceroutes to path number {index}: {path_counter}")
 
+
+# per flow-label
+# tuple composition: item[0]: flow-label, item[1]: list of ip-addresses
+for flow_label in flow_labels:
+    for index, unique_path in enumerate(unique_paths):
+        path_counter = 0
+        for pf_tuple in path_and_flow_label_list:
+            if (unique_path == pf_tuple[1]) and (flow_label == pf_tuple[0]):
+                path_counter = path_counter + 1
+        print(f"Number of traceroutes with flow-label {flow_label} to path number {index}: {path_counter}")
+
+
 # tuple composition: item[0]: flow-label, item[1]: list of ip-addresses
 # for each path, do:
-for idx, item in path_and_flow_label_list:
-    path_counter = 0
-    path_and_flow_counter = 0
-    for index, object in enumerate(path_and_flow_label_list):
-        # if the paths are equal: increment path counter
-        if item[1] == path_and_flow_label_list[index][1]:
-            path_counter = path_counter + 1 
-        if item == path_and_flow_label_list[index]:
-            path_and_flow_counter = path_and_flow_counter + 1
+#for idx, item in path_and_flow_label_list:
+    #path_counter = 0
+    #path_and_flow_counter = 0
+    #for index, object in enumerate(path_and_flow_label_list):
+        ## if the paths are equal: increment path counter
+        #if item[1] == path_and_flow_label_list[index][1]:
+            #path_counter = path_counter + 1 
+        #if item == path_and_flow_label_list[index]:
+            #path_and_flow_counter = path_and_flow_counter + 1
 
-    print(f"Number of traceroutes to path number {idx} with flow-label {}: {}")
+    #print(f"Number of traceroutes to path number {idx} with flow-label {}: {}")
     
 
 
