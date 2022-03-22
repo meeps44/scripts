@@ -25,11 +25,12 @@ def unique_list_of_lists(my_list):
         eq_counter = 0
         index = 0
         while index < len(my_list):
-            if item == my_list[index]:
+            if item == unique_list[index]:
                 eq_counter = eq_counter + 1
                 if eq_counter > 1:
-                    unique_list.pop(index)
+                    unique_list.pop(index) # problem!
                     eq_counter = eq_counter - 1
+                    index = index + 1 # verify this
             index = index + 1
     #print(f"Unique list: {unique_list}")
     return unique_list
