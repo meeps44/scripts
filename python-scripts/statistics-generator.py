@@ -35,6 +35,7 @@ args = parser.parse_args()
 scan_counter = 0
 destinations = []
 paths = [] # list of lists containing all paths found
+unique_paths = [] # subset of list paths, containing only the unique paths
 path_counter = 0 # total number of paths found
 unique_path_counter = 0 # number of unique paths found
 flow_label_counter = 0 # number of unique flow-labels found
@@ -78,7 +79,8 @@ print(f"Scanned {scan_counter} traceroute documents to destination {destinations
 print(f"All paths:\n{paths}")
 path_counter = len(paths)
 print(f"Total number of paths: {path_counter}")
-unique_path_counter = len(unique(paths))
+unique_paths = unique(paths)
+unique_path_counter = len(unique_paths)
 print(f"Number of unique paths discovered: {unique_path_counter}")
 print(f"List of all outgoing flow-labels used: {flow_labels}")
 print(f"Number of unique outgoing flow-labels used: {len(unique(flow_labels))}")
@@ -86,13 +88,12 @@ print(f"Number of unique outgoing flow-labels used: {len(unique(flow_labels))}")
 print(path_and_flow_label_list)
 print(len(path_and_flow_label_list))
 
-for index, item in enumerate(paths):
+for index, unique_path in enumerate(unique_paths):
     path_counter = 0
-    current_path = item
-    for object in len(paths):
-        if item == object:
+    for path in paths:
+        if unique_path == path:
             path_counter = path_counter + 1
-    print(f"Number of traceroutes to path number {index} (based on all paths): {path_counter}")
+    print(f"Number of traceroutes to path number {index}: {path_counter}")
 
 # tuple composition: item[0]: flow-label, item[1]: list of ip-addresses
 # for each path, do:
