@@ -105,7 +105,9 @@ for filename in os.listdir(os.path.dirname(args.file)):
 print(f"Scanned {scan_counter} traceroute-logs to destination {destinations[0]}")
 path_counter = len(paths)
 print(f"Total number of paths discovered: {path_counter}")
+print(f"Paths length before calling unique: {len(paths)}")
 unique_paths = unique_list_of_lists(paths)
+print(f"Paths length after calling unique: {len(paths)}")
 unique_path_counter = len(unique_paths)
 print(f"Number of unique paths discovered: {unique_path_counter}")
 print(f"Total number of source flow-labels: {flow_labels}")
@@ -113,8 +115,9 @@ print(f"Number of unique source flow-labels: {len(unique(flow_labels))}")
 
 for number, unique_path in enumerate(unique_paths):
     path_counter = 0
+    print(f"Paths length in 1st for-loop: {len(paths)}")
     for path in paths:
-        print(f"Paths length: {len(paths)}")
+        print(f"Paths length in for path in paths: {len(paths)}")
         #print(f"Unique path: {unique_path}")
         print(f"Path: {path}")
         if unique_path == path:
