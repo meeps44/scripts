@@ -111,3 +111,13 @@ for flow_label in unique(flow_labels):
             if (unique_path == pf_tuple[1]) and (flow_label == pf_tuple[0]):
                 path_counter = path_counter + 1
         print(f"Number of traceroutes with source flow-label {flow_label} to path number {index}: {path_counter}")
+
+
+# define a Path object (work in progress)
+#class Path:
+    #def __init__(self, path_id, hoplist):
+        #self.path_id = path_id
+        #self.hoplist = hoplist
+
+    #def myfunc(self):
+        #print("Hello my name is " + self.name)
