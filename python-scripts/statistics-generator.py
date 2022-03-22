@@ -20,20 +20,43 @@ def unique_list_of_lists(my_list):
     #print(f"Original list: {my_list}")
     #(print(f"Original list item: {item}\n") for item in list1)
 
+    #unique_list = my_list.copy()
+    #for item in my_list:
+        #eq_counter = 0
+        #index = 0
+        #length = len(my_list)
+        #while index < length:
+            #if item == unique_list[index]:
+                #eq_counter = eq_counter + 1
+                #if eq_counter > 1:
+                    #length = length - 1
+                    #unique_list.remove(item) # removes the first object in the list matching "item"
+                    ##unique_list.pop(index) # problem!
+                    #eq_counter = eq_counter - 1
+            #index = index + 1
+    #print(f"Unique list: {unique_list}")
+
     unique_list = my_list.copy()
     for item in my_list:
         eq_counter = 0
-        index = 0
-        length = len(my_list)
-        while index < length:
-            if item == unique_list[index]:
+        for obj in unique_list:
+            if item == obj:
                 eq_counter = eq_counter + 1
                 if eq_counter > 1:
-                    unique_list.pop(index) # problem!
+                    unique_list.remove(item) # removes the first object in the list matching "item"
                     eq_counter = eq_counter - 1
-                    length = length - 1
-            index = index + 1
+
+        #while index < length:
+            #if item == unique_list[index]:
+                #eq_counter = eq_counter + 1
+                #if eq_counter > 1:
+                    #length = length - 1
+                    #unique_list.remove(item) # removes the first object in the list matching "item"
+                    #eq_counter = eq_counter - 1
+            #index = index + 1
     #print(f"Unique list: {unique_list}")
+
+    print(f"Unique list: {unique_list}")
     return unique_list
 
 
