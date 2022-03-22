@@ -15,9 +15,9 @@ def unique(my_list):
 
 # get unique list-of-lists values
 def unique_list_of_lists(my_list):
-    print("Entering the unique_list_of_lists function")
+    #print("Entering the unique_list_of_lists function")
     # convert list of lists to set of sets
-    print(f"Original list: {my_list}")
+    #print(f"Original list: {my_list}")
     #(print(f"Original list item: {item}\n") for item in list1)
 
     unique_list = my_list
@@ -31,7 +31,7 @@ def unique_list_of_lists(my_list):
                     unique_list.pop(index)
                     eq_counter = eq_counter - 1
             index = index + 1
-    print(f"Unique list: {unique_list}")
+    #print(f"Unique list: {unique_list}")
     return unique_list
 
 
@@ -112,47 +112,13 @@ print(f"Number of unique paths discovered: {unique_path_counter}")
 print(f"List of all outgoing flow-labels used: {flow_labels}")
 print(f"Number of unique outgoing flow-labels used: {len(unique(flow_labels))}")
 
-#print(path_and_flow_label_list)
-#print(len(path_and_flow_label_list))
-
-#for index, unique_path in enumerate(unique_paths):
-#for path in paths:
-    #path_counter = 0
-    #for index, unique_path in enumerate(unique_paths):
-        #print(f"Unique path: {unique_path}")
-        #print(f"Path: {path}")
-        #if path == unique_path:
-            #path_counter = path_counter + 1
-    #print(f"Number of traceroutes to path number {index}: {path_counter}")
-
 for number, unique_path in enumerate(unique_paths):
     path_counter = 0
-    index = 0
-
     for path in paths:
         if unique_path == path:
             path_counter = path_counter + 1
-        #index = index + 1
     print(f"Number of traceroutes to path number {number}: {path_counter}")
 
-
-    #while index < len(paths):
-        #print(f"Unique path: {unique_path}")
-        #print(f"Paths index {index}: {paths[index]}")
-        #if unique_path == paths[index]:
-            #path_counter = path_counter + 1
-        #index = index + 1
-    #print(f"Number of traceroutes to path number {number}: {path_counter}")
-
-    #for path in paths:
-        #print(f"Unique path: {unique_path}")
-        #print(f"Path: {path}")
-        #if unique_path == path:
-            #path_counter = path_counter + 1
-    #print(f"Number of traceroutes to path number {index}: {path_counter}")
-
-
-# per flow-label
 # tuple composition: item[0]: flow-label, item[1]: list of ip-addresses
 for flow_label in unique(flow_labels):
     for index, unique_path in enumerate(unique_paths):
@@ -160,25 +126,7 @@ for flow_label in unique(flow_labels):
         for pf_tuple in path_and_flow_label_list:
             if (unique_path == pf_tuple[1]) and (flow_label == pf_tuple[0]):
                 path_counter = path_counter + 1
-        print(f"Number of traceroutes with flow-label {flow_label} to path number {index}: {path_counter}")
-
-
-# tuple composition: item[0]: flow-label, item[1]: list of ip-addresses
-# for each path, do:
-#for idx, item in path_and_flow_label_list:
-    #path_counter = 0
-    #path_and_flow_counter = 0
-    #for index, object in enumerate(path_and_flow_label_list):
-        ## if the paths are equal: increment path counter
-        #if item[1] == path_and_flow_label_list[index][1]:
-            #path_counter = path_counter + 1 
-        #if item == path_and_flow_label_list[index]:
-            #path_and_flow_counter = path_and_flow_counter + 1
-
-    #print(f"Number of traceroutes to path number {idx} with flow-label {}: {}")
-    
-
-
+        print(f"Number of traceroutes with source flow-label {flow_label} to path number {index}: {path_counter}")
 
 #class Path:
     #def __init__(self, ip_addresses, flow_label, path_number):
