@@ -103,21 +103,22 @@ for filename in os.listdir(os.path.dirname(args.file)):
             paths.append(ip_addresses)
 
 print(f"Scanned {scan_counter} traceroute-logs to destination {destinations[0]}")
-#print(f"All paths:\n{paths}")
 path_counter = len(paths)
 print(f"Total number of paths discovered: {path_counter}")
 unique_paths = unique_list_of_lists(paths)
 unique_path_counter = len(unique_paths)
 print(f"Number of unique paths discovered: {unique_path_counter}")
-print(f"List of all outgoing flow-labels used: {flow_labels}")
-print(f"Number of unique outgoing flow-labels used: {len(unique(flow_labels))}")
+print(f"Total number of source flow-labels: {flow_labels}")
+print(f"Number of unique source flow-labels: {len(unique(flow_labels))}")
 
 for number, unique_path in enumerate(unique_paths):
     path_counter = 0
     for path in paths:
+        print(f"Unique path: {unique_path}")
+        print(f"Path: {path}")
         if unique_path == path:
             path_counter = path_counter + 1
-    print(f"Number of traceroutes to path number {number}: {path_counter}")
+    print(f"Number of traceroutes to path number {number} (any flow-label): {path_counter}")
 
 # tuple composition: item[0]: flow-label, item[1]: list of ip-addresses
 for flow_label in unique(flow_labels):
