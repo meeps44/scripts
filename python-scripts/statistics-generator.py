@@ -91,8 +91,8 @@ print(f"Total number of paths discovered: {path_counter}")
 unique_paths = unique_list_of_lists(paths)
 unique_path_counter = len(unique_paths)
 print(f"Number of unique paths discovered: {unique_path_counter}")
-print(f"Total number of source flow-labels: {flow_labels}")
-print(f"Number of unique source flow-labels: {len(unique(flow_labels))}")
+#print(f"List of source flow-labels discovered: {flow_labels}")
+print(f"Number of unique source flow-labels discovered: {len(unique(flow_labels))}")
 
 for number, unique_path in enumerate(unique_paths):
     path_counter = 0
@@ -100,6 +100,8 @@ for number, unique_path in enumerate(unique_paths):
         if unique_path == path:
             path_counter = path_counter + 1
     print(f"Number of traceroutes to path number {number} (any flow-label): {path_counter}")
+    print(f"Ratio: {path_counter / unique_path_counter}")
+    #print(f"Traceroutes to path number {number} to total number of unique paths ratio: {path_counter / unique_path_counter}")
 
 # tuple composition: item[0]: flow-label, item[1]: list of ip-addresses
 for flow_label in unique(flow_labels):
@@ -109,18 +111,3 @@ for flow_label in unique(flow_labels):
             if (unique_path == pf_tuple[1]) and (flow_label == pf_tuple[0]):
                 path_counter = path_counter + 1
         print(f"Number of traceroutes with source flow-label {flow_label} to path number {index}: {path_counter}")
-
-#class Path:
-    #def __init__(self, ip_addresses, flow_label, path_number):
-        #self.path = ip_addresses
-        #self.flow_label = flow_label
-        #self.path_number = path_number
-
-    #def get_path(self):
-        #return self.path
-    
-    #def get_path_length(self):
-        #return len(self.path)
-
-    #def get_flow_label(self):
-        #return self.flow_label
