@@ -76,10 +76,10 @@ for filename in os.listdir(os.path.dirname(args.file)):
             #print(ip_addresses)
             paths.append(ip_addresses)
 
-print(f"Scanned {scan_counter} traceroute documents to destination {destinations[0]}")
-print(f"All paths:\n{paths}")
+print(f"Scanned {scan_counter} traceroute-logs to destination {destinations[0]}")
+#print(f"All paths:\n{paths}")
 path_counter = len(paths)
-print(f"Total number of paths: {path_counter}")
+print(f"Total number of paths discovered: {path_counter}")
 unique_paths = unique(paths)
 unique_path_counter = len(unique_paths)
 print(f"Number of unique paths discovered: {unique_path_counter}")
