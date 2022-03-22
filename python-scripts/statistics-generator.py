@@ -13,7 +13,11 @@ def unique(list1):
     print("Calling the unique function")
     # convert list of lists to set of sets
     print(f"Original list: {list1}")
-    list_set = set(set(item) for item in list1)
+    (print(f"Original list item: {item}\n") for item in list1)
+
+    list_set = set(frozenset(item) for item in list1)
+    print(f"List set: {list_set}")
+    #list_set = set(list1)
 
     # convert set back to list
     unique_list = list(list(item) for item in list_set)
