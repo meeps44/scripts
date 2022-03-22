@@ -115,14 +115,31 @@ print(f"Number of unique outgoing flow-labels used: {len(unique(flow_labels))}")
 #print(path_and_flow_label_list)
 #print(len(path_and_flow_label_list))
 
-for index, unique_path in enumerate(unique_paths):
+#for index, unique_path in enumerate(unique_paths):
+#for path in paths:
+    #path_counter = 0
+    #for index, unique_path in enumerate(unique_paths):
+        #print(f"Unique path: {unique_path}")
+        #print(f"Path: {path}")
+        #if path == unique_path:
+            #path_counter = path_counter + 1
+    #print(f"Number of traceroutes to path number {index}: {path_counter}")
+
+for number, unique_path in enumerate(unique_paths):
     path_counter = 0
-    for path in paths:
-        print(f"Unique path: {unique_path}")
-        print(f"Path: {path}")
-        if unique_path == path:
+    index = 0
+    while index < len(paths):
+        if unique_path == paths[index]:
             path_counter = path_counter + 1
-    print(f"Number of traceroutes to path number {index}: {path_counter}")
+        index = index + 1
+    print(f"Number of traceroutes to path number {number}: {path_counter}")
+
+    #for path in paths:
+        #print(f"Unique path: {unique_path}")
+        #print(f"Path: {path}")
+        #if unique_path == path:
+            #path_counter = path_counter + 1
+    #print(f"Number of traceroutes to path number {index}: {path_counter}")
 
 
 # per flow-label
