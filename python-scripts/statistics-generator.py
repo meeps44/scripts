@@ -1,3 +1,4 @@
+from __future__ import division
 import argparse, json, logging, os, re
 
 # function to count the number of paths with a particular flow-label
