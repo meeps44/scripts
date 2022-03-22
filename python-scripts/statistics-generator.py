@@ -144,7 +144,7 @@ for number, unique_path in enumerate(unique_paths):
 
 # per flow-label
 # tuple composition: item[0]: flow-label, item[1]: list of ip-addresses
-for flow_label in flow_labels:
+for flow_label in unique(flow_labels):
     for index, unique_path in enumerate(unique_paths):
         path_counter = 0
         for pf_tuple in path_and_flow_label_list:
