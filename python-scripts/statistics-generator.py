@@ -20,7 +20,7 @@ def unique_list_of_lists(my_list):
     #print(f"Original list: {my_list}")
     #(print(f"Original list item: {item}\n") for item in list1)
 
-    unique_list = my_list
+    unique_list = my_list.copy()
     for item in my_list:
         eq_counter = 0
         index = 0
