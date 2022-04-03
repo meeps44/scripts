@@ -52,7 +52,7 @@ def main():
     for line in args.ip_address_file:
         line = line.strip()
         try:
-            print(line + "," + tree[line])
+            print(line + "," + tree[line] + "," + get_asn(tree[line]))
             #file.write(line + "," + tree[line])
         except KeyError as e:
             print("Skipped line '" + line + "'", file=sys.stderr)
