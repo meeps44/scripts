@@ -28,7 +28,6 @@ def get_as_numbers_from_file(routeviews_input):
 
         # get unqiue values
         as_numbers = np.unique(np.array(as_numbers))
-
     return as_numbers
 
 # gets the asn from an IP prefix
