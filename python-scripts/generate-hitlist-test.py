@@ -1,24 +1,9 @@
-#!/usr/bin/env python
-
-# Generates an IPv6 hitlist based on a list of RouteViews prefixes and the 
-# list of responsive IPv6-addresses from https://ipv6hitlist.github.io/.
-# The end result is a list containing one responsive address per ASN.
-# Final format: <responsive ip> <prefix length> <asn>
-# Example: 600:6001:110b::1	48	11351
-
 from __future__ import print_function
 from pathlib import Path
 
 import argparse
 import sys
-
-try:
-    import SubnetTree
-except Exception as e:
-    print(e, file=sys.stderr)
-    print("Use `pip install pysubnettree` to install the required module", file=sys.stderr)
-    sys.exit(1)
-
+import SubnetTree
 
 def fill_tree(tree, fh):
     for line in fh:
@@ -31,19 +16,21 @@ def fill_tree(tree, fh):
 
 # gets the asn from an IP prefix
 def get_asn(prefix):
-    asn = 0
-    path = "/mnt/c/Users/Erlend/Downloads/RouteViews\ data/"
-    filename = "routeviews-rv6-20220312-2200.pfx2as.txt" 
+    path = "/mnt/c/Users/Erlend/Downloads/RouteViews data/"
+    filename = "routeviews-rv6-20220312-2200-short.txt" 
     full = path + filename
     with open(full, "r") as file:
         lines = file.readlines()
-
         for line in lines:
             list = line.split()
-            print(list)
-    return asn
+            ip = list[0]
+            prefix_length = list[1]
+            ip_with_prefix = ip + "/" + prefix_length
+            asn = list[2]
 
-
+            if prefix == ip_with_prefix:
+                return asn
+    return 0
 
 def main():
     parser = argparse.ArgumentParser()
@@ -52,17 +39,12 @@ def main():
     args = parser.parse_args()
 
     tree = SubnetTree.SubnetTree()
-    tree = fill_tree(tree, args.prefix_file)
+    tree = SubnetTree.fill_tree(tree, args.prefix_file)
 
-    # Set up outputfile
-    # filename = f"{str(Path.home())}/python-programming/subnettree-output.txt"
-
-    # Read IP address file, match each address to longest prefix and print output
     for line in args.ip_address_file:
         line = line.strip()
         try:
             print(line + "," + tree[line] + "," + get_asn(tree[line]))
-            #file.write(line + "," + tree[line])
         except KeyError as e:
             print("Skipped line '" + line + "'", file=sys.stderr)
 
