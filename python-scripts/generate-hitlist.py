@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+# Generates an IPv6 hitlist based on a list of RouteViews prefixes and the 
+# list of responsive IPv6-addresses from https://ipv6hitlist.github.io/.
+# The end result is a list containing one responsive address per ASN.
+# Final format: <responsive ip> <prefix length> <asn>
+# Example: 600:6001:110b::1	48	11351
+
 from __future__ import print_function
 from pathlib import Path
 
@@ -23,6 +29,12 @@ def fill_tree(tree, fh):
             print("Skipped line '" + line + "'", file=sys.stderr)
     return tree
 
+# gets the asn from an IP prefix
+def get_asn(prefix):
+    asn = 0
+    return asn
+
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -30,10 +42,7 @@ def main():
     parser.add_argument("-i", "--ip-address-file", required=True, type=argparse.FileType('r'), help="File containing IP addresses to be matched against (non-)aliased prefixes")
     args = parser.parse_args()
 
-    # Store aliased and non-aliased prefixes in a single subnet tree
     tree = SubnetTree.SubnetTree()
-
-    # Read aliased and non-aliased prefixes
     tree = fill_tree(tree, args.prefix_file)
 
     # Set up outputfile
