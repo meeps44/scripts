@@ -41,10 +41,32 @@ def main():
     tree = SubnetTree.SubnetTree()
     tree = SubnetTree.fill_tree(tree, args.prefix_file)
 
+    tuple_list = []
+    hitlist = []
+
     for line in args.ip_address_file:
         line = line.strip()
         try:
-            print(line + "," + tree[line] + "," + get_asn(tree[line]))
+            asn = get_asn(tree[line])
+
+            print(line + "," + tree[line] + "," + asn)
+
+            # save the prefix & asn as a tuple
+            tup = (tree[line], asn)
+
+            # add the tuple to a list
+            tuple_list.append(tup)
+            
+            # get the last 2 characters (the prefix length)
+            last_chars = tree[line][-2:]
+            
+            # if the prefix length is greater than the one that already exists for this (prefix - tuple)-pair,
+            # and the ASNs are equal
+            # replace the item in the list
+            for item in tuple_list:
+                # tuple structure: (prefix, asn)
+                if tup[1] == item[1] and tup[0][-2:] < last_chars:
+                    hitlist.append(line)
         except KeyError as e:
             print("Skipped line '" + line + "'", file=sys.stderr)
 
