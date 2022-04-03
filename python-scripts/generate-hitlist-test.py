@@ -1,6 +1,7 @@
 from __future__ import print_function
 from pathlib import Path
 
+import numpy as np
 import argparse
 import sys
 import SubnetTree
@@ -13,6 +14,22 @@ def fill_tree(tree, fh):
         except ValueError as e:
             print("Skipped line '" + line + "'", file=sys.stderr)
     return tree
+
+# gets all the unqiue AS-numbers from the provided routeviews data file
+# nb! the full path to the file must be included in the argument
+def get_as_numbers_from_file(routeviews_input):
+    as_numbers = []
+    with open(routeviews_input, "r") as file:
+        lines = file.readlines()
+        for line in lines:
+            list = line.split()
+            asn = list[2]
+            as_numbers.append(asn)
+
+        # get unqiue values
+        as_numbers = np.unique(np.array(as_numbers))
+
+    return as_numbers
 
 # gets the asn from an IP prefix
 def get_asn(prefix):
