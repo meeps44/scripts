@@ -77,7 +77,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--prefix-file", required=True, type=argparse.FileType('r'), help="File containing list of RouteViews prefixes")
     parser.add_argument("-i", "--ip-address-file", required=True, type=argparse.FileType('r'), help="File containing IP addresses to be matched against (non-)aliased prefixes")
-    parser.add_argument("-h", "--filtered-hitlist", required=True, type=argparse.FileType('r'), help="File containing IP addresses to be matched against (non-)aliased prefixes")
+    parser.add_argument("-h", "--filtered-hitlist", required=True, type=argparse.FileType('r'), help="File containing the final hitlist that you want to write to")
     args = parser.parse_args()
 
     tree = SubnetTree.SubnetTree()
