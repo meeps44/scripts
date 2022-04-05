@@ -17,18 +17,18 @@ def fill_tree(tree, fh):
 
 # gets all the unqiue AS-numbers from the provided routeviews data file
 # nb! the full path to the file must be included in the argument
-def get_as_numbers_from_file(routeviews_input):
+def get_as_numbers(routeviews_file):
     as_numbers = []
-    with open(routeviews_input, "r") as file:
+    with open(routeviews_file, "r") as file:
         lines = file.readlines()
         for line in lines:
-            list = line.split()
-            asn = list[2]
+            my_list = line.split()
+            asn = my_list[2]
             as_numbers.append(asn)
+            print(f"{asn=}")
 
-        # get unqiue values
-        as_numbers = np.unique(np.array(as_numbers))
-    return as_numbers
+        unique_numbers = list(set(as_numbers))
+    return unique_numbers
 
 # gets the asn from an IP prefix
 def get_asn(prefix):
