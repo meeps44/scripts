@@ -17,9 +17,9 @@ def fill_tree(tree, fh):
 
 # gets all the unqiue AS-numbers from the provided routeviews data file
 # nb! the full path to the file must be included in the argument
-def get_as_numbers(routeviews_file):
+def get_as_numbers(filename):
     as_numbers = []
-    with open(routeviews_file, "r") as file:
+    with open(filename, "r") as file:
         lines = file.readlines()
         for line in lines:
             my_list = line.split()
@@ -31,11 +31,10 @@ def get_as_numbers(routeviews_file):
     return unique_numbers
 
 # gets the asn from an IP prefix
-def get_asn(prefix):
-    path = "/mnt/c/Users/Erlend/Downloads/RouteViews data/"
-    filename = "routeviews-rv6-20220312-2200-short.txt" 
-    full = path + filename
-    with open(full, "r") as file:
+def get_asn(prefix, filename):
+    #path = "/mnt/c/Users/Erlend/Downloads/RouteViews data/"
+    #full = path + filename
+    with open(filename, "r") as file:
         lines = file.readlines()
         for line in lines:
             list = line.split()
@@ -43,6 +42,7 @@ def get_asn(prefix):
             prefix_length = list[1]
             ip_with_prefix = ip + "/" + prefix_length
             asn = list[2]
+            #print(f"{ip=}")
 
             if prefix == ip_with_prefix:
                 return asn
