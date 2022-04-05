@@ -1,41 +1,22 @@
-from __future__ import print_function
-from pathlib import Path
+import SubnetTree, sys
 
-import numpy as np
-import argparse
-import sys
-import SubnetTree
-
-def fill_tree(tree, fh):
-    for line in fh:
-        line = line.strip()
-        try:
-            tree[line] = line
-        except ValueError as e:
-            print("Skipped line '" + line + "'", file=sys.stderr)
-    return tree
-
-# gets all the unqiue AS-numbers from the provided routeviews data file
-# nb! the full path to the file must be included in the argument
 def get_as_numbers_from_file(routeviews_input):
     as_numbers = []
     with open(routeviews_input, "r") as file:
         lines = file.readlines()
         for line in lines:
-            list = line.split()
-            asn = list[2]
+            my_list = line.split()
+            asn = my_list[2]
             as_numbers.append(asn)
+            print(f"{asn=}")
 
-        # get unqiue values
-        as_numbers = np.unique(np.array(as_numbers))
-    return as_numbers
+        unique_numbers = list(set(as_numbers))
+    return unique_numbers
 
-# gets the asn from an IP prefix
-def get_asn(prefix):
-    path = "/mnt/c/Users/Erlend/Downloads/RouteViews data/"
-    filename = "routeviews-rv6-20220312-2200-short.txt" 
-    full = path + filename
-    with open(full, "r") as file:
+def get_asn(prefix, filename):
+    #path = "/mnt/c/Users/Erlend/Downloads/RouteViews data/"
+    #full = path + filename
+    with open(filename, "r") as file:
         lines = file.readlines()
         for line in lines:
             list = line.split()
@@ -43,48 +24,57 @@ def get_asn(prefix):
             prefix_length = list[1]
             ip_with_prefix = ip + "/" + prefix_length
             asn = list[2]
+            print(f"{ip=}")
 
             if prefix == ip_with_prefix:
                 return asn
     return 0
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--prefix-file", required=True, type=argparse.FileType('r'), help="File containing list of RouteViews prefixes")
-    parser.add_argument("-i", "--ip-address-file", required=True, type=argparse.FileType('r'), help="File containing IP addresses to be matched against (non-)aliased prefixes")
-    args = parser.parse_args()
-
-    tree = SubnetTree.SubnetTree()
-    tree = SubnetTree.fill_tree(tree, args.prefix_file)
-
-    tuple_list = []
-    hitlist = []
-
-    for line in args.ip_address_file:
+def fill_tree(tree, fh, suffix):
+    for line in fh:
         line = line.strip()
         try:
-            asn = get_asn(tree[line])
-
-            print(line + "," + tree[line] + "," + asn)
-
-            # save the prefix & asn as a tuple
-            tup = (tree[line], asn)
-
-            # add the tuple to a list
-            tuple_list.append(tup)
-            
-            # get the last 2 characters (the prefix length)
-            last_chars = tree[line][-2:]
-            
-            # if the prefix length is greater than the one that already exists for this (prefix - tuple)-pair,
-            # and the ASNs are equal
-            # replace the item in the list
-            for item in tuple_list:
-                # tuple structure: (prefix, asn)
-                if tup[1] == item[1] and tup[0][-2:] < last_chars:
-                    hitlist.append(line)
-        except KeyError as e:
+            tree[line] = line + suffix
+        except ValueError as e:
             print("Skipped line '" + line + "'", file=sys.stderr)
+    return tree
+
+# creates a hitlist that is a subset of the total hitlist, containing
+# all the IP-addresses that belong to a specific AS
+def create_as_specific_hitlist(routeviewsdata, hitlist, asn):
+    tree = SubnetTree.SubnetTree()
+    tree = SubnetTree.fill_tree(tree, routeviewsdata)
+    routeviews_subset = []
+
+    # generates a list of all IP-addresses in the ipv6-hitlist that belong to the same AS
+    for line in hitlist:
+        print(line + "," + tree[line] + "," + tree[line][-2:])
+        if tree[line][-2:] == asn:
+            new_list = [line, tree[line], tree[line][-2:]]
+            routeviews_subset.append(new_list)
+
+    return routeviews_subset
+
+# gets the IP-address from the provided hitlist with the longest prefix length
+def get_ip_with_longest_prefix(hitlist, routeviewsdata):
+    tree = SubnetTree.SubnetTree()
+    tree = SubnetTree.fill_tree(tree, routeviewsdata)
+
+    prefixlength = 0
+    ip = 0
+
+    for item in hitlist:
+        if item[2] > prefixlength:
+            prefixlength = item[2]
+            ip = item[0]
+
+    return ip
+
+def main():
+    filepath = "C:\\Users\\Erlend\\Downloads\\RouteViews data\\routeviews-rv6-20220312-2200-short.txt"
+    # get_as_numbers_from_file(filepath)
+    #print(get_asn("600:6001:110b::/48", filepath))
+    
 
 if __name__ == "__main__":
-    main()
+        main()
