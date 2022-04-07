@@ -63,7 +63,6 @@ def get_ip_with_longest_prefix(hitlist, routeviewsdata):
     prefixlength = 0
     ip = 0
 
-    # generates a list of all IP-addresses in the ipv6-hitlist that belong to the same AS
     for line in hitlist:
         if tree[line][-2:] > prefixlength:
             prefixlength = tree[line][-2:]
