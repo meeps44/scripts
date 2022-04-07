@@ -39,21 +39,31 @@ def fill_tree(tree, fh, suffix):
             print("Skipped line '" + line + "'", file=sys.stderr)
     return tree
 
-# creates a hitlist that is a subset of the total hitlist, containing
-# all the IP-addresses that belong to a specific AS
+# generates a list of all IP-addresses in the ipv6-hitlist that belong to the same AS
 def create_as_specific_hitlist(routeviewsdata, hitlist, asn):
     tree = SubnetTree.SubnetTree()
     tree = SubnetTree.fill_tree(tree, routeviewsdata)
-    routeviews_subset = []
+    new_hitlist = []
 
-    # generates a list of all IP-addresses in the ipv6-hitlist that belong to the same AS
-    for line in hitlist:
-        print(line + "," + tree[line] + "," + tree[line][-2:])
-        if tree[line][-2:] == asn:
-            new_list = [line, tree[line], tree[line][-2:]]
-            routeviews_subset.append(new_list)
+    for ip_address in hitlist:
+        if get_asn(ip_address) == asn:
+            new_hitlist.append(ip_address)
+    return new_hitlist
 
-    return routeviews_subset
+# creates a hitlist that is a subset of the total hitlist, containing
+# all the IP-addresses that belong to a specific AS
+#def create_as_specific_hitlist(routeviewsdata, hitlist, asn):
+#    tree = SubnetTree.SubnetTree()
+#    tree = SubnetTree.fill_tree(tree, routeviewsdata)
+#    routeviews_subset = []
+#
+#    # generates a list of all IP-addresses in the ipv6-hitlist that belong to the same AS
+#    for line in hitlist:
+#        print(line + "," + tree[line] + "," + tree[line][-2:])
+#        if tree[line][-2:] == asn:
+#            new_list = [line, tree[line], tree[line][-2:]]
+#            routeviews_subset.append(new_list)
+#    return routeviews_subset
 
 # gets the IP-address from the provided hitlist with the longest prefix length
 def get_ip_with_longest_prefix(hitlist, routeviewsdata):
