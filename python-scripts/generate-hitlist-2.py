@@ -54,6 +54,9 @@ def fill_tree(tree, fh):
     return tree
 
 
+# Ideally you'd only have to give the program the routeviews-file once,
+# the program would then clean the routeviews-file, generate the list of addresses
+# and create the tree based on that.
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-n", "--non-aliased-file", required=True, type=argparse.FileType('r'), help="File containing non-aliased prefixes")
@@ -67,25 +70,26 @@ def main():
     # Read aliased and non-aliased prefixes
     tree = read_non_aliased(tree, args.non_aliased_file)
 
-    #as_numbers = set()
-    #ip_addresses = []
+    as_numbers = set()
+    ip_addresses = []
 
     # Read IP address file, match each address to longest prefix and print output
     for line in args.ip_address_file:
         line = line.strip()
         try:
             asn = str(get_asn(tree[line], args.routeviews_file))
-            #if asn not in as_numbers:
-                #as_numbers.add(asn)
-                #ip_addresses.append(line)
-                #print("Appended IP address")
+
+            if asn not in as_numbers:
+                as_numbers.add(asn)
+                ip_addresses.append(line)
+                print("Appended IP address")
             
             print(f"{asn} {tree[line][-2:]} {line} {tree[line]}")
             #print(line + ", " + tree[line] + ", " + str(get_asn(line, args.routeviews_file)))
         except KeyError as e:
             print("Skipped line '" + line + "'", file=sys.stderr)
     
-    #print(f"{ip_addresses=}")
+    print(f"{ip_addresses=}")
 
 if __name__ == "__main__":
     main()
