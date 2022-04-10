@@ -13,7 +13,7 @@ except Exception as e:
     sys.exit(1)
 
 def get_asn(prefix, filename):
-    #for line in filename.readlines():
+    #for line in filename:
         ##print("Entering for-loop")
         ##print(f"{line=}")
         #list = line.split()
@@ -67,14 +67,25 @@ def main():
     # Read aliased and non-aliased prefixes
     tree = read_non_aliased(tree, args.non_aliased_file)
 
+    #as_numbers = set()
+    #ip_addresses = []
+
     # Read IP address file, match each address to longest prefix and print output
     for line in args.ip_address_file:
         line = line.strip()
         try:
-            print(f"{str(get_asn(tree[line], args.routeviews_file))} {tree[line][-2:]} {line} {tree[line]}")
+            asn = str(get_asn(tree[line], args.routeviews_file))
+            #if asn not in as_numbers:
+                #as_numbers.add(asn)
+                #ip_addresses.append(line)
+                #print("Appended IP address")
+            
+            print(f"{asn} {tree[line][-2:]} {line} {tree[line]}")
             #print(line + ", " + tree[line] + ", " + str(get_asn(line, args.routeviews_file)))
         except KeyError as e:
             print("Skipped line '" + line + "'", file=sys.stderr)
+    
+    #print(f"{ip_addresses=}")
 
 if __name__ == "__main__":
     main()
