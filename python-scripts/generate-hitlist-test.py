@@ -1,5 +1,12 @@
 import SubnetTree, sys
 
+# algorthim:
+# first get all prefixes belonging to one AS and add them to a list (by using RouteViews data)
+# then make a tree out of that list
+# then, using the hitlist, find the longest matching prefix per IP in that tree and create a list with all IPs belonging to one AS
+# then get the IP-address with the longest prefix in that list
+# add that IP to a list and repeat for the next AS.
+
 def get_as_numbers_from_file(routeviews_input):
     as_numbers = []
     with open(routeviews_input, "r") as file:
