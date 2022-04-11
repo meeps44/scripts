@@ -27,19 +27,30 @@ def get_asn(prefix, filename):
 
         #if prefix == ip_with_prefix:
             #return asn
+    
+    for line in filename:
+        list = line.split()
+        ip = list[0]
+        prefix_length = list[1]
+        asn = list[2]
+        ip_with_prefix = ip + "/" + prefix_length
 
-    with open(filename, "r") as file:
-        lines = file.readlines()
-        for line in lines:
-            list = line.split()
-            ip = list[0]
-            prefix_length = list[1]
-            asn = list[2]
-            ip_with_prefix = ip + "/" + prefix_length
-
-            if prefix == ip_with_prefix:
-                return asn
+        if prefix == ip_with_prefix:
+            return asn
     return 0
+
+    #with open(filename, "r") as file:
+        #lines = file.readlines()
+        #for line in lines:
+            #list = line.split()
+            #ip = list[0]
+            #prefix_length = list[1]
+            #asn = list[2]
+            #ip_with_prefix = ip + "/" + prefix_length
+
+            #if prefix == ip_with_prefix:
+                #return asn
+    #return 0
 
 def read_non_aliased(tree, fh):
     return fill_tree(tree, fh)
@@ -73,11 +84,15 @@ def main():
     as_numbers = set()
     ip_addresses = []
 
+    with open(args.routeviews_file, "r") as file:
+        data = file.readlines()
+
     # Read IP address file, match each address to longest prefix and print output
     for line in args.ip_address_file:
         line = line.strip()
         try:
-            asn = str(get_asn(tree[line], args.routeviews_file))
+            #asn = str(get_asn(tree[line], args.routeviews_file))
+            asn = str(get_asn(tree[line], data))
 
             if asn not in as_numbers:
                 as_numbers.add(asn)
