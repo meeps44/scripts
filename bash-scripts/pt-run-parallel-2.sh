@@ -95,8 +95,8 @@ for i in $(seq 1 $N_ITERATIONS); do
             done
         done
     done
+    wait
     create_tarball
 done
 
-wait
 echo "All done!"
