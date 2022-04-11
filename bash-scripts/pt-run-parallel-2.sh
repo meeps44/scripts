@@ -11,7 +11,7 @@ N_ITERATIONS = 1
 create_tarball()
 {
     echo "Creating tarball..."
-    local l_DATE=$(date '+%d-%H-%M-%S')
+    local l_DATE=$(date '+%d-%m-%y-%H-%M-%S')
     local l_TAR_FILENAME="tar-$HOSTNAME-${l_DATE}"
     tar -czvf ${l_TAR_FILENAME}.tar.gz /root/logs/$HOSTNAME/*
     echo "Tarball saved to $(pwd)/$l_TAR_FILENAME. Cleaning up the /root/logs/$HOSTNAME/-directory..."
