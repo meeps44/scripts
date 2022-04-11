@@ -83,3 +83,12 @@ TAR_FILENAME="tar-$HOSTNAME-${DATE}"
 tar -czvf ${TAR_FILENAME}.tar.gz /root/logs/$HOSTNAME/*
 echo "Tarball saved to $(pwd)/$TAR_FILENAME. Cleaning up the /root/logs/$HOSTNAME/-directory..."
 rm /root/logs/$HOSTNAME/*
+echo "Transferring tarball to remote host"
+scp $HOME/$TAR_FILENAME {{remote_host}}:{{path/to/remote_file}}
+if [ $? -eq 0 ];
+then
+    echo "Transfer completed successfully. Deleting tarball"
+    rm $HOME/$TAR_FILENAME 
+else
+    echo "Transfer to remote host failed"
+fi
