@@ -13,7 +13,7 @@ create_tarball()
     echo "Creating tarball..."
     local l_DATE=$(date '+%d-%m-%y-%H-%M-%S')
     local l_TAR_FILENAME="tar-$HOSTNAME-${l_DATE}.tar.gz"
-    tar -czvf ${l_TAR_FILENAME} /root/logs/$HOSTNAME/*
+    tar -czvf ${l_TAR_FILENAME} -C /root/logs/$HOSTNAME/ .
     echo "Tarball saved to $(pwd)/$l_TAR_FILENAME. Cleaning up the /root/logs/$HOSTNAME/-directory..."
     rm /root/logs/$HOSTNAME/*
     echo "Transferring tarball to remote host"
