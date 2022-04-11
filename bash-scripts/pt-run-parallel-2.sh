@@ -8,6 +8,26 @@ N_ITERATIONS = 1
 #N=1
 #let M=$N+9
 
+create_tarball()
+{
+    echo "Creating tarball..."
+    local l_DATE=$(date '+%d-%H-%M-%S')
+    local l_TAR_FILENAME="tar-$HOSTNAME-${l_DATE}"
+    tar -czvf ${l_TAR_FILENAME}.tar.gz /root/logs/$HOSTNAME/*
+    echo "Tarball saved to $(pwd)/$l_TAR_FILENAME. Cleaning up the /root/logs/$HOSTNAME/-directory..."
+    rm /root/logs/$HOSTNAME/*
+    echo "Transferring tarball to remote host"
+    scp $HOME/$l_TAR_FILENAME {{remote_host}}:{{path/to/remote_file}}
+    if [ $? -eq 0 ];
+    then
+        echo "Transfer completed successfully. Deleting tarball"
+        rm $HOME/$l_TAR_FILENAME 
+        echo "Tarball deleted"
+    else
+        echo "Transfer to remote host failed"
+    fi
+}
+
 pt_run()
 {
     local l_DESTINATION_ADDR="$1"
@@ -74,24 +94,8 @@ for i in $(seq 1 $N_ITERATIONS); do
             done
         done
     done
+    create_tarball
 done
 
 wait
 echo "All done!"
-
-echo "Creating tarball..."
-DATE=$(date '+%d-%H-%M-%S')
-TAR_FILENAME="tar-$HOSTNAME-${DATE}"
-tar -czvf ${TAR_FILENAME}.tar.gz /root/logs/$HOSTNAME/*
-echo "Tarball saved to $(pwd)/$TAR_FILENAME. Cleaning up the /root/logs/$HOSTNAME/-directory..."
-rm /root/logs/$HOSTNAME/*
-echo "Transferring tarball to remote host"
-scp $HOME/$TAR_FILENAME {{remote_host}}:{{path/to/remote_file}}
-if [ $? -eq 0 ];
-then
-    echo "Transfer completed successfully. Deleting tarball"
-    rm $HOME/$TAR_FILENAME 
-    echo "Tarball deleted"
-else
-    echo "Transfer to remote host failed"
-fi
