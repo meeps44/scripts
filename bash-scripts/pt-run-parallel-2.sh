@@ -3,6 +3,7 @@
 HOST_IP=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
 LIST="/root/git/scripts/text-files/ipv6-address-list-pruned-2.txt"
 LIST_LENGTH=$(wc -l < $LIST) # get the number of lines in file
+N_ITERATIONS = 1
 #echo "$LIST_LENGTH"
 #N=1
 #let M=$N+9
@@ -56,27 +57,28 @@ DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT) # get destination tcp-port from inp
 
 host_ip=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
 
-for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
-    for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
-        N=1
-        let M=$N+9
-        while [ $N -lt $LIST_LENGTH ]; do
-            readarray -t my_array < <(sed -n "${N},${M}p" $LIST)
-                for ADDRESS in ${my_array[@]}; do
-                    #pt_run "$ELEMENT" &
-                    pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
-                done
-            let N=$N+10
+for i in $(seq 1 $N_ITERATIONS); do
+    for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+        for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+            N=1
             let M=$N+9
-            wait
-            #echo "N: $N"
-            #echo "M: $M"
+            while [ $N -lt $LIST_LENGTH ]; do
+                readarray -t my_array < <(sed -n "${N},${M}p" $LIST)
+                    for ADDRESS in ${my_array[@]}; do
+                        #pt_run "$ELEMENT" &
+                        pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
+                    done
+                let N=$N+10
+                let M=$N+9
+                wait
+            done
         done
     done
 done
 
 wait
 echo "All done!"
+
 echo "Creating tarball..."
 DATE=$(date '+%d-%H-%M-%S')
 TAR_FILENAME="tar-$HOSTNAME-${DATE}"
@@ -89,6 +91,7 @@ if [ $? -eq 0 ];
 then
     echo "Transfer completed successfully. Deleting tarball"
     rm $HOME/$TAR_FILENAME 
+    echo "Tarball deleted"
 else
     echo "Transfer to remote host failed"
 fi
