@@ -86,12 +86,13 @@ def main():
             print("Skipped line '" + ip_address + "'", file=sys.stderr)
     
     # print all dictionary key-value pairs
-    #print(my_hitlist)
+    with open(args.keyvalue_file, "w") as file:
+        print(my_hitlist)
 
     # print only the dictionary values
     with open(args.hitlist_file, "w") as file:
         #[print(value) for value in my_hitlist.values()]
-        [file.write(value) for value in my_hitlist.values()]
+        [file.write(value + "\n") for value in my_hitlist.values()]
 
 if __name__ == "__main__":
     main()
