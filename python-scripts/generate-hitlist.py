@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# gets one "active" IP per AS from RouteViews data
+# example usage: python3 generate-hitlist.py -a=routeviews_prefixes.txt -i=responsive-addresses.txt -r=routeviews-rv6-20220411-1200.pfx2as.txt > hitlist.txt
+
 from __future__ import print_function
 
 import argparse
@@ -64,7 +67,8 @@ def main():
             tmp_asn = get_asn(prefix, my_hashmap) 
             if tmp_asn not in as_numbers:
                 as_numbers.add(tmp_asn)
-                print(f"{get_asn(prefix, my_hashmap)},{line},{prefix}")
+                #print(f"{get_asn(prefix, my_hashmap)},{line},{prefix}") # if you want to print the corresponding AS-number and prefix as well
+                print(f"{line}")
         except KeyError as e:
             print("Skipped line '" + line + "'", file=sys.stderr)
 
