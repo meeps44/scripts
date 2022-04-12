@@ -24,6 +24,8 @@ create_tarball()
         echo "Transfer completed successfully. Deleting tarball..."
         rm $HOME/$l_TAR_FILENAME 
         echo "Tarball deleted"
+        echo "Cleaning up raw data..."
+        rm /root/raw/*
     else
         echo "Transfer to remote host failed"
     fi
