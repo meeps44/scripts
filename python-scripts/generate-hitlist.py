@@ -1,10 +1,24 @@
-from __future__ import print_function
-from pathlib import Path
+#!/usr/bin/env python
 
-import numpy as np
+from __future__ import print_function
+
 import argparse
 import sys
-import SubnetTree
+
+try:
+    import SubnetTree
+except Exception as e:
+    print(e, file=sys.stderr)
+    print("Use `pip install pysubnettree` to install the required module", file=sys.stderr)
+    sys.exit(1)
+
+def get_asn(prefix, my_hashmap):
+    asn = 0
+    try:
+        return my_hashmap[prefix]
+    except KeyError as e:
+        print(f"KeyError: prefix {prefix} not found in hashmap", file=sys.stderr)
+    return asn
 
 def fill_tree(tree, fh):
     for line in fh:
@@ -15,97 +29,44 @@ def fill_tree(tree, fh):
             print("Skipped line '" + line + "'", file=sys.stderr)
     return tree
 
-# gets all the unqiue AS-numbers from the provided routeviews data file
-# nb! the full path to the file must be included in the argument
-def get_as_numbers(filename):
-    as_numbers = []
-    with open(filename, "r") as file:
-        lines = file.readlines()
-        for line in lines:
-            my_list = line.split()
-            asn = my_list[2]
-            as_numbers.append(asn)
-            print(f"{asn=}")
-
-        unique_numbers = list(set(as_numbers))
-    return unique_numbers
-
-# gets the asn from an IP prefix
-def get_asn(prefix, filename):
-    #path = "/mnt/c/Users/Erlend/Downloads/RouteViews data/"
-    #full = path + filename
-    with open(filename, "r") as file:
-        lines = file.readlines()
-        for line in lines:
-            list = line.split()
-            ip = list[0]
-            prefix_length = list[1]
-            ip_with_prefix = ip + "/" + prefix_length
-            asn = list[2]
-            #print(f"{ip=}")
-
-            if prefix == ip_with_prefix:
-                return asn
-    return 0
-
-# generates a list of all IP-addresses in the ipv6-hitlist that belong to the same AS
-def generate_hitlist_per_as(tmp_prefixlist, ip_address_file):
-    as_hitlist = []
-
-    tree = SubnetTree.SubnetTree()
-    tree = SubnetTree.fill_tree(tree, tmp_prefixlist)
-
-    # generates a list of all IP-addresses in the ipv6-hitlist that belong to the same AS
-    for line in ip_address_file:
-        print(line + "," + tree[line] + "," + tree[line][-2:])
-        new_list = [line, tree[line], tree[line][-2:]]
-        as_hitlist.append(new_list)
-    
-    # get the last item with the longest prefix length
-    prefixlength = 0
-    ip = 0
-
-    for item in as_hitlist:
-        if item[2] > prefixlength:
-            prefixlength = item[2]
-            ip = item[0]
-
-    return ip
-
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--prefix-file", required=True, type=argparse.FileType('r'), help="File containing list of RouteViews prefixes")
-    parser.add_argument("-i", "--ip-address-file", required=True, type=argparse.FileType('r'), help="File containing IP addresses to be matched against (non-)aliased prefixes")
-    parser.add_argument("-h", "--filtered-hitlist", required=True, type=argparse.FileType('r'), help="File containing the final hitlist that you want to write to")
+    parser.add_argument("-a", "--aliased-file", required=True, type=argparse.FileType('r'), help="File containing RouteViews prefixes")
+    parser.add_argument("-i", "--ip-address-file", required=True, type=argparse.FileType('r'), help="File containing IP addresses to be matched against RouteViews prefixes")
+    parser.add_argument("-r", "--routeviews-file", required=True, help="File containing full RouteViews data")
     args = parser.parse_args()
 
+    as_numbers = set()
+
+    # Store aliased and non-aliased prefixes in a single subnet tree
     tree = SubnetTree.SubnetTree()
-    tree = SubnetTree.fill_tree(tree, args.prefix_file)
 
-    tuple_list = []
-    hitlist = []
-    as_numbers = get_as_numbers_from_file(args.prefix_file)
+    # Read aliased and non-aliased prefixes
+    tree = fill_tree(tree, args.aliased_file)
 
-    for as_number in as_numbers:
-        tmp_prefixlist = []
-        for line in args.prefix_file:
-            list = line.split()
-            ip = list[0]
-            prefix_length = list[1]
-            asn = list[2]
+    #my_hashmap = create_hashmap(args.routeviews_file)
+    my_hashmap = {}
+    with open(args.routeviews_file, "r") as file:
+        data = file.readlines()
+        # Create hashmap (python dictonary)
+        for line in data:
+            line = line.strip()
+            line = line.split()
+            key = line[0] + "/" + line[1]
+            my_hashmap[key] = line[2]
 
-            if as_number == asn:
-                tmp_prefixlist.append(line)
-        
-        ip = generate_hitlist_per_as(tmp_prefixlist, args.ip_address_file)
-        print(f"{as_number=}")
-        print(f"{ip=}")
-        hitlist.append(ip)
-        tuple_list.append(as_number, ip)
-
-    with open(args.filtered_hitlist, "a") as file:
-        file.write(hitlist)
+    # Read IP address file, match each address to longest prefix and print output
+    for line in args.ip_address_file:
+        line = line.strip()
+        try:
+            prefix = tree[line]
+            tmp_asn = get_asn(prefix, my_hashmap) 
+            if tmp_asn not in as_numbers:
+                as_numbers.add(tmp_asn)
+                print(f"{get_asn(prefix, my_hashmap)},{line},{prefix}")
+        except KeyError as e:
+            print("Skipped line '" + line + "'", file=sys.stderr)
 
 if __name__ == "__main__":
     main()
