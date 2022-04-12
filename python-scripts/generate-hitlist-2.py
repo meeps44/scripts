@@ -35,7 +35,7 @@ def main():
     parser.add_argument("-i", "--ip-address-file", required=True, type=argparse.FileType('r'), help="File containing IP addresses to be matched against (non-)aliased prefixes")
     parser.add_argument("-r", "--routeviews-file", required=True, help="File containing full RouteViews data")
     # Output files
-    parser.add_argument("-h", "--hitlist-file", required=False, help="Output file to where the complete hitlist will be written")
+    parser.add_argument("-f", "--hitlist-file", required=False, help="Output file to where the complete hitlist will be written")
     parser.add_argument("-k", "--keyvalue-file", required=False, help="Output file to where the asn-hitlist pair will be written")
     args = parser.parse_args()
 
