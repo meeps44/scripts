@@ -41,8 +41,8 @@ def main():
     # Read aliased and non-aliased prefixes
     tree = read_non_aliased(tree, args.non_aliased_file)
 
-    as_numbers = set()
-    ip_addresses = []
+    unique_as_numbers = set()
+    my_hitlist = {}
     my_hashmap = {}
 
     with open(args.routeviews_file, "r") as file:
@@ -62,7 +62,16 @@ def main():
             asn = my_hashmap[longest_matching_prefix]
             asn = asn.split()
             asn = asn[2]
-            print(f"{asn} {tree[ip_address][-2:]} {ip_address} {tree[ip_address]}")
+            #unique_as_numbers.add(asn)
+
+            # Check if the prefix length is less than this line's prefix length
+            if asn in my_hitlist:
+                if my_hitlist[asn][-2:] < asn[1]:
+                    my_hitlist[asn] = str(f"{ip_address}/{longest_matching_prefix[-2:]}")
+            else:
+                my_hitlist[asn] = str(f"{ip_address}/{longest_matching_prefix[-2:]}")
+
+            print(f"{asn} {longest_matching_prefix[-2:]} {ip_address} {longest_matching_prefix}")
         except KeyError as e:
             print("Skipped line '" + ip_address + "'", file=sys.stderr)
     
