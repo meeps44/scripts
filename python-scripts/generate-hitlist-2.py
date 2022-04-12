@@ -12,46 +12,6 @@ except Exception as e:
     print("Use `pip install pysubnettree` to install the required module", file=sys.stderr)
     sys.exit(1)
 
-def get_asn(prefix, filename):
-    #for line in filename:
-        ##print("Entering for-loop")
-        ##print(f"{line=}")
-        #list = line.split()
-        #ip = list[0]
-        ##print(f"{ip=}")
-        #prefix_length = list[1]
-        ##print(f"{prefix_length=}")
-        #asn = list[2]
-        ##print(f"{asn=}")
-        #ip_with_prefix = ip + "/" + prefix_length
-
-        #if prefix == ip_with_prefix:
-            #return asn
-    
-    for line in filename:
-        list = line.split()
-        ip = list[0]
-        prefix_length = list[1]
-        asn = list[2]
-        ip_with_prefix = ip + "/" + prefix_length
-
-        if prefix == ip_with_prefix:
-            return asn
-    return 0
-
-    #with open(filename, "r") as file:
-        #lines = file.readlines()
-        #for line in lines:
-            #list = line.split()
-            #ip = list[0]
-            #prefix_length = list[1]
-            #asn = list[2]
-            #ip_with_prefix = ip + "/" + prefix_length
-
-            #if prefix == ip_with_prefix:
-                #return asn
-    #return 0
-
 def read_non_aliased(tree, fh):
     return fill_tree(tree, fh)
 
@@ -83,28 +43,30 @@ def main():
 
     as_numbers = set()
     ip_addresses = []
+    my_hashmap = {}
 
     with open(args.routeviews_file, "r") as file:
         data = file.readlines()
+        # Create hashmap (dictonary in python)
+        for line in data:
+            line = line.strip()
+            key = line[0] + "/" + line[1]
+            my_hashmap[key] = line
 
     # Read IP address file, match each address to longest prefix and print output
-    for line in args.ip_address_file:
-        line = line.strip()
+    for ip_address in args.ip_address_file:
+        ip_address = ip_address.strip()
         try:
-            #asn = str(get_asn(tree[line], args.routeviews_file))
-            asn = str(get_asn(tree[line], data))
-
-            if asn not in as_numbers:
-                as_numbers.add(asn)
-                ip_addresses.append(line)
-                print("Appended IP address")
-            
-            print(f"{asn} {tree[line][-2:]} {line} {tree[line]}")
-            #print(line + ", " + tree[line] + ", " + str(get_asn(line, args.routeviews_file)))
+            #asn = str(get_asn(tree[ip_address], data))
+            longest_matching_prefix = tree[ip_address]
+            asn = my_hashmap[longest_matching_prefix]
+            asn = asn.split()
+            asn = asn[2]
+            print(f"{asn} {tree[ip_address][-2:]} {ip_address} {tree[ip_address]}")
         except KeyError as e:
-            print("Skipped line '" + line + "'", file=sys.stderr)
+            print("Skipped line '" + ip_address + "'", file=sys.stderr)
     
-    print(f"{ip_addresses=}")
+    #print(f"{ip_addresses=}")
 
 if __name__ == "__main__":
     main()
