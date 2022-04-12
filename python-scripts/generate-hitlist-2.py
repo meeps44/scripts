@@ -50,7 +50,10 @@ def main():
         # Create hashmap (dictonary in python)
         for line in data:
             line = line.strip()
+            line = line.split()
             key = line[0] + "/" + line[1]
+            #print(f"{key=}")
+            #print("Creating my_hashmap")
             my_hashmap[key] = line
 
     # Read IP address file, match each address to longest prefix and print output
@@ -59,9 +62,11 @@ def main():
         try:
             #asn = str(get_asn(tree[ip_address], data))
             longest_matching_prefix = tree[ip_address]
+            #print(f"{longest_matching_prefix=}")
+            #print(f"My_hashmap value: {my_hashmap[longest_matching_prefix]}")
             asn = my_hashmap[longest_matching_prefix]
-            asn = asn.split()
             asn = asn[2]
+            #print(f"{asn=}")
             #unique_as_numbers.add(asn)
 
             # Check if the prefix length is less than this line's prefix length
@@ -73,7 +78,11 @@ def main():
 
             # print(f"{asn} {longest_matching_prefix[-2:]} {ip_address} {longest_matching_prefix}")
 
-            # print all dictionary values
+            # print all dict values including key
+            for item in my_hitlist:
+                print(item)
+
+                # print all dictionary values
             [print(value) for value in my_hitlist.values()]
         except KeyError as e:
             print("Skipped line '" + ip_address + "'", file=sys.stderr)
