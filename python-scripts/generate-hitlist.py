@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# gets one "active" IP per AS from RouteViews data
+# gets one "active" IP per AS from RouteViews and https://ipv6hitlist.github.io/ data
 # example usage: python3 generate-hitlist.py -a=routeviews_prefixes.txt -i=responsive-addresses.txt -r=routeviews-rv6-20220411-1200.pfx2as.txt > hitlist.txt
 
 from __future__ import print_function
