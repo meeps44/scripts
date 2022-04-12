@@ -71,7 +71,10 @@ def main():
             else:
                 my_hitlist[asn] = str(f"{ip_address}/{longest_matching_prefix[-2:]}")
 
-            print(f"{asn} {longest_matching_prefix[-2:]} {ip_address} {longest_matching_prefix}")
+            # print(f"{asn} {longest_matching_prefix[-2:]} {ip_address} {longest_matching_prefix}")
+
+            # print all dictionary values
+            [print(value) for value in my_hitlist.values()]
         except KeyError as e:
             print("Skipped line '" + ip_address + "'", file=sys.stderr)
     
