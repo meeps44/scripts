@@ -30,9 +30,13 @@ def fill_tree(tree, fh):
 # and create the tree based on that.
 def main():
     parser = argparse.ArgumentParser()
+    # Input files
     parser.add_argument("-n", "--non-aliased-file", required=True, type=argparse.FileType('r'), help="File containing non-aliased prefixes")
     parser.add_argument("-i", "--ip-address-file", required=True, type=argparse.FileType('r'), help="File containing IP addresses to be matched against (non-)aliased prefixes")
     parser.add_argument("-r", "--routeviews-file", required=True, help="File containing full RouteViews data")
+    # Output files
+    parser.add_argument("-h", "--hitlist-file", required=False, help="Output file to where the complete hitlist will be written")
+    parser.add_argument("-k", "--keyvalue-file", required=False, help="Output file to where the asn-hitlist pair will be written")
     args = parser.parse_args()
 
     # Store aliased and non-aliased prefixes in a single subnet tree
@@ -82,11 +86,12 @@ def main():
             print("Skipped line '" + ip_address + "'", file=sys.stderr)
     
     # print all dictionary key-value pairs
-    print(my_hitlist)
+    #print(my_hitlist)
 
     # print only the dictionary values
-    [print(value) for value in my_hitlist.values()]
-    #print(f"{ip_addresses=}")
+    with open(args.hitlist_file, "w") as file:
+        #[print(value) for value in my_hitlist.values()]
+        [file.write(value) for value in my_hitlist.values()]
 
 if __name__ == "__main__":
     main()
