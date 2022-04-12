@@ -78,15 +78,14 @@ def main():
 
             # print(f"{asn} {longest_matching_prefix[-2:]} {ip_address} {longest_matching_prefix}")
 
-            # print all dict values including key
-            for item in my_hitlist:
-                print(item)
-
-                # print all dictionary values
-            [print(value) for value in my_hitlist.values()]
         except KeyError as e:
             print("Skipped line '" + ip_address + "'", file=sys.stderr)
     
+    # print all dictionary key-value pairs
+    print(my_hitlist)
+
+    # print only the dictionary values
+    [print(value) for value in my_hitlist.values()]
     #print(f"{ip_addresses=}")
 
 if __name__ == "__main__":
