@@ -1,0 +1,1 @@
+# script that measurements the responsiveness of a list of IPv6-addresses
