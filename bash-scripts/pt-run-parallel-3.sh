@@ -95,7 +95,6 @@ for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
             done
             let N=$N+10
             let M=$N+9
-            wait
         done
     done
 done
