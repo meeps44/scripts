@@ -84,18 +84,19 @@ for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
     for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
         N=1
         let M=$N+9
-        for i in $(seq 1 $N_ITERATIONS); do
-            while [ $N -lt $HITLIST_LENGTH ]; do
+        while [ $N -lt $HITLIST_LENGTH ]; do
+            for i in $(seq 1 $N_ITERATIONS); do
                 readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
                     for ADDRESS in ${my_array[@]}; do
                         #pt_run "$ELEMENT" &
                         pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
                     done
+            wait
             done
+            let N=$N+10
+            let M=$N+9
+            wait
         done
-        let N=$N+10
-        let M=$N+9
-        wait
     done
 done
 wait
