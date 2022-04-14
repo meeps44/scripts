@@ -50,6 +50,9 @@ with open(file, "r") as my_file:
     ## Remove first item in the list (the destination address) and add it as separate dictionary element
     dest = hop_list.pop(0)
 
+    ## Initialize hop dictionary that only contains hops (used for generating path_id)
+    tmp_hop_dictionary = { index : {"ipv6_address" : address} for index, address in enumerate(hop_list, start=1)}
+
     ## Create top-level dictionary
     my_dict = {}
 
@@ -58,14 +61,12 @@ with open(file, "r") as my_file:
     my_dict["timestamp"] = str(datetime.datetime.now())
     my_dict["source"] = args.source_ip
     my_dict["destination"] = dest
+    my_dict["path_id"] = hashlib.sha1(json.dumps(tmp_hop_dictionary, sort_keys=True).encode('utf-8')).hexdigest()
 
     #count = 0 # in case items is empty and you need it after the loop
 
     ## Initialize hop dictionary
     hop_dictionary = { index : {"ipv6_address" : address, "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
-
-    ## Initialize hop dictionary that only contains hops (used for generating path_id)
-    tmp_hop_dictionary = { index : {"ipv6_address" : address} for index, address in enumerate(hop_list, start=1)}
 
     #print("Hop dictionary before comparsion:")
     #print(hop_dictionary)
@@ -95,7 +96,6 @@ with open(file, "r") as my_file:
     #print(hop_dictionary)
     
 my_dict["hops"] = hop_dictionary
-my_dict["path_id"] = hashlib.sha1(json.dumps(tmp_hop_dictionary, sort_keys=True).encode('utf-8')).hexdigest()
 #print("Complete dictionary:")
 #print(my_dict)
 
