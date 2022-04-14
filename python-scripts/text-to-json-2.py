@@ -1,4 +1,4 @@
-import json, uuid, argparse, datetime, os, re, ipaddress
+import json, uuid, argparse, datetime, os, re, ipaddress, hashlib
 
 IPV4SEG  = r'(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])'
 IPV4ADDR = r'(?:(?:' + IPV4SEG + r'\.){3,3}' + IPV4SEG + r')'
@@ -92,6 +92,7 @@ with open(file, "r") as my_file:
     #print(hop_dictionary)
     
 my_dict["hops"] = hop_dictionary
+my_dict["path_id"] = hashlib.sha1(json.dumps(hop_dictionary, sort_keys=True).encode('utf-8')).hexdigest()
 #print("Complete dictionary:")
 #print(my_dict)
 
