@@ -19,7 +19,7 @@ create_tarball()
     echo "Tarball saved to $TAR_DIR/$l_TAR_FILENAME. Cleaning up the /root/logs/$HOSTNAME/-directory..."
     rm /root/logs/$HOSTNAME/*
     echo "Transferring tarball to remote host"
-    scp -i /root/.ssh/scp-key $TAR_DIR/$l_TAR_FILENAME 209.97.138.74:/root/archived-logs/$l_TAR_FILENAME
+    scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR/$l_TAR_FILENAME 209.97.138.74:/root/archived-logs/$l_TAR_FILENAME
     if [ $? -eq 0 ];
     then
         echo "Transfer completed successfully. Deleting tarball..."
