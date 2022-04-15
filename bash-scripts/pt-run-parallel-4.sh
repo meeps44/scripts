@@ -72,7 +72,7 @@ FLOW_LABEL_HIGH_1=1048574
 FLOW_LABEL_MAX=1048575
 
 #flow_labels=($FLOW_LABEL_MIN)
-FLOW_LABELS=($FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_2)
+FLOW_LABELS=($FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_3)
 #flow_labels=($FLOW_LABEL_MIN $FLOW_LABEL_MID_1 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
 
 DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT) # get destination tcp-port from input args
@@ -88,15 +88,15 @@ for i in $(seq 1 $N_ITERATIONS); do
         let M=$N+9
         while [ $N -lt $HITLIST_LENGTH ]; do
             readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
+            for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
                 for ADDRESS in ${my_array[@]}; do
-                    for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
                     #pt_run "$ELEMENT" &
-                        pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
-                    done
+                    pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
                 done
+            wait
+            done
             let N=$N+10
             let M=$N+9
-            wait
         done
     done
     wait
