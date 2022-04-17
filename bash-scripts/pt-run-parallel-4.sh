@@ -5,8 +5,29 @@ STAGE1=true
 STAGE2=false
 STAGE3=false
 
+if [ "$STAGE1" = true ] ; then
+    echo 'Be careful not to fall off!'
+    # Phase 1
+    # In stage 2, the flow label will be constant (0).
+    # The goal is to figure out if we can get a path to change by changing the port number
+    FLOW_LABELS=($FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
+    DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT) 
+elif [ "$STAGE2" = true ] ; then
+    # Phase 2
+    # In stage 2, the flow label will be constant (0).
+    # The goal is to figure out if we can get a path to change by changing the port number
+    FLOW_LABELS=($FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
+    DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT) # get destination tcp-port from input args
+elif [ "$STAGE3" = true ] ; then
+    # Phase 3
+    # In stage 2, the flow label will be constant (0).
+    # The goal is to figure out if we can get a path to change by changing the port number
+    FLOW_LABELS=($FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
+    DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT) # get destination tcp-port from input args
+fi
+
 # Use large or small hitlist
-FULL_HITLIST=true
+FULL_HITLIST=false
 
 elif [ "$FULL_HITLIST" = true ] ; then
     # Full hitlist
@@ -43,27 +64,6 @@ host_ip=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|(
 
 #N=1
 #let M=$N+9
-
-if [ "$STAGE1" = true ] ; then
-    echo 'Be careful not to fall off!'
-    # Phase 1
-    # In stage 2, the flow label will be constant (0).
-    # The goal is to figure out if we can get a path to change by changing the port number
-    FLOW_LABELS=($FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
-    DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT) 
-elif [ "$STAGE2" = true ] ; then
-    # Phase 2
-    # In stage 2, the flow label will be constant (0).
-    # The goal is to figure out if we can get a path to change by changing the port number
-    FLOW_LABELS=($FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
-    DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT) # get destination tcp-port from input args
-elif [ "$STAGE3" = true ] ; then
-    # Phase 3
-    # In stage 2, the flow label will be constant (0).
-    # The goal is to figure out if we can get a path to change by changing the port number
-    FLOW_LABELS=($FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
-    DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT) # get destination tcp-port from input args
-fi
 
 create_tarball()
 {
