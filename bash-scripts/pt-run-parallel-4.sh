@@ -6,10 +6,7 @@ STAGE2=false
 STAGE3=false
 
 if [ "$STAGE1" = true ] ; then
-    echo 'Be careful not to fall off!'
     # Phase 1
-    # In stage 2, the flow label will be constant (0).
-    # The goal is to figure out if we can get a path to change by changing the port number
     FLOW_LABELS=($FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
     DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT) 
 elif [ "$STAGE2" = true ] ; then
@@ -20,8 +17,6 @@ elif [ "$STAGE2" = true ] ; then
     DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT) # get destination tcp-port from input args
 elif [ "$STAGE3" = true ] ; then
     # Phase 3
-    # In stage 2, the flow label will be constant (0).
-    # The goal is to figure out if we can get a path to change by changing the port number
     FLOW_LABELS=($FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
     DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT) # get destination tcp-port from input args
 fi
@@ -57,13 +52,9 @@ FLOW_LABEL_MAX=1048575
 # other definitions
 HOST_IP=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
 TAR_DIR="/root/tarballs"
-# ITERATIONS=$1 # the number of iterations that you wish to run the script. from input args
-N_ITERATIONS=1
+N_ITERATIONS=1 # the number of iterations that you wish to run the script. from input args
 HITLIST_LENGTH=$(wc -l < $HITLIST) # get the number of lines in file
 host_ip=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
-
-#N=1
-#let M=$N+9
 
 create_tarball()
 {
