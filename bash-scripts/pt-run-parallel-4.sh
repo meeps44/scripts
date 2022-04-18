@@ -5,6 +5,7 @@ TRACEROUTE_DEFAULT_PORT=33434
 HTTP_PORT=80
 HTTPS_PORT=443
 SSH_PORT=22
+DNS_PORT=53
 
 # flow-label definitions
 FLOW_LABEL_MIN=0
@@ -32,18 +33,21 @@ STAGE2=false
 STAGE3=false
 
 if [ "$STAGE1" = true ] ; then
-    # Phase 1
+    # Stage 1
     FLOW_LABELS=($FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
     DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT) 
 elif [ "$STAGE2" = true ] ; then
-    # Phase 2
+    # Stage 2
     # In stage 2, the flow label will be constant (0).
     # The goal is to figure out if we can get a path to change by changing the port number
-    FLOW_LABELS=($FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
-    DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT) # get destination tcp-port from input args
+    FLOW_LABELS=($FLOW_LABEL_MIN)
+    DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT $DNS_PORT) # get destination tcp-port from input args
 elif [ "$STAGE3" = true ] ; then
-    # Phase 3
-    FLOW_LABELS=($FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
+    # Stage 3
+    # The goal of this step is to delve into the cases from stage 2
+    # We want to know if we get the same path if we use a different port-number. Mix of well-known ports
+    FLOW_LABELS=($FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1) # Do the experiment 4 times
+    #FLOW_LABELS=($FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
     DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT) # get destination tcp-port from input args
 fi
 
