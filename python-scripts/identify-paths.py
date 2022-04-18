@@ -5,6 +5,8 @@ destinations = [] # list of all destination addresses searched
 paths = [] # list of all paths
 unique_paths = [] # subset of paths, list of all unique paths
 number_of_files_scanned = 0
+path_id_list = [] # list of path ids
+path_list = [] # list of list of ip-addresses in a path
 
 default_dir = os.getcwd()
 
@@ -15,19 +17,18 @@ parser.add_argument("--log", "-l", const='/root/logs/flowlabel_compare.log', nar
 parser.add_argument("--verbose", "-v", action="store_true")
 args = parser.parse_args()
 
-# creates a list of paths
-def create_path_list(ip_addr):
+# creates a list of paths to destination ip_addr
+def fill_path_list(tag):
     # First get a list of all paths to destiantion ip_addr
-    path_id_list = [] # list of path ids
-    path_list = [] # list of list of ip-addresses in a path
     for file in os.listdir(args.directory):
         if (os.path.isfile(os.path.join(args.directory, file))):
             filename = str(file)
-            with open(os.path.join(args.directory, file), 'r') as file:
-                data = json.load(file)
-                path_id_list.append(data['path_id'])
-                path = data['hops'].values()
-                path_list.append(path)
+            if tag in filename:
+                with open(os.path.join(args.directory, file), 'r') as file:
+                    data = json.load(file)
+                    path_id_list.append(data['path_id'])
+                    path = data['hops'].values()
+                    path_list.append(path)
 
 # compares all paths to destination [ip_addr] (alternatively: use tag) 
 # and prints out the hop number where a path divergence was detected
