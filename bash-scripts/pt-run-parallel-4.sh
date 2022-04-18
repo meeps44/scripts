@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Use large or small hitlist
+FULL_HITLIST=false
+
 # Experiment stages
 STAGE1=true
 STAGE2=false
@@ -21,10 +24,7 @@ elif [ "$STAGE3" = true ] ; then
     DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT) # get destination tcp-port from input args
 fi
 
-# Use large or small hitlist
-FULL_HITLIST=false
-
-elif [ "$FULL_HITLIST" = true ] ; then
+if [ "$FULL_HITLIST" = true ] ; then
     # Full hitlist
     HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
     HITLIST="/root/git/scripts/text-files/hitlist.txt"
