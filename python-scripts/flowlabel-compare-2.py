@@ -100,8 +100,8 @@ if args.directory:
         exit(1)
 
 # get unique values
-flow_label_survived = set(flow_label_survived)
-unique_list = list(flow_label_survived)
+set_list = set(flow_label_survived)
+unique_list = list(set_list)
 pruned_ip_list = "/root/git/text-files/flowlabel_survived_list.txt"
 with open(pruned_ip_list, "w") as file:
     for element in unique_list:
