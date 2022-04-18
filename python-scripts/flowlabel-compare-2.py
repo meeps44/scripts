@@ -102,7 +102,8 @@ if args.directory:
 # get unique values
 set_list = set(flow_label_survived)
 unique_list = list(set_list)
-pruned_ip_list = "/root/git/text-files/flowlabel_survived_list.txt"
+pruned_ip_list = "/home/erlend/tmp/flowlabel_survived_list.txt"
+#pruned_ip_list = "/root/git/scripts/text-files/flowlabel_survived_list.txt"
 with open(pruned_ip_list, "w") as file:
     for element in unique_list:
         file.write(element + "\n")
