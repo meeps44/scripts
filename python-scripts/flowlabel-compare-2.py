@@ -95,7 +95,7 @@ if args.directory:
                                 #logging.info(f"File: {filename}: Change in flow-label detected at hop {item[0]}. Sent flow-label: {source_flow_label}. Returned flow-label: {item[2]}")
                                 print(f"File: {filename}: Change in flow-label detected at hop {item[0]}. Sent flow-label: {source_flow_label}. Returned flow-label: {item[2]}")
                     else:
-                        print(f"File: {filename}: The flow-label did not change in transit.")
+                        #print(f"File: {filename}: The flow-label did not change in transit.")
                         flow_label_survived.append(destination_ip)
                         # print(f"File:\t{filename}: The flow-label was not changed while traversing the path to destination {destination_ip}.")
                         # logging.info(f"Checked file {args.file}. Comparison result: The flow label did not change") # short version
