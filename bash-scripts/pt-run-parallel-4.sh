@@ -68,7 +68,8 @@ create_tarball()
     local l_TAR_FILENAME="tar-$HOSTNAME-${l_DATE}.tar.gz"
     tar -czvf ${l_TAR_FILENAME} -C /root/logs/$HOSTNAME/ .
     echo "Tarball saved to $TAR_DIR/$l_TAR_FILENAME. Cleaning up the /root/logs/$HOSTNAME/-directory..."
-    rm /root/logs/$HOSTNAME/*
+    find /root/logs/$HOSTNAME/ -maxdepth 1 -name "*.json" -print0 | xargs -0 rm
+    #rm /root/logs/$HOSTNAME/*
     echo "Transferring tarball to remote host"
     scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR/$l_TAR_FILENAME 209.97.138.74:/root/archived-logs/$l_TAR_FILENAME
     if [ $? -eq 0 ];
