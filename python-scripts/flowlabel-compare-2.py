@@ -2,6 +2,8 @@ from enum import unique
 from collections import defaultdict
 import logging, argparse, json, os
 
+# Example usage: python3 ~/git/scripts/python-scripts/flowlabel-compare-2.py -d=/mnt/c/Users/Erlend/Downloads/Archived\ Logs/Stage\ 1/Small\ scale\ test/JsonFiles/
+
 # Does the same as the original flow-label compare script, 
 # but also generates a hitlist based on the destinations where the flowlabel
 # completely survived, in addition to generating a graph/table of how long the 
