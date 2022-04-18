@@ -29,11 +29,8 @@ format='%(asctime)s %(levelname)-8s %(message)s',
 level=logging.INFO,
 datefmt='%Y-%m-%d %H:%M:%S')
 
-# initialize logging:
-#logging.basicConfig(filename=args.log,
-#format='%(asctime)s %(levelname)-8s %(message)s',
-#level=logging.INFO,
-#datefmt='%Y-%m-%d %H:%M:%S')
+changed_counter = 0
+changed_location = [] # list of hop-numbers where a change in the flow-label was detected
 
 if args.directory:
     try:
@@ -52,7 +49,9 @@ if args.directory:
                         try:
                             if (data['hops'][key]['returned_flow_label'] != source_flow_label):
                                 flow_label_changed = True
+                                changed_counter = changed_counter + 1
                                 hop_number = key
+                                changed_location.append(hop_number)
                                 hop_ip = data['hops'][key]['ipv6_address'] 
                                 hop_flow_label = data['hops'][key]['returned_flow_label'] 
                                 hop_list.append((hop_number, hop_ip, hop_flow_label))
@@ -85,6 +84,8 @@ if args.directory:
                         logging.info(f"File: {filename}: The flow-label did not change in transit.") 
 
         print("Comparison completed. Results logged to: /root/logs/flowlabel_compare.log")
+        print(f"Number of flow-label changes detected: {changed_counter}")
+        print(f"List of places (hop numbers) where a change in the flow-label was detected: {changed_location}")
     except FileNotFoundError:
         print("Error: No such file or directory")
         exit(1)
