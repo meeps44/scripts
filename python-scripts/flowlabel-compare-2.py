@@ -34,7 +34,9 @@ changed_counter = 0
 changed_location = [] # list of hop-numbers where a change in the flow-label was detected
 unique_ip_addresses = []
 unique_ip_address_counter = 0
+number_of_files_scanned = 0
 flow_label_survived = [] # list of ip-addresses where the flow-label completely survived
+source_flow_label_list = [] # list of source flow-labels
 
 if args.directory:
     try:
@@ -42,9 +44,11 @@ if args.directory:
             if (os.path.isfile(os.path.join(args.directory, file))):
                 filename = str(file)
                 with open(os.path.join(args.directory, file), 'r') as file:
+                    number_of_files_scanned = number_of_files_scanned + 1
                     data = json.load(file)
                     destination_ip = data['destination']
                     source_flow_label = int(data['flow_label'])
+                    source_flow_label_list.append(source_flow_label)
                     tcp_port = data['outgoing_tcp_port']
                     flow_label_changed = False
                     hop_list = [] 
@@ -99,6 +103,7 @@ if args.directory:
         print("Please use the --file option to compare single files. Use the -h argument for more info.")
         exit(1)
 
+
 # get unique values
 set_list = set(flow_label_survived)
 unique_list = list(set_list)
@@ -107,3 +112,15 @@ pruned_ip_list = "/home/erlend/tmp/flowlabel_survived_list.txt"
 with open(pruned_ip_list, "w") as file:
     for element in unique_list:
         file.write(element + "\n")
+    print(f"Pruned IP-address list saved to: {pruned_ip_list}")
+
+print(f"Number of files scanned: {number_of_files_scanned}")
+print(f"Number of unique destination IP-addresses: {len(unique_list)}")
+print(f"Number of unique source flow-labels: {len(unique_list)}")
+print(f"List of source flow-labels: {source_flow_label_list}")
+fl_set_list = set(source_flow_label_list)
+fl_unique_list = list(fl_set_list)
+print(f"List of unique source flow-labels: {fl_unique_list}")
+print(f"Number of unique source flow-labels: {len(fl_unique_list)}")
+print(f"Number of times the flow-label changed in transit: {changed_counter}")
+print(f"List of hops where the flow-label changed: {changed_location}")
