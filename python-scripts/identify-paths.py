@@ -15,11 +15,8 @@ parser.add_argument("--log", "-l", const='/root/logs/flowlabel_compare.log', nar
 parser.add_argument("--verbose", "-v", action="store_true")
 args = parser.parse_args()
 
-# compares all paths to destination [ip_addr] (alternatively: use tag) 
-# and prints out the hop number where a path divergence was detected
-def get_path_div(ip_addr):
-    hop_number = 0
-    print(f"Path divergence discovered at hop number {hop_number}")
+# creates a list of paths
+def create_path_list(ip_addr):
     # First get a list of all paths to destiantion ip_addr
     path_id_list = [] # list of path ids
     path_list = [] # list of list of ip-addresses in a path
@@ -31,6 +28,12 @@ def get_path_div(ip_addr):
                 path_id_list.append(data['path_id'])
                 path = data['hops'].values()
                 path_list.append(path)
+
+# compares all paths to destination [ip_addr] (alternatively: use tag) 
+# and prints out the hop number where a path divergence was detected
+def get_path_div(path_list):
+    hop_number = 0
+    print(f"Path divergence discovered at hop number {hop_number}")
 
 def main():
     if args.directory:
