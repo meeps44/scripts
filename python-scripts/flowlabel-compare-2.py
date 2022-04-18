@@ -26,7 +26,12 @@ parser.add_argument("--verbose", "-v", action="store_true")
 args = parser.parse_args()
 
 # initialize logging:
-logging.basicConfig(filename='/root/logs/flowlabel_compare.log',
+#logging.basicConfig(filename='/root/logs/flowlabel_compare.log',
+#format='%(asctime)s %(levelname)-8s %(message)s',
+#level=logging.INFO,
+#datefmt='%Y-%m-%d %H:%M:%S')
+
+logging.basicConfig(filename='/home/erlend/tmp/flowlabel_compare.log',
 format='%(asctime)s %(levelname)-8s %(message)s',
 level=logging.INFO,
 datefmt='%Y-%m-%d %H:%M:%S')
@@ -85,13 +90,14 @@ if args.directory:
                                 New flow-label: {item[2]}\n \
                                 The flow-label was changed while traversing the path to destination {destination_ip}.")
                             else:
-                                logging.info(f"File: {filename}: Change in flow-label detected at hop {item[0]}. Sent flow-label: {source_flow_label}. Returned flow-label: {item[2]}")
+                                #logging.info(f"File: {filename}: Change in flow-label detected at hop {item[0]}. Sent flow-label: {source_flow_label}. Returned flow-label: {item[2]}")
+                                print(f"File: {filename}: Change in flow-label detected at hop {item[0]}. Sent flow-label: {source_flow_label}. Returned flow-label: {item[2]}")
                     else:
                         print(f"File: {filename}: The flow-label did not change in transit.")
                         flow_label_survived.append(destination_ip)
                         # print(f"File:\t{filename}: The flow-label was not changed while traversing the path to destination {destination_ip}.")
                         # logging.info(f"Checked file {args.file}. Comparison result: The flow label did not change") # short version
-                        logging.info(f"File: {filename}: The flow-label did not change in transit.") 
+                        #logging.info(f"File: {filename}: The flow-label did not change in transit.") 
 
         print("Comparison completed. Results logged to: /root/logs/flowlabel_compare.log")
         print(f"Number of flow-label changes detected: {changed_counter}")
@@ -116,9 +122,9 @@ with open(pruned_ip_list, "w") as file:
     print(f"Pruned IP-address list saved to: {pruned_ip_list}")
 
 print(f"Number of files scanned: {number_of_files_scanned}")
+print(f"Number of unique source IP-addresses (vantage points): {len(unique_list)}")
 print(f"Number of unique destination IP-addresses: {len(unique_list)}")
-print(f"Number of unique source flow-labels: {len(unique_list)}")
-print(f"List of source flow-labels: {source_flow_label_list}")
+print(f"List of source flow-labels detected: {source_flow_label_list}")
 fl_set_list = set(source_flow_label_list)
 fl_unique_list = list(fl_set_list)
 print(f"List of unique source flow-labels: {fl_unique_list}")
