@@ -1,4 +1,5 @@
 from enum import unique
+from collections import defaultdict
 import logging, argparse, json, os
 
 # Does the same as the original flow-label compare script, 
@@ -124,3 +125,10 @@ print(f"List of unique source flow-labels: {fl_unique_list}")
 print(f"Number of unique source flow-labels: {len(fl_unique_list)}")
 print(f"Number of times the flow-label changed in transit: {changed_counter}")
 print(f"List of hops where the flow-label changed: {changed_location}")
+
+print("Distribution of where the flow-label changed (the hop-number):")
+d = defaultdict(int)
+for item in changed_location:
+    d[item] += 1
+
+print(f"{d}")
