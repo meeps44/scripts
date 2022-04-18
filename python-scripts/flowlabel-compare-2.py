@@ -43,6 +43,7 @@ unique_ip_address_counter = 0
 number_of_files_scanned = 0
 flow_label_survived = [] # list of ip-addresses where the flow-label completely survived
 source_flow_label_list = [] # list of source flow-labels
+vantage_point_list = [] # list of vantage points used (source ip addresses)
 
 if args.directory:
     try:
@@ -52,6 +53,7 @@ if args.directory:
                 with open(os.path.join(args.directory, file), 'r') as file:
                     number_of_files_scanned = number_of_files_scanned + 1
                     data = json.load(file)
+                    vantage_point_list.append(data['source'])
                     destination_ip = data['destination']
                     source_flow_label = int(data['flow_label'])
                     source_flow_label_list.append(source_flow_label)
@@ -122,7 +124,9 @@ with open(pruned_ip_list, "w") as file:
     print(f"Pruned IP-address list saved to: {pruned_ip_list}")
 
 print(f"Number of files scanned: {number_of_files_scanned}")
-print(f"Number of unique source IP-addresses (vantage points): {len(unique_list)}")
+vp_set_list = set(vantage_point_list)
+vp_unique_list = list(vp_set_list)
+print(f"Number of unique source IP-addresses (vantage points): {len(vp_unique_list)}")
 print(f"Number of unique destination IP-addresses: {len(unique_list)}")
 #print(f"List of source flow-labels detected: {source_flow_label_list}")
 fl_set_list = set(source_flow_label_list)
