@@ -34,7 +34,7 @@ def fill_path_list(tag):
 # and prints out the hop number where a path divergence was detected
 def get_path_div(path_list):
     hop_number = 0
-    print(f"Path divergence discovered at hop number {hop_number}")
+    print(f"Path divergence discovered at hop number: {hop_number}")
 
 def main():
     if args.directory:
@@ -44,24 +44,12 @@ def main():
                     filename = str(file)
                     with open(os.path.join(args.directory, file), 'r') as file:
                         number_of_files_scanned = number_of_files_scanned + 1
+                        number_of_hops = len(data['hops'])
                         data = json.load(file)
                         destinations.append(data['destination'])
                         paths.append(data['path_id'])
 
-                        for key, value in data['hops'].items():
-                            try:
-                                if (data['hops'][key]['returned_flow_label'] != source_flow_label):
-                                    flow_label_changed = True
-                                    changed_counter = changed_counter + 1
-                                    hop_number = key
-                                    changed_location.append(hop_number)
-                                    hop_ip = data['hops'][key]['ipv6_address'] 
-                                    hop_flow_label = data['hops'][key]['returned_flow_label'] 
-                                    hop_list.append((hop_number, hop_ip, hop_flow_label))
-
-                            except KeyError:
-                                print("KeyError")
-                                exit(1)
+                        print(f"Number of hops to destination {data['destination']}: {number_of_hops}")
         except FileNotFoundError:
             print("Error: No such file or directory")
             exit(1)
