@@ -1,3 +1,4 @@
+from enum import unique
 import logging, argparse, json, os
 
 # Does the same as the original flow-label compare script, 
@@ -31,6 +32,9 @@ datefmt='%Y-%m-%d %H:%M:%S')
 
 changed_counter = 0
 changed_location = [] # list of hop-numbers where a change in the flow-label was detected
+unique_ip_addresses = []
+unique_ip_address_counter = 0
+flow_label_survived = [] # list of ip-addresses where the flow-label completely survived
 
 if args.directory:
     try:
@@ -79,6 +83,7 @@ if args.directory:
                                 logging.info(f"File: {filename}: Change in flow-label detected at hop {item[0]}. Sent flow-label: {source_flow_label}. Returned flow-label: {item[2]}")
                     else:
                         print(f"File: {filename}: The flow-label did not change in transit.")
+                        flow_label_survived.append(destination_ip)
                         # print(f"File:\t{filename}: The flow-label was not changed while traversing the path to destination {destination_ip}.")
                         # logging.info(f"Checked file {args.file}. Comparison result: The flow label did not change") # short version
                         logging.info(f"File: {filename}: The flow-label did not change in transit.") 
@@ -93,3 +98,11 @@ if args.directory:
         print("Error: Not a directory")
         print("Please use the --file option to compare single files. Use the -h argument for more info.")
         exit(1)
+
+# get unique values
+flow_label_survived = set(flow_label_survived)
+unique_list = list(flow_label_survived)
+pruned_ip_list = "/root/git/text-files/flowlabel_survived_list.txt"
+with open(pruned_ip_list, "w") as file:
+    for element in unique_list:
+        file.write(element + "\n")
