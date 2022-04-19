@@ -31,10 +31,29 @@ def fill_path_list(tag):
                     path_list.append(path)
 
 # compares all paths to destination [ip_addr] (alternatively: use tag) 
-# and prints out the hop number where a path divergence was detected
+# and prints out a list of hop numbers where a path divergence was detected
+# path_list is a list of lists containering hop addresses
 def get_path_div(path_list):
+    divergence_list = []
     hop_number = 0
+    for pl_index, hoplist in enumerate(path_list): # for each hop-list
+        for hl_index, ip_address in enumerate(hoplist):
+            try:
+                if ip_address == hoplist[pl_index+1][hl_index]:
+                    print(f"{ip_address} and {hoplist[pl_index+1][hl_index]} are equal")
+                else:
+                    divergence_list.append(hl_index)
+            except IndexError:
+                print("index out of range")
+                break
+
+
     print(f"Path divergence discovered at hop number: {hop_number}")
+
+# compares two lists and returns true if they are equal, false if they are not
+def compare_list(list1, list2):
+    for index, item in enumerate(list1):
+
 
 def main():
     if args.directory:
