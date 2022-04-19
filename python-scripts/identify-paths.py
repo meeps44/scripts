@@ -46,13 +46,27 @@ def get_path_div(path_list):
             except IndexError:
                 print("index out of range")
                 break
+    return divergence_list
 
 
     print(f"Path divergence discovered at hop number: {hop_number}")
 
-# compares two lists and returns true if they are equal, false if they are not
-def compare_list(list1, list2):
+# compares two lists and returns the index where they diverged (if they diverged)
+def compare_lists(list1, list2):
     for index, item in enumerate(list1):
+        try:
+            if item == list2[index]:
+                print(f"{item} and {list2[index]} are equal")
+            else:
+                print(f"list1 item: {item} \nlist2 item: {list2[index]}")
+                print(f"The lists diverged at {index=}")
+                return index
+        except IndexError:
+            print("IndexError: index out of range")
+            print(f"The lists diverged at {index=}")
+            return index
+    print("The lists are equal")
+    return None
 
 
 def main():
