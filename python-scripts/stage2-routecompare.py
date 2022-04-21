@@ -28,6 +28,10 @@ filtered_hitlist = []
 number_of_files_scanned = 0
 path_id_dict = {} # dictionary where the key = destination ip address, value = [list of path_ids found] 
 def build_dictionary():
+    global number_of_files_scanned
+    global path_id_dict
+    global filtered_hitlist
+    print("Building dictionary")
     if args.directory:
         try:
             for file in os.listdir(args.directory):
@@ -40,6 +44,7 @@ def build_dictionary():
                             path_id_dict[destination_ip].append(data['path_id'])
                         else:
                             path_id_dict[destination_ip] = []
+                            path_id_dict[destination_ip].append(data['path_id'])
         except FileNotFoundError:
             print("Error: No such file or directory")
             exit(1)
@@ -47,12 +52,20 @@ def build_dictionary():
             print("Error: Not a directory")
             print("Please use the --file option to compare single files. Use the -h argument for more info.")
             exit(1)
+    print("Dictionary created:")
+    print(f"{path_id_dict=}")
 
 def compare_lists():
-    for key, my_list in path_id_dict.item():
-        #print(f"{my_list=}")
+    global path_id_dict
+    global filtered_hitlist
+    print("Comparing lists")
+    for key, my_list in path_id_dict.items():
+        print(f"{my_list=}")
+        if len(my_list) == 1:
+            filtered_hitlist.append(key)
+
         for a, b in itertools.combinations(my_list, 2):
-            #print(f"{a=} {b=}")
+            print(f"{a=} {b=}")
             if a != b:
                 print(f"Path {a} and {b} are not equal")
                 filtered_hitlist.append(key)
@@ -61,14 +74,18 @@ def compare_lists():
                 print(f"Path {a} and {b} are equal")
 
 def write_hitlist():
+    global filtered_hitlist
+    print("Writing hitlist")
     with open(hitlist_path, "w") as file:
         for element in filtered_hitlist:
             file.write(element + "\n")
+    print(f"Hitlist written to: {hitlist_path=}")
 
 def main():
     build_dictionary()
     compare_lists()
     write_hitlist()
+    print("All done!")
 
 if __name__ == "__main__":
     main()
