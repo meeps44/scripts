@@ -4,8 +4,6 @@ import argparse, json, os, itertools
 
 # Example usage: python3 ~/git/scripts/python-scripts/flowlabel-compare-2.py -d=/mnt/c/Users/Erlend/Downloads/Archived\ Logs/Stage\ 1/Small\ scale\ test/JsonFiles/
 
-path_id_dict = {} # dictionary where the key = destination ip address, value = [list of path_ids found] 
-
 default_dir = os.getcwd()
 
 # initialize argument parsing
@@ -26,6 +24,7 @@ flow_label_survived = [] # list of ip-addresses where the flow-label completely 
 source_flow_label_list = [] # list of source flow-labels
 vantage_point_list = [] # list of vantage points used (source ip addresses)
 
+path_id_dict = {} # dictionary where the key = destination ip address, value = [list of path_ids found] 
 def build_dictionary():
     if args.directory:
         try:
@@ -35,13 +34,11 @@ def build_dictionary():
                     with open(os.path.join(args.directory, file), 'r') as file:
                         number_of_files_scanned = number_of_files_scanned + 1
                         data = json.load(file)
-                        vantage_point_list.append(data['source'])
                         destination_ip = data['destination']
-                        source_flow_label = int(data['flow_label'])
-                        source_flow_label_list.append(source_flow_label)
-                        tcp_port = data['outgoing_tcp_port']
-                        flow_label_changed = False
-                        hop_list = [] 
+                        if destination_ip in path_id_dict:
+                            path_id_dict[destination_ip].append(data['path_id'])
+                        else:
+                            path_id_dict[destination_ip] = []
         except FileNotFoundError:
             print("Error: No such file or directory")
             exit(1)
@@ -50,8 +47,8 @@ def build_dictionary():
             print("Please use the --file option to compare single files. Use the -h argument for more info.")
             exit(1)
 
-def compare_paths():
-    for my_list in my_dict.values():
+def compare_lists():
+    for my_list in path_id_dict.values():
         print(f"{my_list=}")
         #tmp = my_list[i]
         for a, b in itertools.combinations(my_list, 2):
@@ -64,38 +61,38 @@ def compare_paths():
 
 def main():
     build_dictionary()
-    compare_paths()
+    compare_lists()
 
 if __name__ == "__main__":
     main()
 
+def print_stats():
+    # get unique values
+    set_list = set(flow_label_survived)
+    unique_list = list(set_list)
+    pruned_ip_list = "/home/erlend/tmp/flowlabel_survived_list.txt"
+    #pruned_ip_list = "/root/git/scripts/text-files/flowlabel_survived_list.txt"
+    with open(pruned_ip_list, "w") as file:
+        for element in unique_list:
+            file.write(element + "\n")
+        print(f"Pruned IP-address list saved to: {pruned_ip_list}")
 
-# get unique values
-set_list = set(flow_label_survived)
-unique_list = list(set_list)
-pruned_ip_list = "/home/erlend/tmp/flowlabel_survived_list.txt"
-#pruned_ip_list = "/root/git/scripts/text-files/flowlabel_survived_list.txt"
-with open(pruned_ip_list, "w") as file:
-    for element in unique_list:
-        file.write(element + "\n")
-    print(f"Pruned IP-address list saved to: {pruned_ip_list}")
+    print(f"Number of files scanned: {number_of_files_scanned}")
+    vp_set_list = set(vantage_point_list)
+    vp_unique_list = list(vp_set_list)
+    print(f"Number of unique source IP-addresses (vantage points): {len(vp_unique_list)}")
+    print(f"Number of unique destination IP-addresses: {len(unique_list)}")
+    #print(f"List of source flow-labels detected: {source_flow_label_list}")
+    fl_set_list = set(source_flow_label_list)
+    fl_unique_list = list(fl_set_list)
+    print(f"List of unique source flow-labels found: {fl_unique_list}")
+    print(f"Number of unique source flow-labels: {len(fl_unique_list)}")
+    print(f"Number of times the flow-label changed in transit: {changed_counter}")
+    print(f"List of hops where the flow-label changed: {changed_location}")
 
-print(f"Number of files scanned: {number_of_files_scanned}")
-vp_set_list = set(vantage_point_list)
-vp_unique_list = list(vp_set_list)
-print(f"Number of unique source IP-addresses (vantage points): {len(vp_unique_list)}")
-print(f"Number of unique destination IP-addresses: {len(unique_list)}")
-#print(f"List of source flow-labels detected: {source_flow_label_list}")
-fl_set_list = set(source_flow_label_list)
-fl_unique_list = list(fl_set_list)
-print(f"List of unique source flow-labels found: {fl_unique_list}")
-print(f"Number of unique source flow-labels: {len(fl_unique_list)}")
-print(f"Number of times the flow-label changed in transit: {changed_counter}")
-print(f"List of hops where the flow-label changed: {changed_location}")
+    print("Distribution of where the flow-label changed (the hop-number):")
+    d = defaultdict(int)
+    for item in changed_location:
+        d[item] += 1
 
-print("Distribution of where the flow-label changed (the hop-number):")
-d = defaultdict(int)
-for item in changed_location:
-    d[item] += 1
-
-print(f"{d}")
+    print(f"{d}")
