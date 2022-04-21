@@ -70,6 +70,9 @@ def compare_lists(list1, list2):
 
 
 def main():
+    number_of_files_scanned = 0
+    dest_dict = {}
+    # build dictionary
     if args.directory:
         try:
             for file in os.listdir(args.directory):
@@ -79,6 +82,12 @@ def main():
                         number_of_files_scanned = number_of_files_scanned + 1
                         number_of_hops = len(data['hops'])
                         data = json.load(file)
+                        dest_dict[data['destination']] = [] # create a key for every destination ip
+                        dest_dict[data['destination']].append(data['path_id'])
+
+
+    # perform route comparison
+
                         destinations.append(data['destination'])
                         paths.append(data['path_id'])
 
