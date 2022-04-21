@@ -4,6 +4,9 @@ import argparse, json, os, itertools
 
 # Example usage: python3 ~/git/scripts/python-scripts/flowlabel-compare-2.py -d=/mnt/c/Users/Erlend/Downloads/Archived\ Logs/Stage\ 1/Small\ scale\ test/JsonFiles/
 
+#hitlist_path = "/root/git/scripts/text-files/stage2_hitlist.txt"
+hitlist_path = "/home/erlend/tmp/stage2_hitlist.txt"
+
 default_dir = os.getcwd()
 
 # initialize argument parsing
@@ -30,7 +33,6 @@ def build_dictionary():
         try:
             for file in os.listdir(args.directory):
                 if (os.path.isfile(os.path.join(args.directory, file))):
-                    filename = str(file)
                     with open(os.path.join(args.directory, file), 'r') as file:
                         number_of_files_scanned = number_of_files_scanned + 1
                         data = json.load(file)
@@ -50,7 +52,6 @@ def build_dictionary():
 def compare_lists():
     for my_list in path_id_dict.values():
         print(f"{my_list=}")
-        #tmp = my_list[i]
         for a, b in itertools.combinations(my_list, 2):
             print(f"{a=} {b=}")
             if a != b:
@@ -58,6 +59,10 @@ def compare_lists():
                 break
             else:
                 print(f"{a} and {b} are equal")
+
+def create_hitlist():
+    with open(hitlist_path, "w") as file:
+        print("write dst addr to file")
 
 def main():
     build_dictionary()
