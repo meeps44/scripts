@@ -12,8 +12,6 @@ default_dir = os.getcwd()
 # initialize argument parsing
 parser = argparse.ArgumentParser()
 parser.add_argument("--directory", "-dir", "-d", const=default_dir, nargs='?', help="Directory containing json log files that you would like to run the flow-label check on")
-parser.add_argument("--log", "-l", const='/root/logs/flowlabel_compare.log', nargs='?', help="Specify a logfile. Default = /root/logs/flowlabel_compare.log")
-parser.add_argument("--verbose", "-v", action="store_true")
 args = parser.parse_args()
 
 path_id_list = []
@@ -22,11 +20,12 @@ changed_counter = 0
 changed_location = [] # list of hop-numbers where a change in the flow-label was detected
 unique_ip_addresses = []
 unique_ip_address_counter = 0
-number_of_files_scanned = 0
 flow_label_survived = [] # list of ip-addresses where the flow-label completely survived
 source_flow_label_list = [] # list of source flow-labels
 vantage_point_list = [] # list of vantage points used (source ip addresses)
 
+filtered_hitlist = []
+number_of_files_scanned = 0
 path_id_dict = {} # dictionary where the key = destination ip address, value = [list of path_ids found] 
 def build_dictionary():
     if args.directory:
@@ -50,19 +49,21 @@ def build_dictionary():
             exit(1)
 
 def compare_lists():
-    for my_list in path_id_dict.values():
-        print(f"{my_list=}")
+    for key, my_list in path_id_dict.item():
+        #print(f"{my_list=}")
         for a, b in itertools.combinations(my_list, 2):
-            print(f"{a=} {b=}")
+            #print(f"{a=} {b=}")
             if a != b:
-                print(f"{a} and {b} are not equal")
+                print(f"Path {a} and {b} are not equal")
+                filtered_hitlist.append(key)
                 break
             else:
-                print(f"{a} and {b} are equal")
+                print(f"Path {a} and {b} are equal")
 
-def create_hitlist():
+def write_hitlist():
     with open(hitlist_path, "w") as file:
-        print("write dst addr to file")
+        for element in filtered_hitlist:
+            file.write(element + "\n")
 
 def main():
     build_dictionary()
