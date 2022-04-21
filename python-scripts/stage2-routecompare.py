@@ -68,6 +68,7 @@ def write_hitlist():
 def main():
     build_dictionary()
     compare_lists()
+    write_hitlist()
 
 if __name__ == "__main__":
     main()
