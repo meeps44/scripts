@@ -13,12 +13,10 @@ default_dir = os.getcwd()
 # initialize argument parsing
 parser = argparse.ArgumentParser()
 parser.add_argument("--directory", "-dir", "-d", const=default_dir, nargs='?', help="Directory containing json log files that you would like to run the flow-label check on")
-parser.add_argument("--log", "-l", const='/root/logs/flowlabel_compare.log', nargs='?', help="Specify a logfile. Default = /root/logs/flowlabel_compare.log")
-parser.add_argument("--verbose", "-v", action="store_true")
 args = parser.parse_args()
 
 # creates a list of paths to destination ip_addr
-def fill_path_list(tag):
+def build_path_list(tag):
     # First get a list of all paths to destiantion ip_addr
     for file in os.listdir(args.directory):
         if (os.path.isfile(os.path.join(args.directory, file))):
@@ -31,9 +29,9 @@ def fill_path_list(tag):
                     path_list.append(path)
 
 # compares all paths to destination [ip_addr] (alternatively: use tag) 
-# and prints out a list of hop numbers where a path divergence was detected
-# path_list is a list of lists containering hop addresses
-def get_path_div(path_list):
+# and returns a list of hop numbers where a path divergence was detected
+# path_list is a list of lists containing IP-addresses
+def discover_path_divergence(path_list):
     divergence_list = []
     hop_number = 0
     for pl_index, hoplist in enumerate(path_list): # for each hop-list
@@ -47,9 +45,6 @@ def get_path_div(path_list):
                 print("index out of range")
                 break
     return divergence_list
-
-
-    print(f"Path divergence discovered at hop number: {hop_number}")
 
 # compares two lists and returns the index where they diverged (if they diverged)
 def compare_lists(list1, list2):
@@ -68,8 +63,7 @@ def compare_lists(list1, list2):
     print("The lists are equal")
     return None
 
-
-def main():
+def build_dictionary():
     number_of_files_scanned = 0
     dest_dict = {}
     # build dictionary
@@ -85,9 +79,6 @@ def main():
                         dest_dict[data['destination']] = [] # create a key for every destination ip
                         dest_dict[data['destination']].append(data['path_id'])
 
-
-    # perform route comparison
-
                         destinations.append(data['destination'])
                         paths.append(data['path_id'])
 
@@ -99,6 +90,13 @@ def main():
             print("Error: Not a directory")
             print("Please use the --file option to compare single files. Use the -h argument for more info.")
             exit(1)
+
+
+def main():
+    build_dictionary()
+    build_path_list()
+    # perform route comparison
+
 
 if __name__ == "__main__":
     main()
