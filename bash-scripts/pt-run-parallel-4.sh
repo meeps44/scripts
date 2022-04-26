@@ -102,7 +102,7 @@ pt_run()
     local l_FILENAME="$HOSTNAME-${l_SHORT}-${l_DATE}.txt"
 
     echo "Starting paris-traceroute"
-    sudo paris-traceroute -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
+    sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
     echo "paris-traceroute finished. Output saved in $l_FILENAME."
     echo "Converting to JSON..."
     python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL}
