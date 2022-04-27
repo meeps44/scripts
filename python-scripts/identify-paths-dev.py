@@ -57,7 +57,7 @@ hop_list_of_lists = []
 
 # compares all paths in the path list to destination ip_addr (alternatively: use tag) 
 # and returns a list of the hop numbers where a path divergence was detected
-def create_path_divergence_list(destination_tag, path_list):
+def create_path_divergence_list(path_list):
     divergence_list = []
     for pl_index, hoplist in enumerate(path_list): # for each hop-list
         for hl_index, ip_address in enumerate(hoplist):
@@ -189,11 +189,37 @@ def main():
     # END TEST 1 #
 
     # TEST 2 #
+    #test_dict = build_dictionary()
+    #print(f"test_dict length: {len(test_dict)}")
+    #for source in src_ip_list:
+        #for flow_label in flow_label_list:
+            #for key in test_dict:
+                #path_id_list = [] # list of path ids to destination "key"
+                #for file in directory_contents:
+                    #if (os.path.isfile(os.path.join(args.directory, file))):
+                        #filename = str(file)
+                        #with open(os.path.join(args.directory, file), 'r') as file:
+                            #data = json.load(file)
+                            #file_flow_label = data['flow_label']
+                            #source_ip = data['source']
+                            #if create_tag(key) in filename and file_flow_label == flow_label and source_ip == source:
+                                #path_id_list.append(data['path_id'])
+                                #div_list = create_path_divergence_list(some_hoplist)
+                #test_dict[key] = path_id_list
+                #if len(test_dict[key]) > 0:
+                    ##print(f"{test_dict[key]=}")
+                    #print(f"Number of paths from {source=} to destination {key} with {flow_label=}: {len(test_dict[key])}")
+                #if len(test_dict[key]) > 1:
+                    #print(f"List of hop numbers where the paths diverged: {div_list}")
+    # END TEST 2 #
+
+    # TEST 3 #
     test_dict = build_dictionary()
     print(f"test_dict length: {len(test_dict)}")
     for source in src_ip_list:
         for flow_label in flow_label_list:
             for key in test_dict:
+                hop_list_of_lists = []
                 path_id_list = [] # list of path ids to destination "key"
                 for file in directory_contents:
                     if (os.path.isfile(os.path.join(args.directory, file))):
@@ -204,13 +230,18 @@ def main():
                             source_ip = data['source']
                             if create_tag(key) in filename and file_flow_label == flow_label and source_ip == source:
                                 path_id_list.append(data['path_id'])
+                                path = list(data['hops'].values())
+                                #path = data['hops'].values()
+                                hop_list_of_lists.append(path)
                 test_dict[key] = path_id_list
                 if len(test_dict[key]) > 0:
                     #print(f"{test_dict[key]=}")
                     print(f"Number of paths from {source=} to destination {key} with {flow_label=}: {len(test_dict[key])}")
                 if len(test_dict[key]) > 1:
-                    print(f"List of hop numbers where the paths diverged: ")
-    # END TEST 2 #
+                    print(f"{hop_list_of_lists=}")
+                    div_list = create_path_divergence_list(hop_list_of_lists)
+                    print(f"List of hop numbers where the paths diverged: {div_list}")
+    # END TEST 3 #
 
     for source in src_ip_list:
         for flow_label in flow_label_list:
