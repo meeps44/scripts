@@ -1,5 +1,6 @@
 import argparse, json, os
 # counts the number of unique paths to a destination
+# usage example: python3 identify-paths-dev.py -d=/root/home/
 
 destinations = [] # list of all destination addresses searched
 paths = [] # list of all paths
@@ -51,18 +52,23 @@ def discover_path_divergence(path_list):
 def compare_lists(list1, list2):
     for index, item in enumerate(list1):
         try:
-            if item == list2[index]:
-                print(f"{item} and {list2[index]} are equal")
-            else:
-                print(f"list1 item: {item} \nlist2 item: {list2[index]}")
+            if item != list2[index]:
                 print(f"The lists diverged at {index=}")
-                return index
+                return False
+                #return index
+            #if item == list2[index]:
+                #print(f"{item} and {list2[index]} are equal")
+            #else:
+                #print(f"list1 item: {item} \nlist2 item: {list2[index]}")
+                #print(f"The lists diverged at {index=}")
+                #return index
         except IndexError:
             print("IndexError: index out of range")
             print(f"The lists diverged at {index=}")
-            return index
+            return False
+            #return index
     print("The lists are equal")
-    return None
+    return True
 
 def create_tag(destination_ip):
     tag = 0
