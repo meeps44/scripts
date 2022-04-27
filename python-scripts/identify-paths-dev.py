@@ -1,6 +1,13 @@
 import argparse, json, os
-# counts the number of unique paths to a destination
-# usage example: python3 identify-paths-dev.py -d=/root/home/
+# lists the unique paths to a destination
+# example usage: python3 identify-paths-dev.py -d=/root/home/
+
+default_dir = os.getcwd()
+# initialize argument parsing
+parser = argparse.ArgumentParser()
+parser.add_argument("--directory", "-dir", "-d", const=default_dir, nargs='?', help="Directory containing json log files that you would like to run the flow-label check on")
+args = parser.parse_args()
+directory_contents = os.listdir(args.directory)
 
 destinations = [] # list of all destination addresses searched
 paths = [] # list of all paths
@@ -10,22 +17,17 @@ path_id_list = [] # list of path ids
 path_id_list_of_lists = [] # list of lists where each list contains all path_ids for one destiantion
 path_list = [] # list of list of ip-addresses in a path
 
-default_dir = os.getcwd()
-
-# initialize argument parsing
-parser = argparse.ArgumentParser()
-parser.add_argument("--directory", "-dir", "-d", const=default_dir, nargs='?', help="Directory containing json log files that you would like to run the flow-label check on")
-args = parser.parse_args()
-
 # creates a list of paths to destination ip_addr
 def build_path_id_list(destination_tag):
     # First get a list of all path_ids to destiantion ip_addr
-    for file in os.listdir(args.directory):
+    for file in directory_contents:
         if (os.path.isfile(os.path.join(args.directory, file))):
             filename = str(file)
             if destination_tag in filename:
                 with open(os.path.join(args.directory, file), 'r') as file:
                     data = json.load(file)
+                    flow_label = data['flow_label']
+                    #outgoing_port = data['outgoing_tcp_port']
                     path_id_list.append(data['path_id'])
                     path = data['hops'].values()
                     path_list.append(path)
@@ -48,7 +50,7 @@ def discover_path_divergence(path_list):
                 break
     return divergence_list
 
-# compares two lists and returns the index where they diverged (if they diverged)
+# compares two lists and prints the index where they diverged (if they diverged)
 def compare_lists(list1, list2):
     for index, item in enumerate(list1):
         try:
@@ -74,19 +76,41 @@ def create_tag(destination_ip):
     tag = 0
     return tag
 
+def build_flow_label_list():
+    flow_label_list = []
+    if args.directory:
+        try:
+            for file in directory_contents:
+                if (os.path.isfile(os.path.join(args.directory, file))):
+                    with open(os.path.join(args.directory, file), 'r') as file:
+                        data = json.load(file)
+                        flow_label_list.append(data['flow_label'])
+        except FileNotFoundError:
+            print("Error: No such file or directory")
+            exit(1)
+        except NotADirectoryError:
+            print("Error: Not a directory")
+            print("Please use the --file option to compare single files. Use the -h argument for more info.")
+            exit(1)
+    # get unique vales
+    set_list = set(flow_label_list)
+    unique_list = list(set_list)
+    return unique_list
+
+
+
 def build_dictionary():
     number_of_files_scanned = 0
     dest_dict = {}
-    # build dictionary
     if args.directory:
         try:
-            for file in os.listdir(args.directory):
+            for file in directory_contents:
                 if (os.path.isfile(os.path.join(args.directory, file))):
                     filename = str(file)
                     with open(os.path.join(args.directory, file), 'r') as file:
+                        data = json.load(file)
                         number_of_files_scanned = number_of_files_scanned + 1
                         number_of_hops = len(data['hops'])
-                        data = json.load(file)
                         dest_dict[data['destination']] = [] # create a key for every destination ip
                         tag = create_tag(data['destination'])
                         dest_dict[data['destination']].append(build_path_id_list(tag))
