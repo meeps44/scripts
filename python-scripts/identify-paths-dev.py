@@ -97,8 +97,6 @@ def build_flow_label_list():
     unique_list = list(set_list)
     return unique_list
 
-
-
 def build_dictionary():
     number_of_files_scanned = 0
     dest_dict = {}
@@ -127,12 +125,16 @@ def build_dictionary():
             print("Error: Not a directory")
             print("Please use the --file option to compare single files. Use the -h argument for more info.")
             exit(1)
+    return dest_dict
 
 
 def main():
-    build_dictionary()
-    # perform route comparison
-
+    destination = 0
+    for flow_label in build_flow_label_list():
+        my_dict = build_dictionary()
+        print(f"Number of paths to {destination=} with {flow_label=}: {len(my_dict[destination])}")
+        print(f"List of hop numbers where the paths to {destination=} with {flow_label=} diverged: ")
+        # perform route comparison
 
 if __name__ == "__main__":
     main()
