@@ -57,18 +57,10 @@ def compare_lists(list1, list2):
             if item != list2[index]:
                 print(f"The lists diverged at {index=}")
                 return False
-                #return index
-            #if item == list2[index]:
-                #print(f"{item} and {list2[index]} are equal")
-            #else:
-                #print(f"list1 item: {item} \nlist2 item: {list2[index]}")
-                #print(f"The lists diverged at {index=}")
-                #return index
         except IndexError:
             print("IndexError: index out of range")
             print(f"The lists diverged at {index=}")
             return False
-            #return index
     print("The lists are equal")
     return True
 
