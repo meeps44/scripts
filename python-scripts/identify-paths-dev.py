@@ -33,8 +33,8 @@ def create_pathid_list(destination_tag, flow_label):
                         #outgoing_port = data['outgoing_tcp_port']
     return path_id_list
 
-# compares all paths in the path list to destination [ip_addr] (alternatively: use tag) 
-# and returns a list of hop numbers where a path divergence was detected
+# compares all paths in the path list to destination ip_addr (alternatively: use tag) 
+# and returns a list of the hop numbers where a path divergence was detected
 def get_path_divergence_list(destination_tag, path_list):
     divergence_list = []
     for pl_index, hoplist in enumerate(path_list): # for each hop-list
@@ -73,7 +73,7 @@ def create_tag(destination_ip):
     tag = 0
     return tag
 
-def build_flow_label_list():
+def create_flow_label_list():
     flow_label_list = []
     if args.directory:
         try:
@@ -119,7 +119,7 @@ def build_dictionary():
 
 
 def main():
-    flow_label_list = build_flow_label_list()
+    flow_label_list = create_flow_label_list()
     for flow_label in flow_label_list:
         # create a new dictionary
         my_dict = build_dictionary()
