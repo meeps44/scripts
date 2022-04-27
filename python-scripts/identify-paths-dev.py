@@ -14,10 +14,12 @@ paths = [] # list of all paths
 unique_paths = [] # subset of paths, list of all unique paths
 number_of_files_scanned = 0
 path_id_list_of_lists = [] # list of lists where each list contains all path_ids for one destiantion
-path_list = [] # list of list of ip-addresses in a path
+hop_list_of_lists = []
 
 # create and return a list of all path_ids to destination ip_addr with flow label flow_label
 def create_pathid_list(destination_tag, flow_label):
+    path_list = [] # list of list of ip-addresses in a path
+
     path_id_list = [] # list of path ids
     for file in directory_contents:
         if (os.path.isfile(os.path.join(args.directory, file))):
@@ -28,8 +30,10 @@ def create_pathid_list(destination_tag, flow_label):
                     file_flow_label = data['flow_label']
                     if file_flow_label == flow_label:
                         path_id_list.append(data['path_id'])
+
                         path = data['hops'].values()
                         path_list.append(path)
+                        hop_list_of_lists.append(path_list)
                         #outgoing_port = data['outgoing_tcp_port']
     return path_id_list
 
