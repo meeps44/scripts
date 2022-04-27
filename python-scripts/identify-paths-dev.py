@@ -1,6 +1,6 @@
-import argparse, json, os, re
+import argparse, json, os, re, hashlib
 # lists the unique paths to a destination
-# example usage: python3 identify-paths-dev.py -d=/root/home/
+# example usage: python3 identify-paths-dev.py -d=/home/erlend/python-programming/smalljsondata
 
 default_dir = os.getcwd()
 # initialize argument parsing
@@ -95,7 +95,7 @@ def identify_tag(filename):
     return tag
 
 def create_tag(destination_ip):
-    tag = 0
+    tag = hashlib.md5(destination_ip.encode()).hexdigest()[:6]
     return tag
 
 def create_flow_label_list():
@@ -132,7 +132,7 @@ def build_dictionary():
 
                         number_of_hops = len(data['hops'])
                         number_of_files_scanned = number_of_files_scanned + 1
-                        print(f"Number of hops to destination {data['destination']}: {number_of_hops}")
+                        #print(f"Number of hops to destination {data['destination']}: {number_of_hops}")
         except FileNotFoundError:
             print("Error: No such file or directory")
             exit(1)
@@ -142,42 +142,107 @@ def build_dictionary():
             exit(1)
     return dest_dict
 
+def create_source_ip_list():
+    src_list = []
+    if args.directory:
+        try:
+            for file in directory_contents:
+                if (os.path.isfile(os.path.join(args.directory, file))):
+                    with open(os.path.join(args.directory, file), 'r') as file:
+                        data = json.load(file)
+                        src_list.append(data['source'])
+        except FileNotFoundError:
+            print("Error: No such file or directory")
+            exit(1)
+        except NotADirectoryError:
+            print("Error: Not a directory")
+            print("Please use the --file option to compare single files. Use the -h argument for more info.")
+            exit(1)
+    # get unique vales
+    set_list = set(src_list)
+    unique_list = list(set_list)
+    return unique_list
+
 
 def main():
     flow_label_list = create_flow_label_list()
-    for flow_label in flow_label_list:
-        # create a new dictionary
-        my_dict = build_dictionary()
+    src_ip_list = create_source_ip_list()
+    print(f"{flow_label_list=}")
+    print(f"{src_ip_list=}")
 
-        # fill dictionary with path_id items
-        for key in my_dict:
-            tag = create_tag(key)
+    # TEST 1 #
+    #test_dict = build_dictionary()
+    #print(f"test_dict length: {len(test_dict)}")
+    #for key in test_dict:
+        #path_id_list = [] # list of path ids to destination "key"
+        #for file in directory_contents:
+            #if (os.path.isfile(os.path.join(args.directory, file))):
+                #filename = str(file)
+                #with open(os.path.join(args.directory, file), 'r') as file:
+                    #data = json.load(file)
+                    #file_flow_label = data['flow_label']
+                    #source_ip = data['source']
+                    #if create_tag(key) in filename:
+                        #path_id_list.append(data['path_id'])
+        #test_dict[key] = path_id_list
+        #print(f"{test_dict[key]=}")
+    # END TEST 1 #
 
-            # create hoplists and path_id lists
-            for file in directory_contents:
-                hoplist = [] # list of list of ip-addresses in a path
-                list_of_hoplists = []
-                path_id_list = [] # list of path ids
-                list_of_pathid_lists = []
-
-                if (os.path.isfile(os.path.join(args.directory, file))):
-                    filename = str(file)
-                    if tag in filename:
+    # TEST 2 #
+    test_dict = build_dictionary()
+    print(f"test_dict length: {len(test_dict)}")
+    for source in src_ip_list:
+        for flow_label in flow_label_list:
+            for key in test_dict:
+                path_id_list = [] # list of path ids to destination "key"
+                for file in directory_contents:
+                    if (os.path.isfile(os.path.join(args.directory, file))):
+                        filename = str(file)
                         with open(os.path.join(args.directory, file), 'r') as file:
                             data = json.load(file)
                             file_flow_label = data['flow_label']
-                            if file_flow_label == flow_label:
+                            source_ip = data['source']
+                            if create_tag(key) in filename and file_flow_label == flow_label and source_ip == source:
                                 path_id_list.append(data['path_id'])
-                                path = data['hops'].values()
-                                hoplist.append(path)
-                                list_of_hoplists.append(hoplist)
+                test_dict[key] = path_id_list
+                if len(test_dict[key]) > 0:
+                    #print(f"{test_dict[key]=}")
+                    print(f"Number of paths from {source=} to destination {key} with {flow_label=}: {len(test_dict[key])}")
+                if len(test_dict[key]) > 1:
+                    print(f"List of hop numbers where the paths diverged: ")
+    # END TEST 2 #
 
-                list_of_pathid_lists.append(path_id_list)
+    for source in src_ip_list:
+        for flow_label in flow_label_list:
+            # create a new dictionary
+            my_dict = build_dictionary()
+            #for src_ip in src_ip_list:
+            # create hoplists and path_id lists
+            for key in my_dict:
+                tag = create_tag(key)
+                hoplist = [] # list of list of ip-addresses in a path
+                list_of_hoplists = []
+                path_id_list = [] # list of path ids to destination "key"
+                list_of_pathid_lists = []
+                for file in directory_contents:
+                    if (os.path.isfile(os.path.join(args.directory, file))):
+                        filename = str(file)
+                        if tag in filename:
+                            #print(f"Tag {tag} found in filename")
+                            with open(os.path.join(args.directory, file), 'r') as file:
+                                data = json.load(file)
+                                file_flow_label = data['flow_label']
+                                source_ip = data['source']
+                                if file_flow_label == flow_label and source_ip == source:
+                                    path_id_list.append(data['path_id'])
+                                    path = data['hops'].values()
+                                    hoplist.append(path)
+                                    list_of_hoplists.append(hoplist)
+                                    #print(f"{source_ip=}")
+                                    #print(f"Destination ip = {key}")
+                                    #print(f"{path_id_list=}")
 
-            my_dict[key].append(list_of_pathid_lists)
-            print(f"Number of paths to destination {key} with {flow_label=}: {len(my_dict[key])}")
-            # perform route comparison
-            print(f"List of hop numbers where the paths to {key=} with {flow_label=} diverged: {create_path_divergence_list(tag, list_of_pathid_lists)}")
+                my_dict[key].append(path_id_list)
 
 if __name__ == "__main__":
     main()
