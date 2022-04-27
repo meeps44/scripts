@@ -96,19 +96,11 @@ def build_dictionary():
         try:
             for file in directory_contents:
                 if (os.path.isfile(os.path.join(args.directory, file))):
-                    filename = str(file)
                     with open(os.path.join(args.directory, file), 'r') as file:
                         data = json.load(file)
-                        number_of_files_scanned = number_of_files_scanned + 1
                         number_of_hops = len(data['hops'])
+                        number_of_files_scanned = number_of_files_scanned + 1
                         dest_dict[data['destination']] = [] # create a key for every destination ip
-                        tag = create_tag(data['destination'])
-                        dest_dict[data['destination']].append(build_path_id_list(tag))
-                        #dest_dict[data['destination']].append(data['path_id'])
-
-                        destinations.append(data['destination'])
-                        paths.append(data['path_id'])
-
                         print(f"Number of hops to destination {data['destination']}: {number_of_hops}")
         except FileNotFoundError:
             print("Error: No such file or directory")
@@ -121,12 +113,17 @@ def build_dictionary():
 
 
 def main():
-    destination = 0
-    for flow_label in build_flow_label_list():
+    flow_label_list = build_flow_label_list()
+    for flow_label in flow_label_list:
+        # create a new dictionary
         my_dict = build_dictionary()
-        print(f"Number of paths to {destination=} with {flow_label=}: {len(my_dict[destination])}")
-        print(f"List of hop numbers where the paths to {destination=} with {flow_label=} diverged: ")
+        # fill dictionary with path_id items
+        for key in my_dict:
+            tag = create_tag(key)
+            my_dict[key].append(build_path_id_list(tag))
+            print(f"Number of paths to destination {key} with {flow_label=}: {len(my_dict[key])}")
         # perform route comparison
+        print(f"List of hop numbers where the paths to {key=} with {flow_label=} diverged: ")
 
 if __name__ == "__main__":
     main()
