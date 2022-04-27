@@ -57,16 +57,19 @@ hop_list_of_lists = []
 
 # compares all paths in the path list to destination ip_addr (alternatively: use tag) 
 # and returns a list of the hop numbers where a path divergence was detected
-def get_path_divergence_list(destination_tag, path_list):
+def create_path_divergence_list(destination_tag, path_list):
     divergence_list = []
     for pl_index, hoplist in enumerate(path_list): # for each hop-list
         for hl_index, ip_address in enumerate(hoplist):
             try:
-                if ip_address == hoplist[pl_index+1][hl_index]:
-                    print(f"{ip_address} and {hoplist[pl_index+1][hl_index]} are equal")
-                else:
+                if ip_address != hoplist[pl_index+1][hl_index]:
                     divergence_list.append(hl_index)
                     break
+                #if ip_address == hoplist[pl_index+1][hl_index]:
+                    #print(f"{ip_address} and {hoplist[pl_index+1][hl_index]} are equal")
+                #else:
+                    #divergence_list.append(hl_index)
+                    #break
             except IndexError:
                 print("index out of range")
                 break
@@ -145,13 +148,12 @@ def main():
     for flow_label in flow_label_list:
         # create a new dictionary
         my_dict = build_dictionary()
-        
 
         # fill dictionary with path_id items
         for key in my_dict:
             tag = create_tag(key)
-            # create hoplists and path_id lists
 
+            # create hoplists and path_id lists
             for file in directory_contents:
                 hoplist = [] # list of list of ip-addresses in a path
                 list_of_hoplists = []
@@ -175,7 +177,7 @@ def main():
             my_dict[key].append(list_of_pathid_lists)
             print(f"Number of paths to destination {key} with {flow_label=}: {len(my_dict[key])}")
             # perform route comparison
-            print(f"List of hop numbers where the paths to {key=} with {flow_label=} diverged: {get_path_divergence_list(tag, list_of_pathid_lists)}")
+            print(f"List of hop numbers where the paths to {key=} with {flow_label=} diverged: {create_path_divergence_list(tag, list_of_pathid_lists)}")
 
 if __name__ == "__main__":
     main()
