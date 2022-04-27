@@ -17,25 +17,43 @@ path_id_list_of_lists = [] # list of lists where each list contains all path_ids
 hop_list_of_lists = []
 
 # create and return a list of all path_ids to destination ip_addr with flow label flow_label
-def create_pathid_list(destination_tag, flow_label):
-    path_list = [] # list of list of ip-addresses in a path
+#def create_pathid_list(destination_tag, flow_label):
+    #path_list = [] # list of list of ip-addresses in a path
 
-    path_id_list = [] # list of path ids
-    for file in directory_contents:
-        if (os.path.isfile(os.path.join(args.directory, file))):
-            filename = str(file)
-            if destination_tag in filename:
-                with open(os.path.join(args.directory, file), 'r') as file:
-                    data = json.load(file)
-                    file_flow_label = data['flow_label']
-                    if file_flow_label == flow_label:
-                        path_id_list.append(data['path_id'])
+    #path_id_list = [] # list of path ids
+    #for file in directory_contents:
+        #if (os.path.isfile(os.path.join(args.directory, file))):
+            #filename = str(file)
+            #if destination_tag in filename:
+                #with open(os.path.join(args.directory, file), 'r') as file:
+                    #data = json.load(file)
+                    #file_flow_label = data['flow_label']
+                    #if file_flow_label == flow_label:
+                        #path_id_list.append(data['path_id'])
 
-                        path = data['hops'].values()
-                        path_list.append(path)
-                        hop_list_of_lists.append(path_list)
-                        #outgoing_port = data['outgoing_tcp_port']
-    return path_id_list
+                        #path = data['hops'].values()
+                        #path_list.append(path)
+                        #hop_list_of_lists.append(path_list)
+                        ##outgoing_port = data['outgoing_tcp_port']
+    #return path_id_list
+
+#def create_hoplists(destination_tag, flow_label):
+    #hoplist = [] # list of list of ip-addresses in a path
+    #list_of_hoplists = []
+
+    #for file in directory_contents:
+        #if (os.path.isfile(os.path.join(args.directory, file))):
+            #filename = str(file)
+            #if destination_tag in filename:
+                #with open(os.path.join(args.directory, file), 'r') as file:
+                    #data = json.load(file)
+                    #file_flow_label = data['flow_label']
+                    #if file_flow_label == flow_label:
+                        #path = data['hops'].values()
+                        #hoplist.append(path)
+                        #list_of_hoplists.append(hoplist)
+    #return list_of_hoplists
+
 
 # compares all paths in the path list to destination ip_addr (alternatively: use tag) 
 # and returns a list of the hop numbers where a path divergence was detected
@@ -127,13 +145,37 @@ def main():
     for flow_label in flow_label_list:
         # create a new dictionary
         my_dict = build_dictionary()
+        
+
         # fill dictionary with path_id items
         for key in my_dict:
             tag = create_tag(key)
-            my_dict[key].append(create_pathid_list(tag, flow_label))
+            # create hoplists and path_id lists
+
+            for file in directory_contents:
+                hoplist = [] # list of list of ip-addresses in a path
+                list_of_hoplists = []
+                path_id_list = [] # list of path ids
+                list_of_pathid_lists = []
+
+                if (os.path.isfile(os.path.join(args.directory, file))):
+                    filename = str(file)
+                    if tag in filename:
+                        with open(os.path.join(args.directory, file), 'r') as file:
+                            data = json.load(file)
+                            file_flow_label = data['flow_label']
+                            if file_flow_label == flow_label:
+                                path_id_list.append(data['path_id'])
+                                path = data['hops'].values()
+                                hoplist.append(path)
+                                list_of_hoplists.append(hoplist)
+
+                list_of_pathid_lists.append(path_id_list)
+
+            my_dict[key].append(list_of_pathid_lists)
             print(f"Number of paths to destination {key} with {flow_label=}: {len(my_dict[key])}")
             # perform route comparison
-            print(f"List of hop numbers where the paths to {key=} with {flow_label=} diverged: {get_path_divergence_list(tag, )}")
+            print(f"List of hop numbers where the paths to {key=} with {flow_label=} diverged: {get_path_divergence_list(tag, list_of_pathid_lists)}")
 
 if __name__ == "__main__":
     main()
