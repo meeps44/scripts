@@ -133,11 +133,9 @@ def main():
                             if create_tag(key) in filename and file_flow_label == flow_label and source_ip == source:
                                 path_id_list.append(data['path_id'])
                                 path = list(data['hops'].values())
-                                #path = data['hops'].values()
                                 new_list = []
                                 for item in path:
                                     new_list.append(item['ipv6_address'])
-                                #hop_list_of_lists.append(path)
                                 hop_list_of_lists.append(new_list)
                 test_dict[key] = path_id_list
                 if len(test_dict[key]) > 0:
@@ -146,11 +144,12 @@ def main():
                 if len(test_dict[key]) > 1:
                     tmp = compare_list_of_lists(hop_list_of_lists)
                     div_list = []
+
                     # to correct mismatch between hop number and list index, we increment by 1
                     for item in tmp:
                         div_list.append(item+1)
-                    # to make 
-                    if div_list:
+
+                    if div_list: # if the list is not empty
                         print(f"List of hop numbers where the paths diverged: {div_list}")
                     else:
                         #print(f"{hop_list_of_lists=}")
