@@ -374,7 +374,7 @@ def main():
                         if div_list:
                             print(f"List of hop numbers where the paths diverged: {div_list}")
                 else:
-                    print("All paths are equal")
+                    print(f"All paths to destination {key} are equal")
     # END TEST 5 #
 
 if __name__ == "__main__":
