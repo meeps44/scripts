@@ -341,8 +341,7 @@ def main():
             #print(f"{divergence_dictionary=}")
             
             for key in divergence_dictionary:
-
-                # NEW: Checks if paths diverged before doing the rest
+                # Check if paths diverged before doing the rest
                 if not paths_diverged(divergence_dictionary[key]):
                     hop_list_of_lists = []
                     path_id_list = [] # list of path ids to destination "key"
@@ -374,8 +373,8 @@ def main():
                             div_list.append(item+1)
                         if div_list:
                             print(f"List of hop numbers where the paths diverged: {div_list}")
-                        else:
-                            print("The paths did not diverge")
+                else:
+                    print("All paths are equal")
     # END TEST 5 #
 
 if __name__ == "__main__":
