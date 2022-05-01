@@ -98,16 +98,16 @@ main()
 			N=1
 			let M=$N+9
 			while [ $N -lt $HITLIST_LENGTH ]; do
-			readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
-			for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
-				for ADDRESS in ${my_array[@]}; do
-				#pt_run "$ELEMENT" &
-				pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
+				readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
+				for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+					for ADDRESS in ${my_array[@]}; do
+						#pt_run "$ELEMENT" &
+						pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
+					done
+				wait
 				done
-			wait
-			done
-			let N=$N+10
-			let M=$N+9
+				let N=$N+10
+				let M=$N+9
 			done
 		done
 	wait
