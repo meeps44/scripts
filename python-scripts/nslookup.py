@@ -1015,11 +1015,11 @@ hostnames_long_www = [
 hostnames_full = hostnames_long + hostnames_long_www
 
 def dnslookup(hostname_list, filename):
-	with open(filename_www, "w") as my_file:
-		for host in hostnames_long_www:
+	with open(filename, "w") as my_file:
+		for host in hostname_list:
 			try:
 				addressInfo = socket.getaddrinfo(host, 80, family=socket.AF_INET6, proto=socket.IPPROTO_TCP)[0][-1][0]
-				if (host == hostnames_long_www[len(hostnames_long_www)-1]):
+				if (host == hostname_list[len(hostname_list)-1]):
 					my_file.write("\'" + addressInfo + "\'")
 				else:
 					my_file.write("\'" + addressInfo + "\'," + "\n")
