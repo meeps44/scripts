@@ -1014,9 +1014,9 @@ def dnslookup(hostname_list, filename):
 			try:
 				addressInfo = socket.getaddrinfo(host, 80, family=socket.AF_INET6, proto=socket.IPPROTO_TCP)[0][-1][0]
 				if (host == hostname_list[len(hostname_list)-1]):
-					my_file.write("\'" + addressInfo + "\'")
+					my_file.write(addressInfo)
 				else:
-					my_file.write("\'" + addressInfo + "\'," + "\n")
+					my_file.write(addressInfo + "\n")
 				print(host)
 				print(addressInfo)
 			except socket.gaierror:
