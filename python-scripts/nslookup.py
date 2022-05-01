@@ -1027,7 +1027,6 @@ def main():
     #filename_full = "nslookup-alexa-top500-full.txt"
     filename = "nslookup-alexa-top500.txt"
     filename_www = "nslookup-alexa-top500-www.txt"
-    #filename_full = "ipv6-address-list-full-alexa-top500.txt"
 
     dnslookup(hostnames, filename)
     dnslookup(hostnames_www, filename_www)
