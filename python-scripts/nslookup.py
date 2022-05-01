@@ -1,10 +1,6 @@
 import socket
 
 # Performs IPv6 DNS-lookup on a given list of hostnames and logs the resulting IPv6-addresses to a file
-#filename = "ipv6-address-list-full-alexa-top500.txt"
-filename = "nslookup-alexa-top500.txt"
-filename_www = "nslookup-alexa-top500-www.txt"
-filename_full = "nslookup-alexa-top500-full.txt"
 
 hostnames_long = [
 		"google.com",
@@ -1012,8 +1008,6 @@ hostnames_long_www = [
 		"www.squarespace.com"
 ]
 
-hostnames_full = hostnames_long + hostnames_long_www
-
 def dnslookup(hostname_list, filename):
 	with open(filename, "w") as my_file:
 		for host in hostname_list:
@@ -1029,6 +1023,13 @@ def dnslookup(hostname_list, filename):
 				print(f"No address associated with hostname {host}")
 
 def main():
+    hostnames_full = hostnames_long + hostnames_long_www
+    filename_full = "nslookup-alexa-top500-full.txt"
+
+    #filename = "ipv6-address-list-full-alexa-top500.txt"
+    filename = "nslookup-alexa-top500.txt"
+    filename_www = "nslookup-alexa-top500-www.txt"
+
     dnslookup(hostnames_full, filename_full)
 
 if __name__ == "__main__":
