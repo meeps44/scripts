@@ -71,17 +71,18 @@ main()
 	# default values
 	FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
 	DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT) 
-	HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
+	HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses.txt"
+	
 
 	# Use large or small hitlist
-	FULL_HITLIST=false
+	USE_FULL_HITLIST=false
 
-	if [ "$FULL_HITLIST" = true ] ; then
+	if [ "$USE_FULL_HITLIST" = true ] ; then
 		# Full hitlist
 		HITLIST="/root/git/scripts/text-files/hitlist.txt"
 	else
 		# Short hitlist (Alexa top 500)
-		HITLIST="/root/git/scripts/text-files/ipv6-adress-list-alexa-top500-pruned.txt"
+		HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses.txt"
 	fi
 
 	# other definitions
