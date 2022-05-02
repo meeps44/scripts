@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 # Stage 3
-# The goal of this step is to delve into the cases from stage 2
-# We want to know if we get the same path if we use a different port-number. 
+# In stage 3, the flow label will be variable
+# The goal of this step is to delve into the interesting cases from stage 2 (the destination IPs where the paths changed)
+# We want to know if we can get a consistent path by setting the flow label
 
 create_tarball()
 {
@@ -77,7 +78,7 @@ main()
         $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1 
         $FLOW_LABEL_MAX $FLOW_LABEL_MAX $FLOW_LABEL_MAX $FLOW_LABEL_MAX 
         )
-	DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT $DNS_PORT) 
+	DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $HTTP_PORT) 
 	HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses.txt"
 
 	# Use large or small hitlist
