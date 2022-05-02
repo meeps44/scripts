@@ -50,7 +50,7 @@ pt_run()
 
 main()
 {
-	N_ITERATIONS=2 # the number of iterations that you wish to run the entire sequence
+	N_ITERATIONS=1 # the number of iterations that you wish to run the entire sequence
 
 	# port definitions
 	TRACEROUTE_DEFAULT_PORT=33434
@@ -70,8 +70,9 @@ main()
 	FLOW_LABEL_MAX=1048575
 
 	# default values
-	FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN)
-	DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT $DNS_PORT) 
+	FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN)
+	DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $HTTP_PORT) 
+	#DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT $DNS_PORT) 
     HITLIST="/root/git/scripts/text-files/flowlabel_survived_list.txt"
 
 	# Use large or small hitlist
