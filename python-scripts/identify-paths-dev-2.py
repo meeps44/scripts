@@ -155,7 +155,7 @@ def main():
             for key in test_dict:
                 if len(test_dict[key]) == 1:
                     #print(f"Number of paths from {source=} to destination {key} with {flow_label=}: {len(test_dict[key])}")
-                    print(f"Source {source} destination {key} flow_label {flow_label} Number_of_paths_to_destination {len(test_dict[key])}")
+                    print(f"Source {source} destination {key} flow_label {flow_label} Number_of_unique_paths_to_destination {len(get_unique(test_dict[key]))} Hop_number_where_paths_diverged 0")
                 if len(test_dict[key]) > 1:
                     divergence_dictionary[key] = []
 
@@ -183,14 +183,14 @@ def main():
                                 hop_list_of_lists.append(new_list)
                 divergence_dictionary[key] = path_id_list
                 if len(divergence_dictionary[key]) == 1:
-                    print(f"Source {source} destination {key} flow_label {flow_label} Number_of_paths_to_destination {len(divergence_dictionary[key])}")
+                    print(f"Source {source} destination {key} flow_label {flow_label} Number_of_unique_paths_to_destination {len(get_unique(divergence_dictionary[key]))} Hop_number_where_paths_diverged 0")
                 if len(divergence_dictionary[key]) > 1:
                     tmp = compare_list_of_lists(hop_list_of_lists)
                     div_list = []
                     for item in tmp:
                         div_list.append(item+1) # to correct mismatch between hop number and list index, we increment by 1
                     if div_list:
-                        print(f"Source {source} destination {key} flow_label {flow_label} Number_of_paths_to_destination {len(divergence_dictionary[key])} Hop_number_where_paths_diverged {div_list}")
+                        print(f"Source {source} destination {key} flow_label {flow_label} Number_of_unique_paths_to_destination {len(get_unique(divergence_dictionary[key]))} Hop_number_where_paths_diverged {div_list}")
                         #print(f"List of hop numbers where the paths diverged: {div_list}")
 
 if __name__ == "__main__":
