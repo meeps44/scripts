@@ -72,13 +72,19 @@ main()
 
 	# default values
 	FLOW_LABELS=(
-        $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN 
-        $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1
-        $FLOW_LABEL_MID_2 $FLOW_LABEL_MID_2 $FLOW_LABEL_MID_2 $FLOW_LABEL_MID_2 
-        $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1 
-        $FLOW_LABEL_MAX $FLOW_LABEL_MAX $FLOW_LABEL_MAX $FLOW_LABEL_MAX 
+        $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN 
+        $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN 
+        $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 
+        $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 
+        $FLOW_LABEL_MID_2 $FLOW_LABEL_MID_2 $FLOW_LABEL_MID_2 $FLOW_LABEL_MID_2 $FLOW_LABEL_MID_2 
+        $FLOW_LABEL_MID_2 $FLOW_LABEL_MID_2 $FLOW_LABEL_MID_2 $FLOW_LABEL_MID_2 $FLOW_LABEL_MID_2 
+        $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1
+        $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1 $FLOW_LABEL_HIGH_1
+        $FLOW_LABEL_MAX $FLOW_LABEL_MAX $FLOW_LABEL_MAX $FLOW_LABEL_MAX $FLOW_LABEL_MAX
+        $FLOW_LABEL_MAX $FLOW_LABEL_MAX $FLOW_LABEL_MAX $FLOW_LABEL_MAX $FLOW_LABEL_MAX
         )
-	DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $HTTP_PORT) 
+	DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT) 
+	#DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $HTTP_PORT) 
 	HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses.txt"
 
 	# Use large or small hitlist
@@ -99,23 +105,45 @@ main()
 	host_ip=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
 
 	# paris traceroute loop starts here
+	#for i in $(seq 1 $N_ITERATIONS); do
+		#for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+			#N=1
+			#let M=$N+9
+			#while [ $N -lt $HITLIST_LENGTH ]; do
+				#readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
+				#for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+					#for ADDRESS in ${my_array[@]}; do
+						##pt_run "$ELEMENT" &
+						#pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
+					#done
+				#wait
+				#done
+				#let N=$N+10
+				#let M=$N+9
+			#done
+		#done
+	#wait
+	#create_tarball
+	#done
+
+	# paris traceroute loop starts here
 	for i in $(seq 1 $N_ITERATIONS); do
-		for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
-			N=1
-			let M=$N+9
-			while [ $N -lt $HITLIST_LENGTH ]; do
-				readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
-				for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
-					for ADDRESS in ${my_array[@]}; do
-						#pt_run "$ELEMENT" &
-						pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
-					done
-				wait
-				done
-				let N=$N+10
-				let M=$N+9
+	for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+		for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+		N=1
+		let M=$N+9
+		while [ $N -lt $HITLIST_LENGTH ]; do
+			readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
+			for ADDRESS in ${my_array[@]}; do
+				#pt_run "$ELEMENT" &
+				pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
 			done
+			let N=$N+10
+			let M=$N+9
+			wait
 		done
+		done
+	done
 	wait
 	create_tarball
 	done
