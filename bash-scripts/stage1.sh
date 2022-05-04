@@ -92,22 +92,22 @@ main()
 
 	# paris traceroute loop starts here
 	for i in $(seq 1 $N_ITERATIONS); do
-		for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
-			N=1
-			let M=$N+9
-			while [ $N -lt $HITLIST_LENGTH ]; do
-				readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
-				for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
-					for ADDRESS in ${my_array[@]}; do
-						#pt_run "$ELEMENT" &
-						pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
-					done
-				wait
-				done
-				let N=$N+10
-				let M=$N+9
+	for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+		for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+		N=1
+		let M=$N+9
+		while [ $N -lt $HITLIST_LENGTH ]; do
+			readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
+			for ADDRESS in ${my_array[@]}; do
+				#pt_run "$ELEMENT" &
+				pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
 			done
+			let N=$N+10
+			let M=$N+9
+			wait
 		done
+		done
+	done
 	wait
 	create_tarball
 	done
