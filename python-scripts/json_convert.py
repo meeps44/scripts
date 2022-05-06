@@ -1,4 +1,4 @@
-import json, uuid, argparse, datetime, os, re, ipaddress, hashlib, sys, SubnetTree
+import json, argparse, datetime, os, re, ipaddress, hashlib, sys, SubnetTree
 
 def fill_subnettree(tree, rv_file):
     with open(rv_file, "r") as file:
@@ -11,6 +11,13 @@ def fill_subnettree(tree, rv_file):
             except ValueError as e:
                 print("Skipped line '" + line + "'", file=sys.stderr)
     return tree
+
+def get_asn(tree, ip_address):
+    try:
+        return tree[ip_address]
+    except KeyError as e:
+        print(f"KeyError: {ip_address=} not found in subnettree", file=sys.stderr)
+        return 0
 
 def convert(data):
     # REGEX that matches IPv6-address. Credit: David M. Syzdek, https://gist.github.com/syzdek/6086792
@@ -96,9 +103,9 @@ def get_jsondata(directory):
     directory_content = os.listdir(directory)
     for file in directory_content:
         try:
-            if (os.path.isfile(os.path.join(args.directory, file))):
+            if (os.path.isfile(os.path.join(directory, file))):
                 filename = str(file)
-                with open(os.path.join(args.directory, file), "r") as file:
+                with open(os.path.join(directory, file), "r") as file:
                     nmbr_scanned = nmbr_scanned + 1
                     file_data = file.read()
                     json_list.append(convert(file_data))
@@ -119,14 +126,6 @@ def fwrite(data, filename):
     with open(filename, 'w') as fp:
         json.dump(data, fp, indent=4)
         print(f"File {filename} successfully saved to disk")
-
-# asnlookup
-def get_asn(tree, ip_address):
-    try:
-        return tree[ip_address]
-    except KeyError as e:
-        print(f"KeyError: {ip_address=} not found in subnettree", file=sys.stderr)
-        return 0
 
 def main():
     # Initialize argument parsing

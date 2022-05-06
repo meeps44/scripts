@@ -48,7 +48,10 @@ pt_run()
     #sudo paris-traceroute --first=2 --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME # skips the first router in the path
     echo "paris-traceroute finished. Output saved in $l_FILENAME."
     echo "Converting to JSON..."
-    python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL} ${l_TIMESTAMP}
+    #python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL} ${l_TIMESTAMP}
+
+    # below: for use with json_convert.py
+    python3 /root/git/scripts/python-scripts/json_convert.py ${l_FILEPATH} ${HOSTNAME} ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL} ${l_FILENAME} ${l_TIMESTAMP}
 }
 
 main()
