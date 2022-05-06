@@ -1,57 +1,16 @@
 import json, uuid, argparse, datetime, os, re, ipaddress, hashlib, sys, SubnetTree
 
-# initialize argument parsing
-parser = argparse.ArgumentParser()
-parser.add_argument("directory")
-parser.add_argument("hostname")
-parser.add_argument("tcp_port")
-parser.add_argument("source_ip")
-parser.add_argument("flow_label")
-parser.add_argument("json_filename")
-parser.add_argument("timestamp")
-args = parser.parse_args()
-
-def fill_tree(tree, fh):
-    for line in fh:
-        line = line.strip()
-        try:
-            tree[line] = line
-        except ValueError as e:
-            print("Skipped line '" + line + "'", file=sys.stderr)
-    return tree
-
-def create_hashmap(rv_file):
-    my_hashmap = {}
+def fill_subnettree(tree, rv_file):
     with open(rv_file, "r") as file:
-        data = file.readlines()
-        # Create hashmap
-        for line in data:
+        for line in file:
             line = line.strip()
             line = line.split()
             key = line[0] + "/" + line[1]
-            my_hashmap[key] = line[2]
-    return my_hashmap
-
-
-def scan_dir(directory):
-    json_list = []
-    directory_content = os.listdir(directory)
-    for file in directory_content:
-        try:
-            if (os.path.isfile(os.path.join(args.directory, file))):
-                filename = str(file)
-                with open(os.path.join(args.directory, file), "r") as file:
-                    nmbr_scanned = nmbr_scanned + 1
-                    file_data = file.read()
-                    json_list.append(convert(file_data))
-        except FileNotFoundError:
-            print("Error: No such file or directory")
-            exit(1)
-        except NotADirectoryError:
-            print("Error: Not a directory")
-            print("Please use the --file option to compare single files. Use the -h argument for more info.")
-            exit(1)
-    return json_list
+            try:
+                tree[key] = line[2]
+            except ValueError as e:
+                print("Skipped line '" + line + "'", file=sys.stderr)
+    return tree
 
 def convert(data):
     # REGEX that matches IPv6-address. Credit: David M. Syzdek, https://gist.github.com/syzdek/6086792
@@ -132,8 +91,28 @@ def convert(data):
     my_dict["hops"] = hop_dictionary
     return my_dict
 
-def get_filename():
-    filename = f'/root/logs/{args.hostname}/' + os.path.basename(args.json_filename) + ".json"
+def get_jsondata(directory):
+    json_list = []
+    directory_content = os.listdir(directory)
+    for file in directory_content:
+        try:
+            if (os.path.isfile(os.path.join(args.directory, file))):
+                filename = str(file)
+                with open(os.path.join(args.directory, file), "r") as file:
+                    nmbr_scanned = nmbr_scanned + 1
+                    file_data = file.read()
+                    json_list.append(convert(file_data))
+        except FileNotFoundError:
+            print("Error: No such file or directory")
+            exit(1)
+        except NotADirectoryError:
+            print("Error: Not a directory")
+            print("Please use the --file option to compare single files. Use the -h argument for more info.")
+            exit(1)
+    return json_list
+
+def create_filename(hostname, filename):
+    filename = f'/root/logs/{hostname}/' + os.path.basename(filename) + ".json"
     return filename
 
 def fwrite(data, filename):
@@ -142,24 +121,31 @@ def fwrite(data, filename):
         print(f"File {filename} successfully saved to disk")
 
 # asnlookup
-def get_asn(prefix, my_hashmap):
+def get_asn(tree, ip_address):
     try:
-        return my_hashmap[prefix]
+        return tree[ip_address]
     except KeyError as e:
-        print(f"KeyError: prefix {prefix} not found in hashmap", file=sys.stderr)
+        print(f"KeyError: {ip_address=} not found in subnettree", file=sys.stderr)
         return 0
 
 def main():
-    # Store aliased and non-aliased prefixes in a single subnet tree
+    # Initialize argument parsing
+    parser = argparse.ArgumentParser()
+    parser.add_argument("directory")
+    parser.add_argument("hostname")
+    parser.add_argument("tcp_port")
+    parser.add_argument("source_ip")
+    parser.add_argument("flow_label")
+    parser.add_argument("filename")
+    parser.add_argument("timestamp")
+    args = parser.parse_args()
+
+    routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
     tree = SubnetTree.SubnetTree()
+    tree = fill_subnettree(tree, routeviews_file)
 
-    # Read aliased and non-aliased prefixes
-    tree = fill_tree(tree, args.aliased_file)
-    my_hashmap = create_hashmap(args.routeviews_file)
-    get_asn(tree["ip_address"], my_hashmap)
-
-    json_data = scan_dir(args.directory)
-    filename = get_filename()
+    json_data = get_jsondata(args.directory)
+    filename = create_filename(args.hostname, args.filename)
     fwrite(json_data, filename)
 
 if __name__ == "__main__":

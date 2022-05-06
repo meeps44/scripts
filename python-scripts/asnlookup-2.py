@@ -14,7 +14,7 @@ except Exception as e:
     print("Use `pip install pysubnettree` to install the required module", file=sys.stderr)
     sys.exit(1)
 
-def create_hashmap(tree, rv_file):
+def fill_subnettree(tree, rv_file):
     for line in rv_file:
         line = line.strip()
         line = line.split()
@@ -32,7 +32,7 @@ def main():
     args = parser.parse_args()
 
     tree = SubnetTree.SubnetTree()
-    tree = create_hashmap(tree, args.routeviews_file)
+    tree = fill_subnettree(tree, args.routeviews_file)
 
     # Read IP address file, match each address to longest prefix and print output
     for line in args.ip_address_file:
