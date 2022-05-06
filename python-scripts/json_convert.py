@@ -2,11 +2,9 @@ import json, uuid, argparse, datetime, os, re, ipaddress, hashlib, sys
 
 # initialize argument parsing
 parser = argparse.ArgumentParser()
-parser.add_argument("file")
+parser.add_argument("directory")
+parser.add_argument("json_filename")
 parser.add_argument("hostname")
-parser.add_argument("tcp_port")
-parser.add_argument("source_ip")
-parser.add_argument("flow_label")
 args = parser.parse_args()
 
 # asnlookup
@@ -18,9 +16,9 @@ def get_asn(prefix, my_hashmap):
         print(f"KeyError: prefix {prefix} not found in hashmap", file=sys.stderr)
     return asn
 
-def scan(directory):
+def scan_dir(directory):
     json_list = []
-    directory_content = os.listdir(args.directory)
+    directory_content = os.listdir(directory)
     for file in directory_content:
         try:
             if (os.path.isfile(os.path.join(args.directory, file))):
@@ -28,8 +26,7 @@ def scan(directory):
                 with open(os.path.join(args.directory, file), "r") as file:
                     nmbr_scanned = nmbr_scanned + 1
                     file_data = file.read()
-                    my_dict = convert(file_data)
-                    json_list.append(my_dict)
+                    json_list.append(convert(file_data))
         except FileNotFoundError:
             print("Error: No such file or directory")
             exit(1)
@@ -37,11 +34,10 @@ def scan(directory):
             print("Error: Not a directory")
             print("Please use the --file option to compare single files. Use the -h argument for more info.")
             exit(1)
-
     return json_list
 
 def convert(data):
-    # REGEX matching an IPv6-address. Credit: David M. Syzdek, https://gist.github.com/syzdek/6086792
+    # REGEX that matches IPv6-address. Credit: David M. Syzdek, https://gist.github.com/syzdek/6086792
     IPV4SEG  = r'(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])'
     IPV4ADDR = r'(?:(?:' + IPV4SEG + r'\.){3,3}' + IPV4SEG + r')'
     IPV6SEG  = r'(?:(?:[0-9a-fA-F]){1,4})'
@@ -83,15 +79,15 @@ def convert(data):
     ## Create top-level dictionary
     my_dict = {}
 
-    my_dict["outgoing_tcp_port"] = args.tcp_port
-    my_dict["flow_label"] = args.flow_label
+    my_dict["outgoing_tcp_port"] = re.findall(asn, data)
+    my_dict["flow_label"] = re.findall(flowlabel, data)
     my_dict["timestamp"] = str(datetime.datetime.now())
-    my_dict["source"] = args.source_ip
+    my_dict["source"] = re.findall(source_ip, data)
     my_dict["destination"] = dest
     my_dict["path_id"] = hashlib.sha1(json.dumps(tmp_hop_dictionary, sort_keys=True).encode('utf-8')).hexdigest()
 
     ## Initialize hop dictionary
-    hop_dictionary = { index : {"ipv6_address" : address, "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
+    hop_dictionary = { index : {"ipv6_address" : address, "returned_flow_label" : "null", "asn" : "null"} for index, address in enumerate(hop_list, start=1)}
 
     # Find and append returned flow labels to the hop-dictionary
     for item in re.finditer(pattern, data):
@@ -104,28 +100,24 @@ def convert(data):
             if (str(item).replace(" ", "")).replace("\n", "") == (str(ipv6_addr).replace(" ", "")).replace("\n", ""):
                 #print("hop_list item and ipv6_addr are equal")
                 hop_dictionary[index+1]["returned_flow_label"] = int(fl, 16)
+                hop_dictionary[index+1]["asn"] = get_asn(item)
         
     my_dict["hops"] = hop_dictionary
     return my_dict
 
-def get_jsonfilename(input_file):
-    json_file = input_file
-    if json_file.endswith('.txt'):
-        json_file = json_file[:-4]
-
-    json_file = json_file + ".json"
-    filename = f'/root/logs/{args.hostname}/' + os.path.basename(json_file)
+def get_filename():
+    filename = f'/root/logs/{args.hostname}/' + os.path.basename(args.json_filename) + ".json"
     return filename
 
-def fwrite(my_dict, filename):
+def fwrite(data, filename):
     with open(filename, 'w') as fp:
-        json.dump(my_dict, fp, indent=4)
+        json.dump(data, fp, indent=4)
         print(f"File {filename} successfully saved to disk")
 
 def main():
-    my_dict = convert(args.file)
-    filename = get_jsonfilename(args.file)
-    fwrite(my_dict, filename)
+    json_data = scan_dir(args.directory)
+    filename = get_filename()
+    fwrite(json_data, filename)
 
 if __name__ == "__main__":
     main()
