@@ -44,7 +44,8 @@ def fill_tree(tree, fh):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-a", "--aliased-file", required=True, type=argparse.FileType('r'), help="File containing RouteViews prefixes")
+    #parser.add_argument("-n", "--non-aliased-file", required=True, type=argparse.FileType('r'), help="File containing non-aliased RouteViews prefixes")
+    parser.add_argument("-a", "--aliased-file", required=True, type=argparse.FileType('r'), help="File containing aliased RouteViews prefixes")
     parser.add_argument("-i", "--ip-address-file", required=True, type=argparse.FileType('r'), help="File containing IP addresses to be matched against RouteViews prefixes")
     parser.add_argument("-r", "--routeviews-file", required=True, type=argparse.FileType('r'), help="File containing full RouteViews data")
     args = parser.parse_args()
@@ -54,8 +55,7 @@ def main():
 
     # Read aliased and non-aliased prefixes
     tree = fill_tree(tree, args.aliased_file)
-
-    my_hashmap = create_hashmap(args.routeviews_file)
+    my_hashmap = create_hashmap(str(args.routeviews_file))
 
     # Read IP address file, match each address to longest prefix and print output
     for line in args.ip_address_file:
