@@ -61,12 +61,13 @@ def convert(data):
 
     ## Create top-level dictionary
     my_dict = {}
-
     my_dict["outgoing_tcp_port"] = args.tcp_port
     my_dict["flow_label"] = args.flow_label
     my_dict["timestamp"] = args.timestamp
     my_dict["source"] = args.source_ip
+    my_dict["source_asn"] = get_asn(args.source_ip)
     my_dict["destination"] = dest
+    my_dict["destination_asn"] = get_asn(dest)
     my_dict["path_id"] = hashlib.sha1(json.dumps(tmp_hop_dictionary, sort_keys=True).encode('utf-8')).hexdigest()
 
     ## Initialize hop dictionary
@@ -105,9 +106,9 @@ def get_jsondata(directory):
         try:
             if (os.path.isfile(os.path.join(directory, file))):
                 filename = str(file)
-                with open(os.path.join(directory, file), "r") as file:
+                with open(os.path.join(directory, file), "r") as f:
                     nmbr_scanned = nmbr_scanned + 1
-                    file_data = file.read()
+                    file_data = f.read()
                     json_list.append(convert(file_data))
         except FileNotFoundError:
             print("Error: No such file or directory")
@@ -123,8 +124,8 @@ def create_filename(hostname, filename):
     return filename
 
 def fwrite(data, filename):
-    with open(filename, 'w') as fp:
-        json.dump(data, fp, indent=4)
+    with open(filename, 'w') as f:
+        json.dump(data, f, indent=4)
         print(f"File {filename} successfully saved to disk")
 
 def main():
