@@ -14,3 +14,5 @@ make
 make install
 export PATH=$PATH:~/git/libparistraceroute/paris-traceroute
 ldconfig
+apt -y install python3-pip
+python3 -m pip install pysubnettree
