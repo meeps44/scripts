@@ -1,6 +1,7 @@
 import argparse, json, os, hashlib
-# lists the unique paths to a destination
-# example usage: python3 identify-paths-dev.py -d=/home/erlend/python-programming/smalljsondata
+
+# lists the unique paths to a destination and the hop number they diverged (if they diverged)
+# example usage: python3 identify-paths-test.py -d=/home/erlend/python-programming/smalljsondata
 
 default_dir = os.getcwd()
 # initialize argument parsing
