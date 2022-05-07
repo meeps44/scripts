@@ -40,11 +40,11 @@ pt_run()
     local l_DATE=$(date '+%d-%H-%M-%S')
     local l_FILEPATH="/root/raw/"
     local l_FILENAME="$HOSTNAME-${l_SHORT}-${l_DATE}.txt"
-    local l_TIMESTAMP = $(date -u +'%Y-%m-%dT%H:%M:%SZ') 
+    local l_TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ') 
 
     echo "Starting paris-traceroute"
     echo -e "${l_FILEPATH}\n${HOSTNAME}\n${l_DESTINATION_PORT}\n${HOST_IP}\n${l_FLOW_LABEL}\n${l_FILENAME}\n${l_TIMESTAMP}\n" > $l_FILEPATH$l_FILENAME
-    sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
+    sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" "${l_TIMESTAMP}"> $l_FILEPATH$l_FILENAME
     #sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
     #sudo paris-traceroute --first=2 --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME # skips the first router in the path
     echo "paris-traceroute finished. Output saved in $l_FILENAME."
