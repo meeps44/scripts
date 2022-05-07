@@ -126,8 +126,8 @@ def parse(directory):
 
 def create_filename(hostname):
     now = datetime.datetime.now()
-    date = now.strftime("%d-%m-%Y_%H-%M-%S")
-    filename = f'/root/logs/{hostname}/' + hostname + date + ".json"
+    date = now.strftime("%d-%m-%YT%H%M%SZ")
+    filename = f'/root/logs/{hostname}/' + hostname + "-" + date + ".json"
     #filename = f'/root/logs/{hostname}/' + os.path.basename(hostname) + date + ".json"
     #filename = f'/home/erlend/tmp/' + os.path.basename(filename) + ".json"
     return filename
