@@ -1,8 +1,4 @@
-import json, datetime, os, re, ipaddress, hashlib, sys, SubnetTree
-
-
-hostname = ""
-filename = ""
+import json, datetime, os, re, ipaddress, hashlib, sys, SubnetTree, socket
 
 def fill_subnettree(tree, rv_file):
     with open(rv_file, "r") as file:
@@ -29,9 +25,6 @@ def get_asn(tree, ip_address):
         return None
 
 def convert(tcp_port, source_ip, flow_label, data):
-    global hostname
-    global filename
-
     # REGEX that matches IPv6-address. Credit: David M. Syzdek, https://gist.github.com/syzdek/6086792
     IPV4SEG  = r'(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])'
     IPV4ADDR = r'(?:(?:' + IPV4SEG + r'\.){3,3}' + IPV4SEG + r')'
@@ -111,22 +104,15 @@ def convert(tcp_port, source_ip, flow_label, data):
     return my_dict
 
 def parse(directory):
-    global hostname
-    global filename
     json_list = []
     directory_content = os.listdir(directory)
     for file in directory_content:
         try:
             if (os.path.isfile(os.path.join(directory, file))):
                 with open(os.path.join(directory, file), "r") as f:
-                    
-                    #path = f.readline().strip()
-
-                    hostname = f.readline().strip()
                     tcp_port = f.readline().strip()
                     source_ip = f.readline().strip()
                     flow_label = f.readline().strip()
-                    filename = f.readline().strip()
                     file_data = f.read()
                     json_list.append(convert(tcp_port, source_ip, flow_label, file_data))
         except FileNotFoundError:
@@ -138,10 +124,11 @@ def parse(directory):
             exit(1)
     return json_list
 
-def create_filename(hostname, filename):
-    if filename.endswith('.txt'):
-        filename = filename[:-4]
-    filename = f'/root/logs/{hostname}/' + os.path.basename(filename) + ".json"
+def create_filename(hostname):
+    now = datetime.now()
+    date = now.strftime("%d-%m-%Y_%H-%M-%S")
+    filename = f'/root/logs/{hostname}/' + hostname + date + ".json"
+    #filename = f'/root/logs/{hostname}/' + os.path.basename(hostname) + date + ".json"
     #filename = f'/home/erlend/tmp/' + os.path.basename(filename) + ".json"
     return filename
 
@@ -151,13 +138,14 @@ def fwrite(data, filename):
         print(f"File {filename} successfully saved to disk")
 
 def main():
-    global hostname
-    global filename
+    #global hostname
+    #global filename
     #directory = "/home/erlend/python-programming/text-files/"
     directory = "/root/raw/"
+    hostname = str(socket.gethostname())
 
     json_data = parse(directory)
-    my_filename = create_filename(hostname, filename)
+    my_filename = create_filename(hostname)
     fwrite(json_data, my_filename)
 
 if __name__ == "__main__":

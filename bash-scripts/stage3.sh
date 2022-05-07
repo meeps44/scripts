@@ -42,15 +42,21 @@ pt_run()
     local l_FILENAME="$HOSTNAME-${l_SHORT}-${l_DATE}.txt"
 
     echo "Starting paris-traceroute"
-    echo -e "${HOSTNAME}\n${l_DESTINATION_PORT}\n${HOST_IP}\n${l_FLOW_LABEL}\n${l_FILENAME}\n" > $l_FILEPATH$l_FILENAME
+    echo -e "${l_DESTINATION_PORT}\n${HOST_IP}\n${l_FLOW_LABEL}\n" > $l_FILEPATH$l_FILENAME
     sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" >> $l_FILEPATH$l_FILENAME
     #sudo paris-traceroute --first=2 --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME # skips the first router in the path
-    echo "paris-traceroute finished. Output saved in $l_FILENAME."
-    echo "Converting to JSON..."
+    echo "paris-traceroute finished. Output saved in $l_FILEPATH$l_FILENAME."
+    #echo "Converting to JSON..."
     #python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL}
 
     # Below: for use with json_convert.py
     #local l_FILENAME="$HOSTNAME-${l_DATE}.txt"
+    #python3 /root/git/scripts/python-scripts/json_convert.py
+}
+
+convert()
+{
+    echo "Converting to JSON..."
     python3 /root/git/scripts/python-scripts/json_convert.py
 }
 
@@ -142,6 +148,7 @@ main()
 		done
 	done
 	wait
+	convert
 	create_tarball
 	done
 
