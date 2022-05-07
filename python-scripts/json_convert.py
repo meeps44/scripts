@@ -109,7 +109,7 @@ def convert(data):
     my_dict["hops"] = hop_dictionary
     return my_dict
 
-def get_jsondata(directory):
+def parse(directory):
     json_list = []
     directory_content = os.listdir(directory)
     for file in directory_content:
@@ -154,7 +154,7 @@ def main():
     tree = SubnetTree.SubnetTree()
     tree = fill_subnettree(tree, routeviews_file)
 
-    json_data = get_jsondata(args.directory)
+    json_data = parse(args.directory)
     filename = create_filename(args.hostname, args.filename)
     fwrite(json_data, filename)
 

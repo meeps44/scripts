@@ -24,7 +24,7 @@ create_tarball()
         echo "Tarball deleted"
         echo "Cleaning up raw data..."
         #rm /root/raw/*
-        find /root/raw/ -maxdepth 1 -name "*.txt" -print0 | xargs -0 rm
+        #find /root/raw/ -maxdepth 1 -name "*.txt" -print0 | xargs -0 rm
     else
         echo "Transfer to remote host failed"
     fi
@@ -43,16 +43,17 @@ pt_run()
     local l_TIMESTAMP = $(date -u +'%Y-%m-%dT%H:%M:%SZ') 
 
     echo "Starting paris-traceroute"
+    echo -e "${l_FILEPATH}\n${HOSTNAME}\n${l_DESTINATION_PORT}\n${HOST_IP}\n${l_FLOW_LABEL}\n${l_FILENAME}\n${l_TIMESTAMP}\n" > $l_FILEPATH$l_FILENAME
     sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
     #sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
     #sudo paris-traceroute --first=2 --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME # skips the first router in the path
     echo "paris-traceroute finished. Output saved in $l_FILENAME."
     echo "Converting to JSON..."
-    #python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL} ${l_TIMESTAMP}
+    python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL} ${l_TIMESTAMP}
 
     # Below: for use with json_convert.py
-    local l_FILENAME="$HOSTNAME-${l_DATE}.txt"
-    python3 /root/git/scripts/python-scripts/json_convert.py ${l_FILEPATH} ${HOSTNAME} ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL} ${l_FILENAME} ${l_TIMESTAMP}
+    #local l_FILENAME="$HOSTNAME-${l_DATE}.txt"
+    #python3 /root/git/scripts/python-scripts/json_convert.py ${l_FILEPATH} ${HOSTNAME} ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL} ${l_FILENAME} ${l_TIMESTAMP}
 }
 
 main()
@@ -72,14 +73,16 @@ main()
 	FLOW_LABEL_MID=256
 	FLOW_LABEL_HIGH=524288
 	FLOW_LABEL_MAX=1048575
+	
+	FLOW_LABELS=($FLOW_LABEL_MAX)
 
 	# default values
-	FLOW_LABELS=(
-        $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN 
-        $FLOW_LABEL_LOW $FLOW_LABEL_LOW $FLOW_LABEL_LOW $FLOW_LABEL_LOW $FLOW_LABEL_LOW 
-        $FLOW_LABEL_MID $FLOW_LABEL_MID $FLOW_LABEL_MID $FLOW_LABEL_MID $FLOW_LABEL_MID 
-        $FLOW_LABEL_HIGH $FLOW_LABEL_HIGH $FLOW_LABEL_HIGH $FLOW_LABEL_HIGH $FLOW_LABEL_HIGH
-        )
+	#FLOW_LABELS=(
+        #$FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN 
+        #$FLOW_LABEL_LOW $FLOW_LABEL_LOW $FLOW_LABEL_LOW $FLOW_LABEL_LOW $FLOW_LABEL_LOW 
+        #$FLOW_LABEL_MID $FLOW_LABEL_MID $FLOW_LABEL_MID $FLOW_LABEL_MID $FLOW_LABEL_MID 
+        #$FLOW_LABEL_HIGH $FLOW_LABEL_HIGH $FLOW_LABEL_HIGH $FLOW_LABEL_HIGH $FLOW_LABEL_HIGH
+        #)
 	DESTINATION_PORTS=($HTTPS_PORT) 
 	HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses.txt"
 
