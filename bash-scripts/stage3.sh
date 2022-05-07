@@ -24,7 +24,7 @@ create_tarball()
         echo "Tarball deleted"
         echo "Cleaning up raw data..."
         #rm /root/raw/*
-        #find /root/raw/ -maxdepth 1 -name "*.txt" -print0 | xargs -0 rm
+        find /root/raw/ -maxdepth 1 -name "*.txt" -print0 | xargs -0 rm
     else
         echo "Transfer to remote host failed"
     fi
@@ -47,11 +47,11 @@ pt_run()
     #sudo paris-traceroute --first=2 --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME # skips the first router in the path
     echo "paris-traceroute finished. Output saved in $l_FILENAME."
     echo "Converting to JSON..."
-    python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL}
+    #python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL}
 
     # Below: for use with json_convert.py
     #local l_FILENAME="$HOSTNAME-${l_DATE}.txt"
-    #python3 /root/git/scripts/python-scripts/json_convert.py ${l_FILEPATH} ${HOSTNAME} ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL} ${l_FILENAME} ${l_TIMESTAMP}
+    python3 /root/git/scripts/python-scripts/json_convert.py
 }
 
 main()

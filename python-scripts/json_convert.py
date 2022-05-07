@@ -1,5 +1,6 @@
 import json, datetime, os, re, ipaddress, hashlib, sys, SubnetTree
 
+
 hostname = ""
 filename = ""
 
@@ -15,14 +16,22 @@ def fill_subnettree(tree, rv_file):
                 print("Skipped line '" + line + "'", file=sys.stderr)
     return tree
 
+routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
+#routeviews_file = "/home/erlend/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
+tree = SubnetTree.SubnetTree()
+tree = fill_subnettree(tree, routeviews_file)
+
 def get_asn(tree, ip_address):
     try:
         return tree[ip_address]
     except KeyError as e:
-        print(f"KeyError: {ip_address=} not found in subnettree", file=sys.stderr)
-        return 0
+        #print(f"KeyError: {ip_address=} not found in subnettree", file=sys.stderr)
+        return None
 
 def convert(tcp_port, source_ip, flow_label, data):
+    global hostname
+    global filename
+
     # REGEX that matches IPv6-address. Credit: David M. Syzdek, https://gist.github.com/syzdek/6086792
     IPV4SEG  = r'(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])'
     IPV4ADDR = r'(?:(?:' + IPV4SEG + r'\.){3,3}' + IPV4SEG + r')'
@@ -67,13 +76,13 @@ def convert(tcp_port, source_ip, flow_label, data):
     my_dict["flow_label"] = flow_label
     my_dict["timestamp"] = str(datetime.datetime.now())
     my_dict["source"] = source_ip
-    my_dict["source_asn"] = get_asn(source_ip)
+    my_dict["source_asn"] = get_asn(tree, source_ip)
     my_dict["destination"] = dest
-    my_dict["destination_asn"] = get_asn(dest)
+    my_dict["destination_asn"] = get_asn(tree, dest)
     my_dict["path_id"] = hashlib.sha1(json.dumps(tmp_hop_dictionary, sort_keys=True).encode('utf-8')).hexdigest()
 
     ## Initialize hop dictionary
-    hop_dictionary = { index : {"ipv6_address" : address, "returned_flow_label" : "null", "asn" : "null"} for index, address in enumerate(hop_list, start=1)}
+    hop_dictionary = { index : {"ipv6_address" : address, "asn" : "null", "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
 
     # Find and append returned flow labels to the hop-dictionary
     for item in re.finditer(pattern, data):
@@ -95,19 +104,24 @@ def convert(tcp_port, source_ip, flow_label, data):
 
         for index, ip_address in enumerate(hop_list):
             if (str(ip_address).replace(" ", "")).replace("\n", "") == (str(ipv6_addr).replace(" ", "")).replace("\n", ""):
+                hop_dictionary[index+1]["asn"] = get_asn(tree, ip_address)
                 hop_dictionary[index+1]["returned_flow_label"] = int(fl, 16)
-                hop_dictionary[index+1]["asn"] = get_asn(ip_address)
         
     my_dict["hops"] = hop_dictionary
     return my_dict
 
 def parse(directory):
+    global hostname
+    global filename
     json_list = []
     directory_content = os.listdir(directory)
     for file in directory_content:
         try:
             if (os.path.isfile(os.path.join(directory, file))):
                 with open(os.path.join(directory, file), "r") as f:
+                    
+                    #path = f.readline().strip()
+
                     hostname = f.readline().strip()
                     tcp_port = f.readline().strip()
                     source_ip = f.readline().strip()
@@ -125,7 +139,10 @@ def parse(directory):
     return json_list
 
 def create_filename(hostname, filename):
+    if filename.endswith('.txt'):
+        filename = filename[:-4]
     filename = f'/root/logs/{hostname}/' + os.path.basename(filename) + ".json"
+    #filename = f'/home/erlend/tmp/' + os.path.basename(filename) + ".json"
     return filename
 
 def fwrite(data, filename):
@@ -134,26 +151,14 @@ def fwrite(data, filename):
         print(f"File {filename} successfully saved to disk")
 
 def main():
+    global hostname
+    global filename
+    #directory = "/home/erlend/python-programming/text-files/"
     directory = "/root/raw/"
 
-    # Initialize argument parsing
-    #parser = argparse.ArgumentParser()
-    #parser.add_argument("directory")
-    #parser.add_argument("hostname")
-    #parser.add_argument("tcp_port")
-    #parser.add_argument("source_ip")
-    #parser.add_argument("flow_label")
-    #parser.add_argument("filename")
-    #parser.add_argument("timestamp")
-    #args = parser.parse_args()
-
-    routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
-    tree = SubnetTree.SubnetTree()
-    tree = fill_subnettree(tree, routeviews_file)
-
     json_data = parse(directory)
-    filename = create_filename(hostname, filename)
-    fwrite(json_data, filename)
+    my_filename = create_filename(hostname, filename)
+    fwrite(json_data, my_filename)
 
 if __name__ == "__main__":
     main()
