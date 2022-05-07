@@ -1,4 +1,28 @@
-import json, uuid, argparse, datetime, os, re, ipaddress, hashlib
+import json, uuid, argparse, datetime, os, re, ipaddress, hashlib, SubnetTree
+
+def fill_subnettree(tree, rv_file):
+    with open(rv_file, "r") as file:
+        for line in file:
+            line = line.strip()
+            line = line.split()
+            key = line[0] + "/" + line[1]
+            try:
+                tree[key] = line[2]
+            except ValueError as e:
+                print("Skipped line '" + line + "'", file=sys.stderr)
+    return tree
+
+routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
+#routeviews_file = "/home/erlend/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
+tree = SubnetTree.SubnetTree()
+tree = fill_subnettree(tree, routeviews_file)
+
+def get_asn(tree, ip_address):
+    try:
+        return tree[ip_address]
+    except KeyError as e:
+        #print(f"KeyError: {ip_address=} not found in subnettree", file=sys.stderr)
+        return None
 
 IPV4SEG  = r'(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])'
 IPV4ADDR = r'(?:(?:' + IPV4SEG + r'\.){3,3}' + IPV4SEG + r')'
