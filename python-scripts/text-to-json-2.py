@@ -31,7 +31,7 @@ parser.add_argument("hostname")
 parser.add_argument("tcp_port")
 parser.add_argument("source_ip")
 parser.add_argument("flow_label")
-parser.add_argument("timestamp")
+#parser.add_argument("timestamp")
 args = parser.parse_args()
 
 file = args.file
@@ -59,8 +59,8 @@ with open(file, "r") as my_file:
 
     my_dict["outgoing_tcp_port"] = args.tcp_port
     my_dict["flow_label"] = args.flow_label
-    #my_dict["timestamp"] = str(datetime.datetime.now())
-    my_dict["timestamp"] = args.timestamp
+    my_dict["timestamp"] = str(datetime.datetime.now())
+    #my_dict["timestamp"] = args.timestamp
     my_dict["source"] = args.source_ip
     my_dict["destination"] = dest
     my_dict["path_id"] = hashlib.sha1(json.dumps(tmp_hop_dictionary, sort_keys=True).encode('utf-8')).hexdigest()
