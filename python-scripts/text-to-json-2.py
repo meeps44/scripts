@@ -99,7 +99,8 @@ with open(file, "r") as my_file:
     #count = 0 # in case items is empty and you need it after the loop
 
     ## Initialize hop dictionary
-    hop_dictionary = { index : {"ipv6_address" : address, "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
+    #hop_dictionary = { index : {"ipv6_address" : address, "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
+    hop_dictionary = { index : {"ipv6_address" : address, "asn" : "null", "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
 
     #print("Hop dictionary before comparsion:")
     #print(hop_dictionary)
@@ -117,12 +118,13 @@ with open(file, "r") as my_file:
         #tuple = (str(ipv6_addr), fl)
         #flow_label_list.append(tuple)
 
-        for index, item in enumerate(hop_list):
+        for index, ip_address in enumerate(hop_list):
             #print(item)
             #print(ipv6_addr)
             #print(int(fl, 16))
-            if (str(item).replace(" ", "")).replace("\n", "") == (str(ipv6_addr).replace(" ", "")).replace("\n", ""):
+            if (str(ip_address).replace(" ", "")).replace("\n", "") == (str(ipv6_addr).replace(" ", "")).replace("\n", ""):
                 #print("hop_list item and ipv6_addr are equal")
+                hop_dictionary[index+1]["asn"] = get_asn(tree, ip_address)
                 hop_dictionary[index+1]["returned_flow_label"] = int(fl, 16)
 
     #print("Hop dictionary after comparison: ")
