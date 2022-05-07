@@ -43,7 +43,7 @@ pt_run()
 
     echo "Starting paris-traceroute"
     echo -e "${l_FILEPATH}\n${HOSTNAME}\n${l_DESTINATION_PORT}\n${HOST_IP}\n${l_FLOW_LABEL}\n${l_FILENAME}\n" > $l_FILEPATH$l_FILENAME
-    sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
+    sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" >> $l_FILEPATH$l_FILENAME
     #sudo paris-traceroute --first=2 --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME # skips the first router in the path
     echo "paris-traceroute finished. Output saved in $l_FILENAME."
     echo "Converting to JSON..."
