@@ -50,7 +50,8 @@ pt_run()
     echo "Converting to JSON..."
     #python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL} ${l_TIMESTAMP}
 
-    # below: for use with json_convert.py
+    # Below: for use with json_convert.py
+    local l_FILENAME="$HOSTNAME-${l_DATE}.txt"
     python3 /root/git/scripts/python-scripts/json_convert.py ${l_FILEPATH} ${HOSTNAME} ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL} ${l_FILENAME} ${l_TIMESTAMP}
 }
 
