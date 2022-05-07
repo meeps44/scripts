@@ -1,15 +1,7 @@
-import json, argparse, datetime, os, re, ipaddress, hashlib, sys, SubnetTree
+import json, datetime, os, re, ipaddress, hashlib, sys, SubnetTree
 
-# Initialize argument parsing
-parser = argparse.ArgumentParser()
-parser.add_argument("directory")
-parser.add_argument("hostname")
-parser.add_argument("tcp_port")
-parser.add_argument("source_ip")
-parser.add_argument("flow_label")
-parser.add_argument("filename")
-parser.add_argument("timestamp")
-args = parser.parse_args()
+hostname = ""
+filename = ""
 
 def fill_subnettree(tree, rv_file):
     with open(rv_file, "r") as file:
@@ -30,7 +22,7 @@ def get_asn(tree, ip_address):
         print(f"KeyError: {ip_address=} not found in subnettree", file=sys.stderr)
         return 0
 
-def convert(data):
+def convert(tcp_port, source_ip, flow_label, data):
     # REGEX that matches IPv6-address. Credit: David M. Syzdek, https://gist.github.com/syzdek/6086792
     IPV4SEG  = r'(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])'
     IPV4ADDR = r'(?:(?:' + IPV4SEG + r'\.){3,3}' + IPV4SEG + r')'
@@ -71,11 +63,11 @@ def convert(data):
 
     ## Create top-level dictionary
     my_dict = {}
-    my_dict["outgoing_tcp_port"] = args.tcp_port
-    my_dict["flow_label"] = args.flow_label
-    my_dict["timestamp"] = args.timestamp
-    my_dict["source"] = args.source_ip
-    my_dict["source_asn"] = get_asn(args.source_ip)
+    my_dict["outgoing_tcp_port"] = tcp_port
+    my_dict["flow_label"] = flow_label
+    my_dict["timestamp"] = str(datetime.datetime.now())
+    my_dict["source"] = source_ip
+    my_dict["source_asn"] = get_asn(source_ip)
     my_dict["destination"] = dest
     my_dict["destination_asn"] = get_asn(dest)
     my_dict["path_id"] = hashlib.sha1(json.dumps(tmp_hop_dictionary, sort_keys=True).encode('utf-8')).hexdigest()
@@ -115,11 +107,14 @@ def parse(directory):
     for file in directory_content:
         try:
             if (os.path.isfile(os.path.join(directory, file))):
-                filename = str(file)
                 with open(os.path.join(directory, file), "r") as f:
-                    nmbr_scanned = nmbr_scanned + 1
+                    hostname = f.readline().strip()
+                    tcp_port = f.readline().strip()
+                    source_ip = f.readline().strip()
+                    flow_label = f.readline().strip()
+                    filename = f.readline().strip()
                     file_data = f.read()
-                    json_list.append(convert(file_data))
+                    json_list.append(convert(tcp_port, source_ip, flow_label, file_data))
         except FileNotFoundError:
             print("Error: No such file or directory")
             exit(1)
@@ -139,6 +134,8 @@ def fwrite(data, filename):
         print(f"File {filename} successfully saved to disk")
 
 def main():
+    directory = "/root/raw/"
+
     # Initialize argument parsing
     #parser = argparse.ArgumentParser()
     #parser.add_argument("directory")
@@ -154,8 +151,8 @@ def main():
     tree = SubnetTree.SubnetTree()
     tree = fill_subnettree(tree, routeviews_file)
 
-    json_data = parse(args.directory)
-    filename = create_filename(args.hostname, args.filename)
+    json_data = parse(directory)
+    filename = create_filename(hostname, filename)
     fwrite(json_data, filename)
 
 if __name__ == "__main__":
