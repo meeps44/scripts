@@ -1,5 +1,16 @@
 import json, argparse, datetime, os, re, ipaddress, hashlib, sys, SubnetTree
 
+# Initialize argument parsing
+parser = argparse.ArgumentParser()
+parser.add_argument("directory")
+parser.add_argument("hostname")
+parser.add_argument("tcp_port")
+parser.add_argument("source_ip")
+parser.add_argument("flow_label")
+parser.add_argument("filename")
+parser.add_argument("timestamp")
+args = parser.parse_args()
+
 def fill_subnettree(tree, rv_file):
     with open(rv_file, "r") as file:
         for line in file:
@@ -41,7 +52,6 @@ def convert(data):
     IPV6ADDR = '|'.join(['(?:{})'.format(g) for g in IPV6GROUPS[::-1]])  # Reverse rows for greedy match
     # END REGEX
 
-    #file = "/home/erlend/git/terraform-config/python-scripts/example-output/example-output-1.txt"
     # reg = r"((([0-9a-fA-F]+) )+\n(([0-9a-fA-F]+) )+\n(([0-9a-fA-F]+) )+\n(([0-9a-fA-F]+) )+\n(([0-9a-fA-F]+) )+\n(([0-9a-fA-F]+) )+\n(([0-9a-fA-F]+) )+([0-9a-fA-F]+))+"
     reg = r"(((([0-9a-f]) ?){32})\n){6}"
     pattern = re.compile(reg, re.MULTILINE)
@@ -130,15 +140,15 @@ def fwrite(data, filename):
 
 def main():
     # Initialize argument parsing
-    parser = argparse.ArgumentParser()
-    parser.add_argument("directory")
-    parser.add_argument("hostname")
-    parser.add_argument("tcp_port")
-    parser.add_argument("source_ip")
-    parser.add_argument("flow_label")
-    parser.add_argument("filename")
-    parser.add_argument("timestamp")
-    args = parser.parse_args()
+    #parser = argparse.ArgumentParser()
+    #parser.add_argument("directory")
+    #parser.add_argument("hostname")
+    #parser.add_argument("tcp_port")
+    #parser.add_argument("source_ip")
+    #parser.add_argument("flow_label")
+    #parser.add_argument("filename")
+    #parser.add_argument("timestamp")
+    #args = parser.parse_args()
 
     routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
     tree = SubnetTree.SubnetTree()
