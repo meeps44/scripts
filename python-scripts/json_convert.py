@@ -12,8 +12,8 @@ def fill_subnettree(tree, rv_file):
                 print("Skipped line '" + line + "'", file=sys.stderr)
     return tree
 
-routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
-#routeviews_file = "/home/erlend/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
+#routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
+routeviews_file = "/home/erlend/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
 tree = SubnetTree.SubnetTree()
 tree = fill_subnettree(tree, routeviews_file)
 
