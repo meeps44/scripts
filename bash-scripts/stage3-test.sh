@@ -45,9 +45,9 @@ pt_run()
     local l_FILENAME="$HOSTNAME-${l_SHORT}-${l_DATE}.txt"
 
     echo "Starting paris-traceroute"
-    sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
-    #echo -e "tcp_port ${l_DESTINATION_PORT}\nsource_ip ${HOST_IP}\nflow_label ${l_FLOW_LABEL}\n" > $l_FILEPATH$l_FILENAME
-    #sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" >> $l_FILEPATH$l_FILENAME
+    echo -e "tcp_port ${l_DESTINATION_PORT}\nsource_ip ${HOST_IP}\nflow_label ${l_FLOW_LABEL}\n" > $l_FILEPATH$l_FILENAME
+    sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" >> $l_FILEPATH$l_FILENAME
+    #sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
     #sudo paris-traceroute --first=2 --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME # skips the first router in the path
     echo "paris-traceroute finished. Output saved to $l_FILEPATH$l_FILENAME."
 
