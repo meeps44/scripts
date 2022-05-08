@@ -9,7 +9,8 @@ create_tarball()
 {
     cd $TAR_DIR
     echo "Creating tarball..."
-    local l_DATE=$(date '+%d-%m-%y-%H-%M-%S')
+    local l_DATE=$(date -u +'%Y-%m-%dT%H%M%SZ')
+    #local l_DATE=$(date '+%d-%m-%y-%H-%M-%S')
     local l_TAR_FILENAME="tar-$HOSTNAME-${l_DATE}.tar.gz"
     tar -czvf ${l_TAR_FILENAME} -C /root/logs/$HOSTNAME/ .
     echo "Tarball saved to $TAR_DIR/$l_TAR_FILENAME. Cleaning up the /root/logs/$HOSTNAME/-directory..."
@@ -50,16 +51,6 @@ pt_run()
     echo "paris-traceroute finished. Output saved to $l_FILEPATH$l_FILENAME."
     echo "Converting to JSON..."
     python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL}
-
-    # Below: for use with json_convert.py
-    #local l_FILENAME="$HOSTNAME-${l_DATE}.txt"
-    #python3 /root/git/scripts/python-scripts/json_convert.py
-}
-
-convert()
-{
-    echo "Converting to JSON..."
-    python3 /root/git/scripts/python-scripts/json_convert.py
 }
 
 main()
@@ -148,7 +139,6 @@ main()
 		done
 	done
 	wait
-	#convert
 	create_tarball
 	done
 
