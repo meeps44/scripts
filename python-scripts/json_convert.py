@@ -111,15 +111,15 @@ def parse(directory):
             if (os.path.isfile(os.path.join(directory, file))):
                 with open(os.path.join(directory, file), "r") as f:
                     file_data = f.read()
-                    tcp_port = re.findall("tcp_port", file_data)[0]
-                    tcp_port = tcp_port.strip()[len("tcp_port "):]
-
-                    source_ip = re.findall("source_ip", file_data)[0]
-                    source_ip = source_ip.strip()[len("source_ip "):]
-
-                    flow_label = re.findall("flow_label", file_data)[0]
-                    flow_label = flow_label.strip()[len("flow_label "):]
-
+                    lines = f.readlines()
+                    for line in lines:
+                        if re.match("^tcp_port", line):
+                            tcp_port = line[len("tcp_port "):].strip() 
+                        if re.match("^source_ip", line):
+                            source_ip = line[len("source_ip "):].strip() 
+                        if re.match("^flow_label", line):
+                            flow_label = line[len("flow_label "):].strip() 
+                            break # flow_label is the last variable echoed
                     json_list.append(convert(tcp_port, source_ip, flow_label, file_data))
         except FileNotFoundError:
             print("Error: No such file or directory")
