@@ -1,4 +1,4 @@
-import json, datetime, os, re, ipaddress, hashlib, sys, SubnetTree, socket
+import json, datetime, os, re, ipaddress, hashlib, sys, SubnetTree, socket, argparse
 
 def fill_subnettree(tree, rv_file):
     with open(rv_file, "r") as file:
@@ -127,9 +127,9 @@ def parse(directory):
 def create_filename(hostname):
     now = datetime.datetime.now()
     date = now.strftime("%d-%m-%YT%H%M%SZ")
-    filename = f'/root/logs/{hostname}/' + hostname + "-" + date + ".json"
+    #filename = f'/root/logs/{hostname}/' + hostname + "-" + date + ".json"
     #filename = f'/root/logs/{hostname}/' + os.path.basename(hostname) + date + ".json"
-    #filename = f'/home/erlend/tmp/' + os.path.basename(filename) + ".json"
+    filename = f'/home/erlend/tmp/' + "convert-" + date + ".json"
     return filename
 
 def fwrite(data, filename):
@@ -138,10 +138,14 @@ def fwrite(data, filename):
         print(f"File {filename} successfully saved to disk")
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--directory", "-dir", "-d", nargs='?', help="Directory containing text-files to convert to json")
+    args = parser.parse_args()
     #global hostname
     #global filename
     #directory = "/home/erlend/python-programming/text-files/"
-    directory = "/root/raw/"
+    #directory = "/root/raw/"
+    directory = args.directory
     hostname = str(socket.gethostname())
 
     json_data = parse(directory)
