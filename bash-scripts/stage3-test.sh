@@ -9,7 +9,7 @@ create_tarball()
 {
     cd $TAR_DIR
     echo "Creating tarball..."
-    local l_DATE=$(date '+%d-%m-%y-%H-%M-%S')
+    local l_DATE=$(date -u +'%Y-%m-%dT%H%M%SZ')
     local l_TAR_FILENAME="tar-$HOSTNAME-${l_DATE}.tar.gz"
     #tar -czvf ${l_TAR_FILENAME} -C /root/logs/$HOSTNAME/ .
     tar -czvf ${l_TAR_FILENAME} -C /root/raw/ .
