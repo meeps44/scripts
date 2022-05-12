@@ -1,4 +1,4 @@
-import json, uuid, argparse, datetime, os, re, ipaddress, hashlib, SubnetTree
+import json, uuid, argparse, datetime, os, re, ipaddress, hashlib, SubnetTree, sys
 
 def fill_subnettree(tree, rv_file):
     with open(rv_file, "r") as file:
