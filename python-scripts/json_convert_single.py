@@ -1,4 +1,4 @@
-import json, datetime, os, re, ipaddress, hashlib, sys, SubnetTree, socket, argparse
+import json, datetime, os, re, ipaddress, hashlib, sys, SubnetTree, socket, argparse, subprocess
 
 def fill_subnettree(tree, rv_file):
     with open(rv_file, "r") as file:
@@ -22,7 +22,11 @@ def get_asn(tree, ip_address):
         return tree[ip_address]
     except KeyError as e:
         #print(f"KeyError: {ip_address=} not found in subnettree", file=sys.stderr)
-        return None
+        # If they address is not found, do a whois lookup:
+        # example: whois -h whois.cymru.com " -v 216.90.108.31 2005-12-25 13:23:01 GMT"
+        result = subprocess.run(["whois", "-h", "whois.cymru.com","capture_output=True, text=True"], capture_output=True, text=True)
+        return result
+        #return None
 
 def create_dict(directory, filename, tcp_port, source_ip, flow_label):
     # REGEX that matches IPv6-address. Credit: David M. Syzdek, https://gist.github.com/syzdek/6086792
