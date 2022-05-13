@@ -24,8 +24,11 @@ def get_asn(tree, ip_address):
         #print(f"KeyError: {ip_address=} not found in subnettree", file=sys.stderr)
         # If they address is not found, do a whois lookup:
         # example: whois -h whois.cymru.com " -v 216.90.108.31 2005-12-25 13:23:01 GMT"
-        result = subprocess.run(["whois", "-h", "whois.cymru.com","capture_output=True, text=True"], capture_output=True, text=True)
-        return result
+        result = subprocess.run(["whois", "-h", "whois.cymru.com","216.90.108.31"], capture_output=True)
+        stdout_as_str = result.stdout.decode("utf-8")
+        x = re.findall("AS Name\n[0-9]{1,5}", stdout_as_str)
+        as_number = x[0][8:] 
+        return as_number
         #return None
 
 def create_dict(directory, filename, tcp_port, source_ip, flow_label):
