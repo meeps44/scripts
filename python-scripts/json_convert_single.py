@@ -30,7 +30,7 @@ def get_asn(tree, ip_address):
         stdout_as_str = result.stdout.decode("utf-8")
 
         #x = re.findall("AS Name\n[0-9]{1,5}", stdout_as_str)
-        x = re.findall("^[0-9]{1,5} ", stdout_as_str)
+        x = re.findall("[0-9]{1,5} ", stdout_as_str)
         #as_number = x[0][8:] 
         as_number = x[0].strip()
         return as_number
