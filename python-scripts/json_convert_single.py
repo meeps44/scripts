@@ -25,7 +25,7 @@ def get_asn(tree, ip_address):
         # If the ip_address:asn-mapping is not found in the routeviews data, do a whois lookup:
         #result = subprocess.run(["whois", "-h", "whois.cymru.com", ip_address], capture_output=True)
         reverse_addr = ipaddress.ip_address(ip_address).reverse_pointer
-        reverse_addr = reverse_addr[:len(reverse_addr - 9)] + ".origin6.asn.cymru.com."
+        reverse_addr = reverse_addr[:len(reverse_addr) - 9] + ".origin6.asn.cymru.com."
         result = subprocess.run(["dig", "+short", reverse_addr, "TXT"], capture_output=True) # use DNS-based lookup for optimal performance
         stdout_as_str = result.stdout.decode("utf-8")
 
