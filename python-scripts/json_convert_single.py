@@ -1,4 +1,4 @@
-import json, datetime, os, re, ipaddress, hashlib, sys, SubnetTree, socket, argparse, subprocess
+import json, datetime, os, re, ipaddress, hashlib, sys, SubnetTree, socket, argparse, subprocess, string
 
 def fill_subnettree(tree, rv_file):
     with open(rv_file, "r") as file:
@@ -29,9 +29,21 @@ def get_asn(tree, ip_address):
         result = subprocess.run(["dig", "+short", reverse_addr, "TXT"], capture_output=True) # use DNS-based lookup for optimal performance
         stdout_as_str = result.stdout.decode("utf-8")
 
+        my_str = ""
+        for elem in stdout_as_str:
+            if elem == "|":
+                break
+            if elem in string.digits:
+                my_str = my_str + elem
+
+        my_str = my_str.strip()
+        my_list = my_str.split()
+        list_to_string = ' '.join([str(elem) for elem in my_list])
+        return list_to_string
+
         #x = re.findall("AS Name\n[0-9]{1,5}", stdout_as_str)
-        x = re.findall("[0-9]{1,5} ", stdout_as_str)
         #as_number = x[0][8:] 
+        x = re.findall("[0-9]{1,5} ", stdout_as_str)
         as_number = x[0].strip()
         return as_number
         #return None
