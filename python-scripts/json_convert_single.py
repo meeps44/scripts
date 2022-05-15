@@ -12,8 +12,8 @@ def fill_subnettree(tree, rv_file):
                 print("Skipped line '" + line + "'", file=sys.stderr)
     return tree
 
-#routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
-routeviews_file = "/home/erlend/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
+routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
+#routeviews_file = "/home/erlend/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
 tree = SubnetTree.SubnetTree()
 tree = fill_subnettree(tree, routeviews_file)
 
@@ -21,9 +21,7 @@ def get_asn(tree, ip_address):
     try:
         return tree[ip_address]
     except KeyError as e:
-        #print(f"KeyError: {ip_address=} not found in subnettree", file=sys.stderr)
         # If the ip_address:asn-mapping is not found in the routeviews data, do a whois lookup:
-        #result = subprocess.run(["whois", "-h", "whois.cymru.com", ip_address], capture_output=True)
         reverse_addr = ipaddress.ip_address(ip_address).reverse_pointer
         reverse_addr = reverse_addr[:len(reverse_addr) - 9] + ".origin6.asn.cymru.com."
         result = subprocess.run(["dig", "+short", reverse_addr, "TXT"], capture_output=True) # use DNS-based lookup for optimal performance
@@ -144,8 +142,8 @@ def fwrite(data, filename):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("directory")
     parser.add_argument("file")
-    parser.add_argument("hostname")
     parser.add_argument("tcp_port")
     parser.add_argument("source_ip")
     parser.add_argument("flow_label")
