@@ -151,8 +151,9 @@ def main():
                             test_dict[destination_ip].append(path_id)
 
                             asn_list.append(data['source_asn'])
-                            for item in data['hops']:
-                                asn_list.append(item['asn'])
+                            for key in data['hops']:
+                                if data['hops'][key]['asn'] != "":
+                                    asn_list.append(int(data['hops'][key]['asn']))
             
             print(f"Scanned {nmbr_scanned=} json-files")
             unique_asn_list = get_unique(asn_list)
