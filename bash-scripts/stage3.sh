@@ -83,7 +83,7 @@ main()
 	HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses.txt"
 
 	# Use large or small hitlist
-	USE_FULL_HITLIST=false
+	USE_FULL_HITLIST=true
 
 	if [ "$USE_FULL_HITLIST" = true ] ; then
 		# Full hitlist

@@ -129,6 +129,7 @@ def main():
     src_ip_list = create_source_ip_list()
     print(f"{flow_label_list=}")
     print(f"{src_ip_list=}")
+    asn_list = []
 
     for source in src_ip_list:
         for flow_label in flow_label_list:
@@ -140,7 +141,6 @@ def main():
                 if (os.path.isfile(os.path.join(args.directory, file))):
                     filename = str(file)
                     with open(os.path.join(args.directory, file), 'r') as file:
-                        asn_list = []
                         nmbr_scanned = nmbr_scanned + 1
                         data = json.load(file)
                         file_flow_label = data['flow_label']
