@@ -51,7 +51,11 @@ def build_dictionary():
                 if (os.path.isfile(os.path.join(args.directory, file))):
                     with open(os.path.join(args.directory, file), 'r') as file:
                         data = json.load(file)
-                        dest_dict[data['destination']] = [] # create a key for every destination ip
+                        #dest_dict[data['destination']] = [] # create a key for every destination ip
+                        dest_dict[data['destination']] = {
+                            "path_id": [],
+                            "asn": [] 
+                        } # create a key for every destination ip
 
                         number_of_hops = len(data['hops'])
                         number_of_files_scanned = number_of_files_scanned + 1
@@ -148,19 +152,20 @@ def main():
                         destination_ip = data['destination']
                         path_id = data['path_id']
                         if destination_ip in test_dict and file_flow_label == flow_label and source_ip == source:
-                            test_dict[destination_ip].append(path_id)
+                            test_dict[destination_ip]['path_id'].append(path_id)
 
                             asn_list.append(data['source_asn'])
                             for key in data['hops']:
                                 if data['hops'][key]['asn'] != "":
-                                    asn_list.append(int(data['hops'][key]['asn']))
+                                    test_dict[destination_ip]['asn'].append(int(data['hops'][key]['asn']))
+                                    #asn_list.append(int(data['hops'][key]['asn']))
                             #test_dict[destination_ip][as_numbers] = asn_list
             
             print(f"Scanned {nmbr_scanned=} json-files")
-            unique_asn_list = get_unique(asn_list)
             #print(f"{test_dict=}")
             
             for key in test_dict:
+                unique_asn_list = get_unique(test_dict[key]['asn'])
                 if len(test_dict[key]) == 1:
                     #print(f"Number of paths from {source=} to destination {key} with {flow_label=}: {len(test_dict[key])}")
                     print(f"Legend: \
@@ -173,7 +178,7 @@ def main():
                         Number_of_ASes_traversed \
                         Number of unique ASes traversed\
                         ")
-                    print(f"{source} {key} {flow_label} {len(get_unique(test_dict[key]))} 0 {asn_list} {unique_asn_list} {len(asn_list)} {len(unique_asn_list)}")
+                    print(f"{source} {key} {flow_label} {len(get_unique(test_dict[key]))} 0 {test_dict[key]['asn']} {unique_asn_list} {len(test_dict[key]['asn'])} {len(unique_asn_list)}")
                     #print(f"Source {source} destination {key} flow_label {flow_label} Number_of_unique_paths_to_destination {len(get_unique(test_dict[key]))} Hop_number_where_paths_diverged 0")
                 if len(test_dict[key]) > 1:
                     divergence_dictionary[key] = []
@@ -213,7 +218,7 @@ def main():
                         Number_of_ASes_traversed \
                         Number of unique ASes traversed\
                         ")
-                    print(f"{source} {key} {flow_label} {len(get_unique(test_dict[key]))} 0 {asn_list} {unique_asn_list} {len(asn_list)} {len(unique_asn_list)}")
+                    print(f"{source} {key} {flow_label} {len(get_unique(divergence_dictionary[key]))} 0 {asn_list} {unique_asn_list} {len(asn_list)} {len(unique_asn_list)}")
                 if len(divergence_dictionary[key]) > 1:
                     tmp = compare_list_of_lists(hop_list_of_lists)
                     div_list = []
@@ -231,7 +236,7 @@ def main():
                             Number_of_ASes_traversed \
                             Number of unique ASes traversed\
                             ")
-                        print(f"{source} {key} {flow_label} {len(get_unique(test_dict[key]))} {div_list} {asn_list} {unique_asn_list} {len(asn_list)} {len(unique_asn_list)}")
+                        print(f"{source} {key} {flow_label} {len(get_unique(divergence_dictionary[key]))} {div_list} {asn_list} {unique_asn_list} {len(asn_list)} {len(unique_asn_list)}")
 
 if __name__ == "__main__":
     main()
