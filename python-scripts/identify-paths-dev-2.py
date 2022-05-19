@@ -154,6 +154,7 @@ def main():
                             for key in data['hops']:
                                 if data['hops'][key]['asn'] != "":
                                     asn_list.append(int(data['hops'][key]['asn']))
+                            #test_dict[destination_ip][as_numbers] = asn_list
             
             print(f"Scanned {nmbr_scanned=} json-files")
             unique_asn_list = get_unique(asn_list)
