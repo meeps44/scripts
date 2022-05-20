@@ -1,7 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
-#%matplotlib inline
 
 filepath = "C:\\Users\\Erlend\\Documents\\Programming\\Python programming\\data.txt"
 with open(filepath, "r") as file:
