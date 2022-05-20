@@ -1,25 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-%matplotlib inline
-  
-# No of Data points
-N = 500
-  
-# initializing random values
-data = np.random.randn(N)
-  
-# getting data of the histogram
-count, bins_count = np.histogram(data, bins=10)
-  
-# finding the PDF of the histogram using count values
-pdf = count / sum(count)
-  
-# using numpy np.cumsum to calculate the CDF
-# We can also find using the PDF values by looping and adding
-cdf = np.cumsum(pdf)
-  
-# plotting PDF and CDF
-plt.plot(bins_count[1:], pdf, color="red", label="PDF")
-plt.plot(bins_count[1:], cdf, label="CDF")
+#%matplotlib inline
+
+filepath = "C:\\Users\\Erlend\\Documents\\Programming\\Python programming\\data.txt"
+with open(filepath, "r") as file:
+    data = file.readlines()
+    N = len(data)
+    arr = np.array(data)
+
+X2 = np.sort(data)
+F2 = np.array(range(N))/float(N)
+
+plt.plot(X2, F2, label="CDF")
 plt.legend()
+plt.show()
