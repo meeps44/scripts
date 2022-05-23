@@ -124,7 +124,7 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
         print("Please use the --file option to compare single files. Use the -h argument for more info.")
         exit(1)
 
-    return my_dict
+    return tl_dict
 
 def create_filename(hostname):
     now = datetime.datetime.now()
