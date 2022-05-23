@@ -12,7 +12,6 @@ create_tarball()
     tar -czvf ${l_TAR_FILENAME} -C /root/logs/$HOSTNAME/ .
     echo "Tarball saved to $TAR_DIR/$l_TAR_FILENAME. Cleaning up the /root/logs/$HOSTNAME/-directory..."
     find /root/logs/$HOSTNAME/ -maxdepth 1 -name "*.json" -print0 | xargs -0 rm
-    #rm /root/logs/$HOSTNAME/*
     echo "Transferring tarball to remote host"
     scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR/$l_TAR_FILENAME 209.97.138.74:/root/archived-logs/$l_TAR_FILENAME
     if [ $? -eq 0 ];
@@ -99,7 +98,6 @@ main()
 		while [ $N -lt $HITLIST_LENGTH ]; do
 			readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
 			for ADDRESS in ${my_array[@]}; do
-				#pt_run "$ELEMENT" &
 				pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
 			done
 			let N=$N+10

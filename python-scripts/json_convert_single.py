@@ -86,26 +86,25 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
                 # Remove first item in the list (the destination address) and add it as separate dictionary element
                 dest = hop_list.pop(0)
 
-                ## Initialize hop dictionary that only contains hops (used for generating path_id)
+                # Initialize hop dictionary that only contains hops (used for generating path_id)
                 tmp_hop_dictionary = { index : {"ipv6_address" : address} for index, address in enumerate(hop_list, start=1)}
 
-                ## Create top-level dictionary
-                my_dict = {}
-                my_dict["outgoing_tcp_port"] = tcp_port
-                my_dict["flow_label"] = flow_label
-                my_dict["timestamp"] = str(datetime.datetime.now())
-                my_dict["source"] = source_ip
-                my_dict["source_asn"] = get_asn(tree, source_ip)
-                my_dict["destination"] = dest
-                my_dict["destination_asn"] = get_asn(tree, dest)
-                my_dict["path_id"] = hashlib.sha1(json.dumps(tmp_hop_dictionary, sort_keys=True).encode('utf-8')).hexdigest()
+                # Create top-level dictionary
+                tl_dict = {}
+                tl_dict["outgoing_tcp_port"] = tcp_port
+                tl_dict["flow_label"] = flow_label
+                tl_dict["timestamp"] = str(datetime.datetime.now())
+                tl_dict["source"] = source_ip
+                tl_dict["source_asn"] = get_asn(tree, source_ip)
+                tl_dict["destination"] = dest
+                tl_dict["destination_asn"] = get_asn(tree, dest)
+                tl_dict["path_id"] = hashlib.sha1(json.dumps(tmp_hop_dictionary, sort_keys=True).encode('utf-8')).hexdigest()
 
-                ## Initialize hop dictionary
+                # Initialize hop dictionary
                 hop_dictionary = { index : {"ipv6_address" : address, "asn" : "null", "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
 
                 # Find and append returned flow labels to the hop-dictionary
                 for item in re.finditer(pattern, data):
-                    # print(item.group())
                     ip = (item.group()[24:72].replace(" ", "")).replace("\n", "") # use regex to find response-IP in txt file
                     ipv6_addr = ipaddress.ip_address(int(ip, 16))
                     fl = item.group()[151:158].replace(" ", "") # use regex to capture the returned flow-label contained in the ICMP payload. NB! will not work in the presence of IPv6 extension headers
@@ -115,7 +114,7 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
                             hop_dictionary[index+1]["asn"] = get_asn(tree, ip_address)
                             hop_dictionary[index+1]["returned_flow_label"] = int(fl, 16)
                     
-                my_dict["hops"] = hop_dictionary
+                tl_dict["hops"] = hop_dictionary
 
     except FileNotFoundError:
         print("Error: No such file or directory")
