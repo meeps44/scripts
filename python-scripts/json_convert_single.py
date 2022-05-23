@@ -105,9 +105,9 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
 
                 # Find and append returned flow labels to the hop-dictionary
                 for item in re.finditer(pattern, data):
-                    ip = (item.group()[24:72].replace(" ", "")).replace("\n", "") # use regex to find response-IP in txt file
+                    ip = (item.group()[24:72].replace(" ", "")).replace("\n", "") # Use regex to find response-IP in txt file
                     ipv6_addr = ipaddress.ip_address(int(ip, 16))
-                    fl = item.group()[151:158].replace(" ", "") # use regex to capture the returned flow-label contained in the ICMP payload. NB! will not work in the presence of IPv6 extension headers
+                    fl = item.group()[151:158].replace(" ", "") # Use regex to capture the returned flow-label contained in the ICMP payload 
 
                     for index, ip_address in enumerate(hop_list):
                         if (str(ip_address).replace(" ", "")).replace("\n", "") == (str(ipv6_addr).replace(" ", "")).replace("\n", ""):
