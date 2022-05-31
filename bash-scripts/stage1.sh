@@ -63,11 +63,16 @@ main()
 	FLOW_LABEL_MID=256
 	FLOW_LABEL_HIGH=524288
 	FLOW_LABEL_MAX=1048575
-
+	
 	# default values
-	FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
-	DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT) 
-	HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses.txt"
+	FLOW_LABELS=(
+        $FLOW_LABEL_MIN  
+        $FLOW_LABEL_LOW  
+        $FLOW_LABEL_MID  
+        $FLOW_LABEL_HIGH 
+        )
+	DESTINATION_PORTS=($HTTPS_PORT) 
+	HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses-3105.txt"
 	
 
 	# Use large or small hitlist
