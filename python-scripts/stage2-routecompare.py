@@ -2,7 +2,7 @@ from enum import unique
 from collections import defaultdict
 import argparse, json, os, itertools
 
-# Example usage: python3 ~/git/scripts/python-scripts/flowlabel-compare-2.py -d=/mnt/c/Users/Erlend/Downloads/Archived\ Logs/Stage\ 1/Small\ scale\ test/JsonFiles/
+# Example usage: python3 ~/git/scripts/python-scripts/stage2-routecompare.py -d=/mnt/c/Users/Erlend/Downloads/Archived\ Logs/Stage\ 1/Small\ scale\ test/JsonFiles/
 
 #hitlist_path = "/root/git/scripts/text-files/stage2_hitlist.txt"
 hitlist_path = "/home/erlend/tmp/stage2_hitlist.txt"
