@@ -7,11 +7,13 @@ create_tarball()
 {
     cd $TAR_DIR
     echo "Creating tarball..."
-    local l_DATE=$(date '+%d-%m-%y-%H-%M-%S')
+    local l_DATE=$(date -u +'%Y-%m-%dT%H%M%SZ')
+    #local l_DATE=$(date '+%d-%m-%y-%H-%M-%S')
     local l_TAR_FILENAME="tar-$HOSTNAME-${l_DATE}.tar.gz"
     tar -czvf ${l_TAR_FILENAME} -C /root/logs/$HOSTNAME/ .
     echo "Tarball saved to $TAR_DIR/$l_TAR_FILENAME. Cleaning up the /root/logs/$HOSTNAME/-directory..."
     find /root/logs/$HOSTNAME/ -maxdepth 1 -name "*.json" -print0 | xargs -0 rm
+    #rm /root/logs/$HOSTNAME/*
     echo "Transferring tarball to remote host"
     scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR/$l_TAR_FILENAME 209.97.138.74:/root/archived-logs/$l_TAR_FILENAME
     if [ $? -eq 0 ];
@@ -34,16 +36,20 @@ pt_run()
     local l_FLOW_LABEL="$3"
     local l_HASH=$(echo -n ${l_DESTINATION_ADDR} | md5sum | awk '{print $1}')
     local l_SHORT="${l_HASH:0:6}"
-    local l_DATE=$(date '+%d-%H-%M-%S')
+    #local l_DATE=$(date '+%d-%H-%M-%S')
+    local l_DATE=$(date -u +'%Y-%m-%dT%H%M%SZ')
     local l_FILEPATH="/root/raw/"
     local l_FILENAME="$HOSTNAME-${l_SHORT}-${l_DATE}.txt"
 
     echo "Starting paris-traceroute"
     sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
+    #echo -e "${l_DESTINATION_PORT}\n${HOST_IP}\n${l_FLOW_LABEL}\n" > $l_FILEPATH$l_FILENAME
+    #sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" >> $l_FILEPATH$l_FILENAME
     #sudo paris-traceroute --first=2 --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME # skips the first router in the path
-    echo "paris-traceroute finished. Output saved in $l_FILENAME."
+    echo "paris-traceroute finished. Output saved to $l_FILEPATH$l_FILENAME."
     echo "Converting to JSON..."
-    python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL}
+    #python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL}
+    python3 /root/git/scripts/python-scripts/json_convert_single.py $l_FILEPATH $l_FILENAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL}
 }
 
 main()
