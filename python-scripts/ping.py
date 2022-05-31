@@ -12,7 +12,7 @@ def ping(hostnames, filename):
                 print(f"{hostname} did not respond to ping", file=sys.stderr)
 
 def main():
-    filename = "responsive-alexatop500-addresses.txt"
+    filename = "responsive-alexatop500-addresses-3105.txt"
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--hostnames", "-i", help="List of hostnames")
