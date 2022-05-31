@@ -80,7 +80,7 @@ main()
         $FLOW_LABEL_HIGH $FLOW_LABEL_HIGH $FLOW_LABEL_HIGH $FLOW_LABEL_HIGH $FLOW_LABEL_HIGH
         )
 	DESTINATION_PORTS=($HTTPS_PORT) 
-	HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses.txt"
+	HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses-3105.txt"
 
 	# Use large or small hitlist
 	USE_FULL_HITLIST=false
@@ -90,7 +90,7 @@ main()
 		HITLIST="/root/git/scripts/text-files/hitlist.txt"
 	else
 		# Short hitlist (Alexa top 500)
-		HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses.txt"
+		HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses-3105.txt"
 	fi
 
 	# other definitions
