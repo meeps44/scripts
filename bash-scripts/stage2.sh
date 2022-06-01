@@ -36,7 +36,7 @@ pt_run()
     local l_DESTINATION_PORT="$2"
     local l_FLOW_LABEL="$3"
     local l_HASH=$(echo -n ${l_DESTINATION_ADDR} | md5sum | awk '{print $1}')
-    local l_SHORT="${l_HASH:0:6}"
+    local l_SHORT="${l_HASH:0:8}"
     #local l_DATE=$(date '+%d-%H-%M-%S')
     local l_DATE=$(date -u +'%Y-%m-%dT%H%M%SZ')
     local l_FILEPATH="/root/raw/"
