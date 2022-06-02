@@ -176,7 +176,7 @@ def main():
                                     #asn_list.append(int(data['hops'][key]['asn']))
                             #test_dict[destination_ip][as_numbers] = asn_list
             
-            print(f"Scanned {nmbr_scanned=} json-files")
+            #print(f"Scanned {nmbr_scanned=} json-files")
             #print(f"{test_dict=}")
             
             for key in test_dict:
