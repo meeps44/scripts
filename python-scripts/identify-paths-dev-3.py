@@ -131,13 +131,13 @@ def get_unique(input_list):
 def print_legend():
     print(f"Legend: \
         Source \
-        destination \
-        flow_label \
+        Destination \
+        Flow_label \
         Number_of_unique_paths_to_destination \
         Hop_number_where_paths_diverged \
         List_of_ASes_traversed \
         Number_of_ASes_traversed \
-        Number of unique ASes traversed\
+        Number_of_unique_ASes_traversed\
         ")
 
 
