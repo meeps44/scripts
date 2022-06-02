@@ -128,12 +128,27 @@ def get_unique(input_list):
     unique_list = list(set_list)
     return unique_list
 
+def print_legend():
+    print(f"Legend: \
+        Source \
+        destination \
+        flow_label \
+        Number_of_unique_paths_to_destination \
+        Hop_number_where_paths_diverged \
+        List_of_ASes_traversed \
+        Number_of_ASes_traversed \
+        Number of unique ASes traversed\
+        ")
+
+
 def main():
     flow_label_list = create_flow_label_list()
     src_ip_list = create_source_ip_list()
     print(f"{flow_label_list=}")
     print(f"{src_ip_list=}")
     asn_list = []
+
+    print_legend()
 
     for source in src_ip_list:
         for flow_label in flow_label_list:
@@ -168,16 +183,6 @@ def main():
                 unique_asn_list = get_unique(test_dict[key]['asn'])
                 if len(test_dict[key]) == 1:
                     #print(f"Number of paths from {source=} to destination {key} with {flow_label=}: {len(test_dict[key])}")
-                    print(f"Legend: \
-                        Source \
-                        destination \
-                        flow_label \
-                        Number_of_unique_paths_to_destination \
-                        Hop_number_where_paths_diverged \
-                        List_of_ASes_traversed \
-                        Number_of_ASes_traversed \
-                        Number of unique ASes traversed\
-                        ")
                     print(f"{source} {key} {flow_label} {len(get_unique(test_dict[key]))} 0 {test_dict[key]['asn']} {unique_asn_list} {len(test_dict[key]['asn'])} {len(unique_asn_list)}")
                     #print(f"Source {source} destination {key} flow_label {flow_label} Number_of_unique_paths_to_destination {len(get_unique(test_dict[key]))} Hop_number_where_paths_diverged 0")
                 if len(test_dict[key]) > 1:
@@ -208,16 +213,6 @@ def main():
                 divergence_dictionary[key] = path_id_list
                 if len(divergence_dictionary[key]) == 1:
                     #print(f"Source {source} destination {key} flow_label {flow_label} Number_of_unique_paths_to_destination {len(get_unique(divergence_dictionary[key]))} Hop_number_where_paths_diverged 0")
-                    print(f"Legend: \
-                        Source \
-                        destination \
-                        flow_label \
-                        Number_of_unique_paths_to_destination \
-                        Hop_number_where_paths_diverged \
-                        List_of_ASes_traversed \
-                        Number_of_ASes_traversed \
-                        Number of unique ASes traversed\
-                        ")
                     print(f"{source} {key} {flow_label} {len(get_unique(divergence_dictionary[key]))} 0 {asn_list} {unique_asn_list} {len(asn_list)} {len(unique_asn_list)}")
                 if len(divergence_dictionary[key]) > 1:
                     tmp = compare_list_of_lists(hop_list_of_lists)
@@ -226,16 +221,6 @@ def main():
                         div_list.append(item+1) # to correct mismatch between hop number and list index, we increment by 1
                     if div_list:
                         #print(f"Source {source} destination {key} flow_label {flow_label} Number_of_unique_paths_to_destination {len(get_unique(divergence_dictionary[key]))} Hop_number_where_paths_diverged {div_list}")
-                        print(f"Legend: \
-                            Source \
-                            destination \
-                            flow_label \
-                            Number_of_unique_paths_to_destination \
-                            Hop_number_where_paths_diverged \
-                            List_of_ASes_traversed \
-                            Number_of_ASes_traversed \
-                            Number of unique ASes traversed\
-                            ")
                         print(f"{source} {key} {flow_label} {len(get_unique(divergence_dictionary[key]))} {div_list} {asn_list} {unique_asn_list} {len(asn_list)} {len(unique_asn_list)}")
 
 if __name__ == "__main__":
