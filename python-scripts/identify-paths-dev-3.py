@@ -135,7 +135,6 @@ def print_legend():
         Number_of_unique_paths_to_destination \
         Hop_number_where_paths_diverged \
         List_of_unique_ASes_traversed \
-        Number_of_ASes_traversed \
         Number_of_unique_ASes_traversed\
         ")
 
@@ -183,7 +182,7 @@ def main():
             for destination_ip in test_dict:
                 # If there is only one unique path found with flow label [f] to destination [d]:
                 if len(get_unique(test_dict[destination_ip]['path_id'])) == 1:
-                    print(f"{source} {destination_ip} {flow_label} {len(get_unique(test_dict[destination_ip]['path_id']))} 0 {get_unique(test_dict[destination_ip]['asn'])} {len(test_dict[destination_ip]['asn'])} {len(get_unique(test_dict[destination_ip]['asn']))}")
+                    print(f"{source} {destination_ip} {flow_label} {len(get_unique(test_dict[destination_ip]['path_id']))} 0 {get_unique(test_dict[destination_ip]['asn'])} {len(get_unique(test_dict[destination_ip]['asn']))}")
                     #print(f"{source} {key} {flow_label} {len(get_unique(test_dict[key]))} {0:<30} {test_dict[key]['asn']:<30} {unique_asn_list:<30} {len(test_dict[key]['asn']):<30} {len(unique_asn_list):<30}") # no alignment
                     #print(f"Source {source} destination {key} flow_label {flow_label} Number_of_unique_paths_to_destination {len(get_unique(test_dict[key]))} Hop_number_where_paths_diverged 0")
                 
@@ -230,7 +229,7 @@ def main():
                 for item in tmp:
                     div_list.append(item+1) # to correct mismatch between hop number and list index, we increment by 1
                 if div_list:
-                    print(f"{source} {destination_ip} {flow_label} {len(get_unique(test_dict[destination_ip]['path_id']))} {div_list} {get_unique(test_dict[destination_ip]['asn'])} {len(asn_list)} {len(get_unique(test_dict[destination_ip]['asn']))}")
+                    print(f"{source} {destination_ip} {flow_label} {len(get_unique(test_dict[destination_ip]['path_id']))} {div_list} {get_unique(test_dict[destination_ip]['asn'])} {len(get_unique(test_dict[destination_ip]['asn']))}")
 
 if __name__ == "__main__":
     main()
