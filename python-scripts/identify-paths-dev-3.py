@@ -137,7 +137,7 @@ def print_legend():
         ")
 
 def print_info(source_ip, dest_ip, flowlabel, number_of_unique_paths_to_destination, hop_number_where_paths_diverged, list_of_unique_ASes_traversed, number_of_unique_ASes_traversed):
-    print(f"{source_ip}, {dest_ip}, {flowlabel}, {number_of_unique_paths_to_destination}, {hop_number_where_paths_diverged}, {list_of_unique_ASes_traversed}, {number_of_unique_ASes_traversed}")
+    print(f"{source_ip} {dest_ip} {flowlabel} {number_of_unique_paths_to_destination} {hop_number_where_paths_diverged} {list_of_unique_ASes_traversed} {number_of_unique_ASes_traversed}")
 
 
 def main():
