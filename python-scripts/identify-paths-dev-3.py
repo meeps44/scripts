@@ -165,19 +165,21 @@ def main():
                         destination_ip = data['destination']
                         path_id = data['path_id']
                         source_asn = data['source_asn']
+                        #as_hop_list = []
                         if destination_ip in test_dict and file_flow_label == flow_label and source_ip == source:
                             test_dict[destination_ip]['path_id'].append(path_id)
-                            test_dict[destination_ip]['asn'].append(int(source_asn))
-                            #print(f"{source_asn=}")
-                            #print(f"{data['hops']=}")
+                            #test_dict[destination_ip]['asn'].append(int(source_asn))
+                            #as_hop_list.append(int(source_asn))
 
-                            #asn_list.append(data['source_asn'])
                             for value in data['hops']:
                                 if data['hops'][value]['asn'] != "":
                                     #print(f"{value=}")
                                     #print("asn:")
                                     #print(int(data['hops'][value]['asn']))
+
                                     test_dict[destination_ip]['asn'].append(int(data['hops'][value]['asn']))
+                                    #as_hop_list.append(int(data['hops'][value]['asn']))
+                            #test_dict[destination_ip]['asn'].append(as_hop_list)
 
             for destination_ip in test_dict:
                 # If there is only one unique path found with flow label [f] to destination [d]:
