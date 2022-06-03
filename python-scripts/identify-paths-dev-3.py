@@ -17,7 +17,6 @@ path_id_list_of_lists = [] # list of lists where each list contains all path_ids
 hop_list_of_lists = []
 
 def create_tag(destination_ip):
-    # the tag is always a 6-digit hexadecimal number
     tag = hashlib.md5(destination_ip.encode()).hexdigest()[:8]
     return tag
 
@@ -107,18 +106,15 @@ def compare_list_of_lists(list1):
     divergence_list = []
     for index, item in enumerate(list1): # for each hop-list
         try:
-            #print(f"Comparing list{index} and list{index+1}")
             tmp = compare_lists(item, list1[index+1])
             if tmp != None:
                 divergence_list.append(tmp)
         except IndexError:
-            #print(f"Index {index+1} out of range")
             return divergence_list
-    #print(f"{divergence_list=}")
     return divergence_list
 
-# checks if a list of path_ids all contain the same path_id
-# if yes, return true. else, return false
+# Checks if a list of path_ids all contain the same path_id
+# If yes, return True.
 def paths_equal(pathid_list):
     result = all(element == pathid_list[0] for element in pathid_list)
     return result
@@ -184,41 +180,31 @@ def main():
                                     #print(int(data['hops'][value]['asn']))
                                     test_dict[destination_ip]['asn'].append(int(data['hops'][value]['asn']))
 
-                            #print("Printing asn list:")
-                            #print(test_dict[destination_ip]['asn'])
-                            #print("Printing unique asn list:")
-                            #print(get_unique(test_dict[destination_ip]['asn']))
-
-                                    #asn_list.append(int(data['hops'][key]['asn']))
-                            #test_dict[destination_ip][as_numbers] = asn_list
-            
-            #print(f"Scanned {nmbr_scanned=} json-files")
-            #print(f"{test_dict=}")
-            
             for destination_ip in test_dict:
-                #print("test_dict key:")
-                #print(destination_ip)
-                #print("test_dict asn_list:")
-                #print(test_dict[destination_ip]['asn'])
-                if len(test_dict[destination_ip]['path_id']) == 1:
-                    #print(f"Number of paths from {source=} to destination {key} with {flow_label=}: {len(test_dict[key])}")
+                # If there is only one unique path found with flow label [f] to destination [d]:
+                if len(get_unique(test_dict[destination_ip]['path_id'])) == 1:
                     print(f"{source} {destination_ip} {flow_label} {len(get_unique(test_dict[destination_ip]['path_id']))} 0 {get_unique(test_dict[destination_ip]['asn'])} {len(test_dict[destination_ip]['asn'])} {len(get_unique(test_dict[destination_ip]['asn']))}")
                     #print(f"{source} {key} {flow_label} {len(get_unique(test_dict[key]))} {0:<30} {test_dict[key]['asn']:<30} {unique_asn_list:<30} {len(test_dict[key]['asn']):<30} {len(unique_asn_list):<30}") # no alignment
                     #print(f"Source {source} destination {key} flow_label {flow_label} Number_of_unique_paths_to_destination {len(get_unique(test_dict[key]))} Hop_number_where_paths_diverged 0")
-                if len(test_dict[destination_ip]['path_id']) > 1:
-                    #print(test_dict[destination_ip]['path_id'])
+                
+                # If there are multiple different paths found with flow label [f] to destination [d]: append them to the divergence dictionary:
+                if len(get_unique(test_dict[destination_ip]['path_id'])) > 1:
                     divergence_dictionary[destination_ip] = {'path_id_list':[], 'asn_list':[]}
-                    divergence_dictionary[destination_ip]['path_id_list'].append(test_dict[destination_ip]['path_id'])
-                    #for item in test_dict[destination_ip]['path_id']:
-                        #divergence_dictionary[destination_ip]['path_id_list'].append(item)
+                    #divergence_dictionary[destination_ip]['path_id_list'] = test_dict[destination_ip]['path_id']
+                    #divergence_dictionary[destination_ip]['path_id_list'] = test_dict[destination_ip]['asn']
+
+                    # Append each path to the divergence dictionary
+                    for item in test_dict[destination_ip]['path_id']:
+                        divergence_dictionary[destination_ip]['path_id_list'].append(item)
+
+                    # Append each list of AS-hops to the divergence dictionary
                     for item in test_dict[destination_ip]['asn']:
                         divergence_dictionary[destination_ip]['asn_list'].append(item)
-                    #print(get_unique(divergence_dictionary[destination_ip]['asn_list']))
-
-            #print(f"{divergence_dictionary=}")
             
+            # Scan the files again, figure out on which hop the paths diverged and print the result
+            # To optimize, we calculate divergence hop number only for the destinations where a path divergence was detected 
+            # (the number of unique paths found to destination [d] with flow label [f] is > 1)
             for destination_ip in divergence_dictionary:
-                # Check if paths diverged before doing the rest
                 hop_list_of_lists = []
                 path_id_list = [] # list of path ids to destination "destination_ip"
                 for file in directory_contents:
@@ -237,20 +223,14 @@ def main():
                                     new_list.append(item['ipv6_address'])
                                 #hop_list_of_lists.append(path)
                                 hop_list_of_lists.append(new_list)
-                #print(f"{path_id_list=}")
+
                 divergence_dictionary[destination_ip]['path_id_list'] = path_id_list
-                if len(get_unique(divergence_dictionary[destination_ip]['path_id_list'])) == 1:
-                    #print(f"Source {source} destination {key} flow_label {flow_label} Number_of_unique_paths_to_destination {len(get_unique(divergence_dictionary[key]))} Hop_number_where_paths_diverged 0")
-                    print(f"{source} {destination_ip} {flow_label} {len(get_unique(divergence_dictionary[destination_ip]['path_id_list']))} 0 {get_unique(divergence_dictionary[destination_ip]['asn_list'])} {len(asn_list)} {len(divergence_dictionary[destination_ip]['asn_list'])}")
-                if len(get_unique(divergence_dictionary[destination_ip]['path_id_list'])) > 1:
-                    tmp = compare_list_of_lists(hop_list_of_lists)
-                    #tmp = compare_list_of_lists(hop_list_of_lists)
-                    div_list = []
-                    for item in tmp:
-                        div_list.append(item+1) # to correct mismatch between hop number and list index, we increment by 1
-                    if div_list:
-                        #print(f"Source {source} destination {key} flow_label {flow_label} Number_of_unique_paths_to_destination {len(get_unique(divergence_dictionary[key]))} Hop_number_where_paths_diverged {div_list}")
-                        print(f"{source} {destination_ip} {flow_label} {len(get_unique(divergence_dictionary[destination_ip]))} {div_list} {get_unique(divergence_dictionary[destination_ip]['asn_list'])} {len(asn_list)} {len(get_unique(divergence_dictionary[destination_ip]['asn_list']))}")
+                tmp = compare_list_of_lists(hop_list_of_lists)
+                div_list = []
+                for item in tmp:
+                    div_list.append(item+1) # to correct mismatch between hop number and list index, we increment by 1
+                if div_list:
+                    print(f"{source} {destination_ip} {flow_label} {len(get_unique(test_dict[destination_ip]['path_id']))} {div_list} {get_unique(test_dict[destination_ip]['asn'])} {len(asn_list)} {len(get_unique(test_dict[destination_ip]['asn']))}")
 
 if __name__ == "__main__":
     main()
