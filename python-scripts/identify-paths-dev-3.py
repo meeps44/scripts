@@ -182,7 +182,6 @@ def main():
                 if len(get_unique(test_dict[destination_ip]['path_id'])) == 1:
                     print_info(source_ip=source, dest_ip=destination_ip, flowlabel=flow_label, number_of_unique_paths_to_destination=len(get_unique(test_dict[destination_ip]['path_id'])),
                      hop_number_where_paths_diverged=None, list_of_unique_ASes_traversed=get_unique(test_dict[destination_ip]['asn']), number_of_unique_ASes_traversed=len(get_unique(test_dict[destination_ip]['asn'])))
-                    #print(f"{source} {destination_ip} {flow_label} {len(get_unique(test_dict[destination_ip]['path_id']))} 0 {get_unique(test_dict[destination_ip]['asn'])} {len(get_unique(test_dict[destination_ip]['asn']))}")
                 
                 # If there are multiple different paths found with flow label [f] to destination [d]: append them to the divergence dictionary:
                 if len(get_unique(test_dict[destination_ip]['path_id'])) > 1:
@@ -227,7 +226,6 @@ def main():
                 if div_list:
                     print_info(source_ip=source, dest_ip=destination_ip, flowlabel=flow_label, number_of_unique_paths_to_destination=len(get_unique(test_dict[destination_ip]['path_id'])),
                      hop_number_where_paths_diverged=div_list, list_of_unique_ASes_traversed=get_unique(test_dict[destination_ip]['asn']), number_of_unique_ASes_traversed=len(get_unique(test_dict[destination_ip]['asn'])))
-                    #print(f"{source} {destination_ip} {flow_label} {len(get_unique(test_dict[destination_ip]['path_id']))} {div_list} {get_unique(test_dict[destination_ip]['asn'])} {len(get_unique(test_dict[destination_ip]['asn']))}")
 
 if __name__ == "__main__":
     main()
