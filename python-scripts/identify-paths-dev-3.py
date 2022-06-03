@@ -1,9 +1,9 @@
 import argparse, json, os, hashlib
-# lists the unique paths to a destination
-# example usage: python3 identify-paths-dev.py -d=/home/erlend/python-programming/smalljsondata
+# Lists the unique paths to a destination
+# Example usage: python3 identify-paths-dev.py -d=/home/erlend/python-programming/smalljsondata
 
 default_dir = os.getcwd()
-# initialize argument parsing
+# Initialize argument parsing
 parser = argparse.ArgumentParser()
 parser.add_argument("--directory", "-dir", "-d", const=default_dir, nargs='?', help="Directory containing json log files that you would like to run the flow-label check on")
 args = parser.parse_args()
@@ -36,7 +36,6 @@ def create_flow_label_list():
             print("Error: Not a directory")
             print("Please use the --file option to compare single files. Use the -h argument for more info.")
             exit(1)
-    # get unique vales
     set_list = set(flow_label_list)
     unique_list = list(set_list)
     return unique_list
@@ -50,11 +49,11 @@ def build_dictionary():
                 if (os.path.isfile(os.path.join(args.directory, file))):
                     with open(os.path.join(args.directory, file), 'r') as file:
                         data = json.load(file)
-                        #dest_dict[data['destination']] = [] # create a key for every destination ip
+                        # Create a key for every destination ip
                         dest_dict[data['destination']] = {
                             "path_id": [],
                             "asn": [] 
-                        } # create a key for every destination ip
+                        } 
 
                         number_of_hops = len(data['hops'])
                         number_of_files_scanned = number_of_files_scanned + 1
@@ -84,12 +83,11 @@ def create_source_ip_list():
             print("Error: Not a directory")
             print("Please use the --file option to compare single files. Use the -h argument for more info.")
             exit(1)
-    # get unique vales
     set_list = set(src_list)
     unique_list = list(set_list)
     return unique_list
 
-# compares two lists and returns the index where they diverged (if they diverged)
+# Compares two lists and returns the index where they diverged (if they diverged)
 def compare_lists(list1, list2):
     for index, item in enumerate(list1):
         try:
@@ -152,7 +150,6 @@ def main():
         for flow_label in flow_label_list:
             nmbr_scanned = 0
             test_dict = build_dictionary()
-            #print(f"test_dict length: {len(test_dict)}")
             divergence_dictionary = {}
             for file in directory_contents:
                 if (os.path.isfile(os.path.join(args.directory, file))):
@@ -168,15 +165,11 @@ def main():
                         #as_hop_list = []
                         if destination_ip in test_dict and file_flow_label == flow_label and source_ip == source:
                             test_dict[destination_ip]['path_id'].append(path_id)
-                            #test_dict[destination_ip]['asn'].append(int(source_asn))
+                            test_dict[destination_ip]['asn'].append(int(source_asn))
                             #as_hop_list.append(int(source_asn))
 
                             for value in data['hops']:
                                 if data['hops'][value]['asn'] != "":
-                                    #print(f"{value=}")
-                                    #print("asn:")
-                                    #print(int(data['hops'][value]['asn']))
-
                                     test_dict[destination_ip]['asn'].append(int(data['hops'][value]['asn']))
                                     #as_hop_list.append(int(data['hops'][value]['asn']))
                             #test_dict[destination_ip]['asn'].append(as_hop_list)
@@ -185,14 +178,10 @@ def main():
                 # If there is only one unique path found with flow label [f] to destination [d]:
                 if len(get_unique(test_dict[destination_ip]['path_id'])) == 1:
                     print(f"{source} {destination_ip} {flow_label} {len(get_unique(test_dict[destination_ip]['path_id']))} 0 {get_unique(test_dict[destination_ip]['asn'])} {len(get_unique(test_dict[destination_ip]['asn']))}")
-                    #print(f"{source} {key} {flow_label} {len(get_unique(test_dict[key]))} {0:<30} {test_dict[key]['asn']:<30} {unique_asn_list:<30} {len(test_dict[key]['asn']):<30} {len(unique_asn_list):<30}") # no alignment
-                    #print(f"Source {source} destination {key} flow_label {flow_label} Number_of_unique_paths_to_destination {len(get_unique(test_dict[key]))} Hop_number_where_paths_diverged 0")
                 
                 # If there are multiple different paths found with flow label [f] to destination [d]: append them to the divergence dictionary:
                 if len(get_unique(test_dict[destination_ip]['path_id'])) > 1:
                     divergence_dictionary[destination_ip] = {'path_id_list':[], 'asn_list':[]}
-                    #divergence_dictionary[destination_ip]['path_id_list'] = test_dict[destination_ip]['path_id']
-                    #divergence_dictionary[destination_ip]['path_id_list'] = test_dict[destination_ip]['asn']
 
                     # Append each path to the divergence dictionary
                     for item in test_dict[destination_ip]['path_id']:
