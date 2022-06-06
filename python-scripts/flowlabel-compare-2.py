@@ -62,7 +62,7 @@ def main():
 
                         for key, value in data['hops'].items():
                             try:
-                                if (data['hops'][key]['returned_flow_label'] != source_flow_label):
+                                if (data['hops'][key]['returned_flow_label'] != source_flow_label and data['hops'][key]['returned_flow_label'] != "null"):
                                     flow_label_changed = True
                                     changed_counter = changed_counter + 1
                                     hop_number = key
