@@ -137,7 +137,7 @@ def print_legend():
         ")
 
 def print_info(source_ip, dest_ip, flowlabel, number_of_unique_paths_to_destination, hop_number_where_paths_diverged, list_of_unique_ASes_traversed, number_of_unique_ASes_traversed):
-    print(f"{source_ip} {dest_ip} {flowlabel} {number_of_unique_paths_to_destination} {hop_number_where_paths_diverged} {list_of_unique_ASes_traversed} {number_of_unique_ASes_traversed}")
+    print(f"{source_ip} {dest_ip} {flowlabel} {number_of_unique_paths_to_destination} {hop_number_where_paths_diverged} {list_of_unique_ASes_traversed} {number_of_unique_ASes_traversed}", end=" ")
 
 
 def main():
@@ -182,6 +182,7 @@ def main():
                 if len(get_unique(test_dict[destination_ip]['path_id'])) == 1:
                     print_info(source_ip=source, dest_ip=destination_ip, flowlabel=flow_label, number_of_unique_paths_to_destination=len(get_unique(test_dict[destination_ip]['path_id'])),
                      hop_number_where_paths_diverged=None, list_of_unique_ASes_traversed=get_unique(test_dict[destination_ip]['asn']), number_of_unique_ASes_traversed=len(get_unique(test_dict[destination_ip]['asn'])))
+                    print("")
                 
                 # If there are multiple different paths found with flow label [f] to destination [d]: append them to the divergence dictionary:
                 if len(get_unique(test_dict[destination_ip]['path_id'])) > 1:
@@ -204,28 +205,49 @@ def main():
                 for file in directory_contents:
                     if (os.path.isfile(os.path.join(args.directory, file))):
                         filename = str(file)
-                        with open(os.path.join(args.directory, file), 'r') as file:
-                            data = json.load(file)
-                            file_flow_label = data['flow_label']
-                            source_ip = data['source']
-                            if create_tag(destination_ip) in filename and file_flow_label == flow_label and source_ip == source:
-                                path_id_list.append(data['path_id'])
-                                path = list(data['hops'].values())
-                                #path = data['hops'].values()
-                                new_list = []
-                                for item in path:
-                                    new_list.append(item['ipv6_address'])
-                                #hop_list_of_lists.append(path)
-                                hop_list_of_lists.append(new_list)
+                        if create_tag(destination_ip) in filename:
+                            with open(os.path.join(args.directory, file), 'r') as file:
+                                data = json.load(file)
+                                file_flow_label = data['flow_label']
+                                source_ip = data['source']
+                                if file_flow_label == flow_label and source_ip == source:
+                                    path_id_list.append(data['path_id'])
+                                    path = list(data['hops'].values())
+                                    #path = data['hops'].values()
+                                    new_list = []
+                                    for item in path:
+                                        new_list.append(item['ipv6_address'])
+                                    #hop_list_of_lists.append(path)
+                                    hop_list_of_lists.append(new_list)
 
                 divergence_dictionary[destination_ip]['path_id_list'] = path_id_list
                 tmp = compare_list_of_lists(hop_list_of_lists)
                 div_list = []
                 for item in tmp:
-                    div_list.append(item+1) # to correct mismatch between hop number and list index, we increment by 1
+                    div_list.append(item+1) # To correct mismatch between hop number and list index, we increment by 1
                 if div_list:
                     print_info(source_ip=source, dest_ip=destination_ip, flowlabel=flow_label, number_of_unique_paths_to_destination=len(get_unique(test_dict[destination_ip]['path_id'])),
-                     hop_number_where_paths_diverged=div_list, list_of_unique_ASes_traversed=get_unique(test_dict[destination_ip]['asn']), number_of_unique_ASes_traversed=len(get_unique(test_dict[destination_ip]['asn'])))
+                    hop_number_where_paths_diverged=div_list, list_of_unique_ASes_traversed=get_unique(test_dict[destination_ip]['asn']), number_of_unique_ASes_traversed=len(get_unique(test_dict[destination_ip]['asn'])))
+
+                    # Print ASN where path diverged
+                    #print(f"{div_list=}")
+                    #for hopnumber in div_list:
+                        #for file in directory_contents:
+                            #if (os.path.isfile(os.path.join(args.directory, file))):
+                                #filename = str(file)
+                                #if create_tag(destination_ip) in filename:
+                                    #with open(os.path.join(args.directory, file), 'r') as file:
+                                        #data = json.load(file)
+                                        #file_flow_label = data['flow_label']
+                                        #source_ip = data['source']
+                                        #destination_ip = data['destination']
+                                        #if file_flow_label == flow_label and source_ip == source:
+                                            #try:
+                                                #asn = data['hops'][str(hopnumber)]['asn']
+                                                #print(f"{asn}", end=" ")
+                                            #except KeyError:
+                                                #print("Error: Skipped line")
+                    #print("")
 
 if __name__ == "__main__":
     main()
