@@ -233,6 +233,7 @@ def main():
                     # Print ASN where path diverged
                     #print(f"{div_list=}")
                     #for hopnumber in div_list:
+                        #div_asn = list()
                         #for file in directory_contents:
                             #if (os.path.isfile(os.path.join(args.directory, file))):
                                 #filename = str(file)
@@ -245,10 +246,12 @@ def main():
                                         #if file_flow_label == flow_label and source_ip == source:
                                             #try:
                                                 #asn = data['hops'][str(hopnumber)]['asn']
-                                                #print(f"{asn}", end=" ")
+                                                #div_asn.append(asn)
+                                                ##print(f"{asn}", end=" ")
                                             #except KeyError:
                                                 #print("Error: Skipped line")
-                    #print("")
+                        #print(div_asn)
+                        #print(get_unique(div_asn))
 
 if __name__ == "__main__":
     main()
