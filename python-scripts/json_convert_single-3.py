@@ -1,4 +1,6 @@
-import json, datetime, os, re, ipaddress, hashlib, sys, SubnetTree, socket, argparse, subprocess, string, scapy
+from scapy.all import *
+#from scapy.layers.inet import IP, ICMP
+import json, datetime, os, re, ipaddress, hashlib, sys, SubnetTree, socket, argparse, subprocess, string
 
 def fill_subnettree(tree, rv_file):
     with open(rv_file, "r") as file:
@@ -12,8 +14,8 @@ def fill_subnettree(tree, rv_file):
                 print("Skipped line '" + line + "'", file=sys.stderr)
     return tree
 
-routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
-#routeviews_file = "/home/erlend/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
+#routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
+routeviews_file = "/home/erlend/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
 tree = SubnetTree.SubnetTree()
 tree = fill_subnettree(tree, routeviews_file)
 
@@ -72,7 +74,7 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
     reg = r"(((([0-9a-f]) ?){32})\n){6}"
     pattern = re.compile(reg, re.MULTILINE)
 
-    reg_1 = r"/(?<=$\n)(.|\n)*?(?=&)/g" # Matches any block enclosed between $ and &
+    reg_1 = r"(?<=\<\n)(.|\n)*?(?=\n\>)" # Matches any block enclosed between < and >
     reg_2 = r"\[ IPv6 in ICMPv6 \]\#\#\# \\n        version   = 6\\n        tc        = 128\\n        fl        = [0-9]*\\n"
     reg_3 = r"fl        = [0-9]*"
     reg_4 = r"[0-9]+"
@@ -116,19 +118,51 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
                 hop_dictionary = { index : {"ipv6_address" : address, "asn" : "null", "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
 
 
-                for item in re.finditer(pattern_1, data):
-                    ip = (item.group()[24:72].replace(" ", "")).replace("\n", "") # Use regex to find response-IP in txt file. This is fine as the responsive-IP will always at a certain offset in the packet header.
+                for raw_data in re.finditer(pattern_1, data):
+                    ip = (raw_data.group()[24:72].replace(" ", "")).replace("\n", "") # Use regex to find response-IP in txt file. This is fine as the response-IP will always at a certain offset in the packet header.
                     ipv6_addr = ipaddress.ip_address(int(ip, 16))
-                    #fl = item.group()[151:158].replace(" ", "") # Use regex to capture the returned flow-label contained in the ICMP payload 
-                    fl = re.findall(pattern_2, item)
-                    fl = re.findall(pattern_3, fl)
-                    fl = re.findall(pattern_4, fl)
-                    fl = fl[0]
+                    # Use regex to capture the returned flow-label contained in the ICMP payload
+                    #fl = item.group()[151:158].replace(" ", "")  
+                    print("Hello")
+                    print(raw_data)
+                    #packet = raw_data.replace(" ", "\x")
+                    #packet = raw_data.group().replace(" ", "")
+                    #packet = raw_data.group().replace(r"\n", "")
+                    #packet = packet.strip()
+                    packet = raw_data.group()
+                    #packet = r"\x" + packet
+                    #print(packet)
+                    #packet = packet.replace(" ", r"\x")
+                    print(packet)
+                    #packet = packet.encode("UTF-8")
+                    #an_integer = int(packet, 16)
+                    #packet = hex(an_integer)
+
+                    hex_dump = IPv6(import_hexcap(packet))
+                    #print("Hex dump:")
+                    #print(hex_dump)
+                    #hex_dump = hex_dump.encode("UTF-8")
+                    #packet = IPv6(hex_dump)
+                    packet_string = hex_dump.show(dump=True)
+                    print("Scapy Packet:")
+                    print(packet_string)
+                    print("Type:")
+                    print(type(packet_string))
+                    fl = re.findall(pattern_2, packet_string)
+                    print(fl)
+                    if fl:
+                        fl = re.findall(pattern_3, fl[0])
+                        fl = re.findall(pattern_4, fl[0])
+                        fl = fl[0]
+                    else:
+                        fl = "null"
+                    print(f"Flow label: {fl}")
 
                     for index, ip_address in enumerate(hop_list):
                         if (str(ip_address).replace(" ", "")).replace("\n", "") == (str(ipv6_addr).replace(" ", "")).replace("\n", ""):
                             hop_dictionary[index+1]["asn"] = get_asn(tree, ip_address)
-                            hop_dictionary[index+1]["returned_flow_label"] = int(fl, 16)
+                            if fl != "null":
+                                hop_dictionary[index+1]["returned_flow_label"] = int(fl, 16)
                     
                 tl_dict["hops"] = hop_dictionary
 
@@ -183,8 +217,8 @@ def main():
     hostname = str(socket.gethostname())
 
     json_data = create_dict(args.directory, args.file, args.tcp_port, args.source_ip, args.flow_label)
-    my_filename = create_filename(hostname, args.tag)
-    fwrite(json_data, my_filename)
+    #my_filename = create_filename(hostname, args.tag)
+    #fwrite(json_data, my_filename)
 
 if __name__ == "__main__":
     main()
