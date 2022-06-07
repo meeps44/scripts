@@ -12,8 +12,8 @@ create_tarball()
     local l_TAR_FILENAME="tar-$HOSTNAME-${l_DATE}.tar.gz"
     tar -czvf ${l_TAR_FILENAME} -C /root/logs/$HOSTNAME/ .
     echo "Tarball saved to $TAR_DIR/$l_TAR_FILENAME. Cleaning up the /root/logs/$HOSTNAME/-directory..."
+	# Clean up JSON-files
     find /root/logs/$HOSTNAME/ -maxdepth 1 -name "*.json" -print0 | xargs -0 rm
-    #rm /root/logs/$HOSTNAME/*
     echo "Transferring tarball to remote host"
     scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR/$l_TAR_FILENAME 209.97.138.74:/root/archived-logs/$l_TAR_FILENAME
     if [ $? -eq 0 ];
@@ -43,28 +43,24 @@ pt_run()
 
     echo "Starting paris-traceroute"
     sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
-    #echo -e "${l_DESTINATION_PORT}\n${HOST_IP}\n${l_FLOW_LABEL}\n" > $l_FILEPATH$l_FILENAME
-    #sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" >> $l_FILEPATH$l_FILENAME
-    #sudo paris-traceroute --first=2 --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME # skips the first router in the path
     echo "paris-traceroute finished. Output saved to $l_FILEPATH$l_FILENAME."
     echo "Converting to JSON..."
-    #python3 /root/git/scripts/python-scripts/text-to-json-2.py $l_FILEPATH$l_FILENAME $HOSTNAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL}
-    #python3 /root/git/scripts/python-scripts/json_convert_single.py $l_FILEPATH $l_FILENAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_FLOW_LABEL}
     python3 /root/git/scripts/python-scripts/json_convert_single-2.py $l_FILEPATH $l_FILENAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_SHORT} ${l_FLOW_LABEL}
 }
 
 main()
 {
-	N_ITERATIONS=1 # the number of iterations that you wish to run the entire sequence
+	# Number of iterations to run the entire sequence
+	N_ITERATIONS=1 
 
-	# port definitions
+	# Port definitions
 	TRACEROUTE_DEFAULT_PORT=33434
 	HTTP_PORT=80
 	HTTPS_PORT=443
 	SSH_PORT=22
 	DNS_PORT=53
 
-	# flow-label definitions
+	# Flow-label definitions
 	FLOW_LABEL_MIN=0
 	FLOW_LABEL_LOW=1
 	FLOW_LABEL_MID=256
@@ -79,7 +75,6 @@ main()
         $FLOW_LABEL_HIGH 
         )
 	DESTINATION_PORTS=($HTTPS_PORT) 
-	#FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN $FLOW_LABEL_MIN)
 	HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses-3105.txt"
 	
 
@@ -94,13 +89,13 @@ main()
 		HITLIST="/root/git/scripts/text-files/responsive-alexatop500-addresses-3105.txt"
 	fi
 
-	# other definitions
+	# Other definitions
 	HOST_IP=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
 	TAR_DIR="/root/tarballs"
 	HITLIST_LENGTH=$(wc -l < $HITLIST) # get the number of lines in file
 	host_ip=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
 
-	# paris traceroute loop starts here
+	# Paris traceroute loop starts here
 	for i in $(seq 1 $N_ITERATIONS); do
 	for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
 		for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
