@@ -41,13 +41,6 @@ def get_asn(tree, ip_address):
         list_to_string = ' '.join([str(elem) for elem in my_list])
         return list_to_string
 
-        #x = re.findall("AS Name\n[0-9]{1,5}", stdout_as_str)
-        #as_number = x[0][8:] 
-        x = re.findall("[0-9]{1,5} ", stdout_as_str)
-        as_number = x[0].strip()
-        return as_number
-        #return None
-
 def create_dict(directory, filename, tcp_port, source_ip, flow_label):
     # REGEX that matches IPv6-address. Credit: David M. Syzdek, https://gist.github.com/syzdek/6086792
     IPV4SEG  = r'(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])'
@@ -117,16 +110,10 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
                 # Initialize hop dictionary
                 hop_dictionary = { index : {"ipv6_address" : address, "asn" : "null", "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
 
-
                 for raw_data in re.finditer(pattern_1, data):
-                    ip = (raw_data.group()[24:72].replace(" ", "")).replace("\n", "") # Use regex to find response-IP in txt file. This is fine as the response-IP will always at a certain offset in the packet header.
+                    ip = (raw_data.group()[24:72].replace(" ", "")).replace("\n", "") # Use regex to find response-IP. The response-IP will always be located at a certain offset in the IPv6-packet header.
                     ipv6_addr = ipaddress.ip_address(int(ip, 16))
-                    # Use regex to capture the returned flow-label contained in the ICMP payload
-                    #fl = item.group()[151:158].replace(" ", "")  
-                    #packet = raw_data.replace(" ", "\x")
-                    #packet = raw_data.group().replace(" ", "")
-                    #packet = raw_data.group().replace(r"\n", "")
-                    #packet = packet.strip()
+                    # Use regex and Scapy to parse the raw hexdump and capture the returned flow-label contained in the ICMP payload
                     packet = raw_data.group()
                     index = 0
                     new_string = ""
@@ -135,27 +122,13 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
                         line = f"{index_nr}   " + line + "\n"
                         new_string = new_string + line
                         index = index + 10
-                    #print("New_string:")
-                    #print(new_string)
-                    #print(packet)
-                    #packet = r"\x" + packet
-                    #print(packet)
-                    #packet = packet.replace(" ", r"\x")
-                    #packet = packet.encode("UTF-8")
-                    #an_integer = int(packet, 16)
-                    #packet = hex(an_integer)
 
                     hex_dump = IPv6(import_hexcap(new_string))
                     packet_string = hex_dump.show(dump=True)
-                    #print("Hex dump:")
-                    #print(hex_dump)
-                    #hex_dump = hex_dump.encode("UTF-8")
-                    #packet = IPv6(hex_dump)
-                    #print("Scapy Packet:")
                     #print(packet_string)
-                    fl = re.findall(r"IPv6 in ICMPv6 ]### \n        version   = 6\n        tc        = 0\n        fl        = [0-9]*", packet_string)
+                    fl = re.findall(r"IPv6 in ICMPv6 ]### \n        version   = 6\n        tc        = [0-9]*\n        fl        = [0-9]*", packet_string)
                     if fl:
-                        fl = re.findall(pattern_3, str(fl[0]))
+                        fl = re.findall(pattern_3, fl[0])
                         fl = re.findall(pattern_4, fl[0])
                         fl = fl[0]
                     else:
@@ -223,6 +196,8 @@ def main():
     hostname = str(socket.gethostname())
 
     json_data = create_dict(args.directory, args.file, args.tcp_port, args.source_ip, args.flow_label)
+    print("json_data")
+    print(json_data)
     #my_filename = create_filename(hostname, args.tag)
     #fwrite(json_data, my_filename)
 
