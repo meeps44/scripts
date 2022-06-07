@@ -75,12 +75,12 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
     pattern = re.compile(reg, re.MULTILINE)
 
     reg_1 = r"(?<=\<\n)(.|\n)*?(?=\n\>)" # Matches any block enclosed between < and >
-    reg_2 = r"\[ IPv6 in ICMPv6 \]\#\#\# \\n        version   = 6\\n        tc        = 128\\n        fl        = [0-9]*\\n"
+    #reg_2 = r"IPv6 in ICMPv6 ]### \n        version   = 6\n        tc        = 0\n        fl        = [0-9]*"
     reg_3 = r"fl        = [0-9]*"
     reg_4 = r"[0-9]+"
 
     pattern_1 = re.compile(reg_1, re.MULTILINE)
-    pattern_2 = re.compile(reg_2, re.MULTILINE)
+    #pattern_2 = re.compile(reg_2, re.MULTILINE)
     pattern_3 = re.compile(reg_3, re.MULTILINE)
     pattern_4 = re.compile(reg_4, re.MULTILINE)
     
@@ -123,8 +123,6 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
                     ipv6_addr = ipaddress.ip_address(int(ip, 16))
                     # Use regex to capture the returned flow-label contained in the ICMP payload
                     #fl = item.group()[151:158].replace(" ", "")  
-                    print("Hello")
-                    print(raw_data)
                     #packet = raw_data.replace(" ", "\x")
                     #packet = raw_data.group().replace(" ", "")
                     #packet = raw_data.group().replace(r"\n", "")
@@ -137,30 +135,27 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
                         line = f"{index_nr}   " + line + "\n"
                         new_string = new_string + line
                         index = index + 10
-                    print("New_string:")
-                    print(new_string)
+                    #print("New_string:")
+                    #print(new_string)
+                    #print(packet)
                     #packet = r"\x" + packet
                     #print(packet)
                     #packet = packet.replace(" ", r"\x")
-                    print(packet)
                     #packet = packet.encode("UTF-8")
                     #an_integer = int(packet, 16)
                     #packet = hex(an_integer)
 
-                    hex_dump = IPv6(import_hexcap(packet))
+                    hex_dump = IPv6(import_hexcap(new_string))
+                    packet_string = hex_dump.show(dump=True)
                     #print("Hex dump:")
                     #print(hex_dump)
                     #hex_dump = hex_dump.encode("UTF-8")
                     #packet = IPv6(hex_dump)
-                    packet_string = hex_dump.show(dump=True)
-                    print("Scapy Packet:")
-                    print(packet_string)
-                    print("Type:")
-                    print(type(packet_string))
-                    fl = re.findall(pattern_2, packet_string)
-                    print(fl)
+                    #print("Scapy Packet:")
+                    #print(packet_string)
+                    fl = re.findall(r"IPv6 in ICMPv6 ]### \n        version   = 6\n        tc        = 0\n        fl        = [0-9]*", packet_string)
                     if fl:
-                        fl = re.findall(pattern_3, fl[0])
+                        fl = re.findall(pattern_3, str(fl[0]))
                         fl = re.findall(pattern_4, fl[0])
                         fl = fl[0]
                     else:
@@ -172,6 +167,8 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
                             hop_dictionary[index+1]["asn"] = get_asn(tree, ip_address)
                             if fl != "null":
                                 hop_dictionary[index+1]["returned_flow_label"] = int(fl, 16)
+                            else:
+                                hop_dictionary[index+1]["returned_flow_label"] = "null"
                     
                 tl_dict["hops"] = hop_dictionary
 
