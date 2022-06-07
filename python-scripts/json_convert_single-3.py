@@ -14,8 +14,8 @@ def fill_subnettree(tree, rv_file):
                 print("Skipped line '" + line + "'", file=sys.stderr)
     return tree
 
-#routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
-routeviews_file = "/home/erlend/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
+routeviews_file = "/root/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
+#routeviews_file = "/home/erlend/git/scripts/text-files/routeviews-rv6-20220505-1200.pfx2as.txt"
 tree = SubnetTree.SubnetTree()
 tree = fill_subnettree(tree, routeviews_file)
 
@@ -126,7 +126,6 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
 
                     hex_dump = IPv6(import_hexcap(new_string))
                     packet_string = hex_dump.show(dump=True)
-                    #print(packet_string)
                     fl = re.findall(r"IPv6 in ICMPv6 ]### \n        version   = 6\n        tc        = [0-9]*\n        fl        = [0-9]*", packet_string)
                     if fl:
                         fl = re.findall(pattern_3, fl[0])
@@ -145,20 +144,6 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
                                 hop_dictionary[index+1]["returned_flow_label"] = "null"
                     
                 tl_dict["hops"] = hop_dictionary
-
-                
-
-                #for item in re.finditer(pattern, data):
-                    #ip = (item.group()[24:72].replace(" ", "")).replace("\n", "") # Use regex to find response-IP in txt file
-                    #ipv6_addr = ipaddress.ip_address(int(ip, 16))
-                    #fl = item.group()[151:158].replace(" ", "") # Use regex to capture the returned flow-label contained in the ICMP payload 
-
-                    #for index, ip_address in enumerate(hop_list):
-                        #if (str(ip_address).replace(" ", "")).replace("\n", "") == (str(ipv6_addr).replace(" ", "")).replace("\n", ""):
-                            #hop_dictionary[index+1]["asn"] = get_asn(tree, ip_address)
-                            #hop_dictionary[index+1]["returned_flow_label"] = int(fl, 16)
-                    
-                #tl_dict["hops"] = hop_dictionary
 
     except FileNotFoundError:
         print("Error: No such file or directory")
@@ -196,9 +181,8 @@ def main():
     hostname = str(socket.gethostname())
 
     json_data = create_dict(args.directory, args.file, args.tcp_port, args.source_ip, args.flow_label)
-    print(json_data)
-    #my_filename = create_filename(hostname, args.tag)
-    #fwrite(json_data, my_filename)
+    my_filename = create_filename(hostname, args.tag)
+    fwrite(json_data, my_filename)
 
 if __name__ == "__main__":
     main()
