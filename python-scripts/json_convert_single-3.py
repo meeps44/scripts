@@ -110,6 +110,7 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
                 # Initialize hop dictionary
                 hop_dictionary = { index : {"ipv6_address" : address, "asn" : "null", "returned_flow_label" : "null"} for index, address in enumerate(hop_list, start=1)}
 
+                # Find and append returned flow labels to the hop-dictionary
                 for raw_data in re.finditer(pattern_1, data):
                     ip = (raw_data.group()[24:72].replace(" ", "")).replace("\n", "") # Use regex to find response-IP. The response-IP will always be located at a certain offset in the IPv6-packet header.
                     ipv6_addr = ipaddress.ip_address(int(ip, 16))
@@ -147,7 +148,6 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
 
                 
 
-                # Find and append returned flow labels to the hop-dictionary
                 #for item in re.finditer(pattern, data):
                     #ip = (item.group()[24:72].replace(" ", "")).replace("\n", "") # Use regex to find response-IP in txt file
                     #ipv6_addr = ipaddress.ip_address(int(ip, 16))
@@ -196,7 +196,6 @@ def main():
     hostname = str(socket.gethostname())
 
     json_data = create_dict(args.directory, args.file, args.tcp_port, args.source_ip, args.flow_label)
-    print("json_data")
     print(json_data)
     #my_filename = create_filename(hostname, args.tag)
     #fwrite(json_data, my_filename)
