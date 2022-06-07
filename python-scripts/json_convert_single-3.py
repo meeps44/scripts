@@ -130,6 +130,15 @@ def create_dict(directory, filename, tcp_port, source_ip, flow_label):
                     #packet = raw_data.group().replace(r"\n", "")
                     #packet = packet.strip()
                     packet = raw_data.group()
+                    index = 0
+                    new_string = ""
+                    for line in packet.splitlines():
+                        index_nr = str(index).zfill(4)
+                        line = f"{index_nr}   " + line + "\n"
+                        new_string = new_string + line
+                        index = index + 10
+                    print("New_string:")
+                    print(new_string)
                     #packet = r"\x" + packet
                     #print(packet)
                     #packet = packet.replace(" ", r"\x")
