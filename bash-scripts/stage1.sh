@@ -80,7 +80,7 @@ main()
 	
 
 	# Use large or small hitlist
-	USE_FULL_HITLIST=true
+	USE_FULL_HITLIST=false
 
 	if [ "$USE_FULL_HITLIST" = true ] ; then
 		# Full hitlist
