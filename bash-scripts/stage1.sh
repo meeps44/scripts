@@ -46,7 +46,6 @@ pt_run()
     echo "paris-traceroute finished. Output saved to $l_FILEPATH$l_FILENAME."
     echo "Converting to JSON..."
     python3 /root/git/scripts/python-scripts/json_convert_single-2.py $l_FILEPATH $l_FILENAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_SHORT} ${l_FLOW_LABEL}
-    #python3 /root/git/scripts/python-scripts/json_convert_single-3.py $l_FILEPATH $l_FILENAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_SHORT} ${l_FLOW_LABEL}
 }
 
 main()
@@ -81,7 +80,7 @@ main()
 	
 
 	# Use large or small hitlist
-	USE_FULL_HITLIST=false
+	USE_FULL_HITLIST=true
 
 	if [ "$USE_FULL_HITLIST" = true ] ; then
 		# Full hitlist
@@ -102,14 +101,14 @@ main()
 	for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
 		for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
 		N=1
-		let M=$N+$N_PARALLEL-1
+		let M=$N+9
 		while [ $N -lt $HITLIST_LENGTH ]; do
 			readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
 			for ADDRESS in ${my_array[@]}; do
 				pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
 			done
-			let N=$N+$N_PARALLEL
-			let M=$N+$N_PARALLEL-1
+			let N=$N+10
+			let M=$N+9
 			wait
 		done
 		done
