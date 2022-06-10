@@ -52,6 +52,7 @@ main()
 {
 	# Number of iterations to run the entire sequence
 	N_ITERATIONS=1 
+	N_PARALLEL=20 # the number of parallel running instances of Paris traceroute
 
 	# Port definitions
 	TRACEROUTE_DEFAULT_PORT=33434
@@ -100,14 +101,14 @@ main()
 	for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
 		for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
 		N=1
-		let M=$N+9
+		let M=$N+($N_PARALLEL-1)
 		while [ $N -lt $HITLIST_LENGTH ]; do
 			readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
 			for ADDRESS in ${my_array[@]}; do
 				pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
 			done
-			let N=$N+10
-			let M=$N+9
+			let N=$N+($N_PARALLEL)
+			let M=$N+($N_PARALLEL-1)
 			wait
 		done
 		done
