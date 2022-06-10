@@ -102,14 +102,14 @@ main()
 	for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
 		for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
 		N=1
-		let M=$N+($N_PARALLEL-1)
+		let M=$N+$N_PARALLEL-1
 		while [ $N -lt $HITLIST_LENGTH ]; do
 			readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
 			for ADDRESS in ${my_array[@]}; do
 				pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
 			done
-			let N=$N+($N_PARALLEL)
-			let M=$N+($N_PARALLEL-1)
+			let N=$N+$N_PARALLEL
+			let M=$N+$N_PARALLEL-1
 			wait
 		done
 		done
