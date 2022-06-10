@@ -45,7 +45,8 @@ pt_run()
     sudo paris-traceroute --num-queries=1 -T -p ${l_DESTINATION_PORT} "${l_FLOW_LABEL}" "${l_DESTINATION_ADDR}" > $l_FILEPATH$l_FILENAME
     echo "paris-traceroute finished. Output saved to $l_FILEPATH$l_FILENAME."
     echo "Converting to JSON..."
-    python3 /root/git/scripts/python-scripts/json_convert_single-2.py $l_FILEPATH $l_FILENAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_SHORT} ${l_FLOW_LABEL}
+    #python3 /root/git/scripts/python-scripts/json_convert_single-2.py $l_FILEPATH $l_FILENAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_SHORT} ${l_FLOW_LABEL}
+    python3 /root/git/scripts/python-scripts/json_convert_single-3.py $l_FILEPATH $l_FILENAME ${l_DESTINATION_PORT} ${HOST_IP} ${l_SHORT} ${l_FLOW_LABEL}
 }
 
 main()
