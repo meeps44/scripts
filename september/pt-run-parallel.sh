@@ -66,6 +66,10 @@ TAR_DIR="/root/tarballs"
 N_ITERATIONS=1                    # the number of iterations that you wish to run the script. from input args
 HITLIST_LENGTH=$(wc -l <$HITLIST) # get the number of lines in file
 DATE=$(date '+%Y-%m-%dT%H_%M_%SZ')
+CSV_FILEPATH="/root/csv/"
+CSV_FILENAME="$HOSTNAME-${DATE}.csv"
+echo "Creating $CSV_FILEPATH$CSV_FILENAME"
+touch $CSV_FILEPATH$CSV_FILENAME
 
 create_tarball() {
     cd $TAR_DIR
@@ -93,15 +97,10 @@ pt_run() {
     local l_DESTINATION_ADDR="$1"
     local l_DESTINATION_PORT="$2"
     local l_FLOW_LABEL="$3"
-    local l_FILEPATH="/root/csv/"
-    local l_FILENAME="$HOSTNAME-${DATE}.csv"
-
-    echo "Creating .csv"
-    touch $l_FILEPATH$l_FILENAME
 
     echo "Starting paris-traceroute"
-    sudo paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $l_FILEPATH$l_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR
-    echo "paris-traceroute finished. Output saved to $l_FILEPATH$l_FILENAME."
+    sudo paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR
+    echo "paris-traceroute finished. Output saved to $CSV_FILEPATH$CSV_FILENAME."
 }
 
 for i in $(seq 1 $N_ITERATIONS); do
