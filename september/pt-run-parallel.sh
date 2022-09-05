@@ -51,8 +51,10 @@ elif [ "$STAGE3" = true ]; then
 fi
 
 if [ "$FULL_HITLIST" = true ]; then
-    # Full hitlist
-    HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
+    # Short hitlist (20 lines)
+    #HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
+
+    # Long hitlist (15757 lines)
     HITLIST="/root/git/scripts/text-files/hitlist.txt"
 else
     # Short hitlist (Alexa top 500)
