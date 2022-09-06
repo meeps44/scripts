@@ -17,13 +17,26 @@ FLOW_LABEL_MID_2=131071
 FLOW_LABEL_HIGH_1=1048574
 FLOW_LABEL_MAX=1048575
 
+#00000000000000000000:
+FLOW_LABEL_0=0
+#00000000000000001000:
+FLOW_LABEL_1=8
+#00000000000010000000:
+FLOW_LABEL_2=128
+#00000000100000000000:
+FLOW_LABEL_3=2048
+#00001000000000000000:
+FLOW_LABEL_4=32768
+#10000000000000000000:
+FLOW_LABEL_5=524288
+
 # default values
 FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
 DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT)
 HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
 
 # Use large or small hitlist
-FULL_HITLIST=false
+FULL_HITLIST=true
 
 # Experiment stages
 STAGE1=true
@@ -33,9 +46,11 @@ STAGE3=false
 if [ "$STAGE1" = true ]; then
     # Stage 1
     # The goal of stage 1 is to figure out if the flow-label is maintained across all hops to a destination
-    #FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
-    FLOW_LABELS=($FLOW_LABEL_MAX)
-    DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT)
+    #FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2)
+    FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1 $FLOW_LABEL_2 $FLOW_LABEL_3 $FLOW_LABEL_4 $FLOW_LABEL_5)
+    #FLOW_LABELS=($FLOW_LABEL_MAX)
+    #DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT)
+    DESTINATION_PORTS=($HTTPS_PORT)
 elif [ "$STAGE2" = true ]; then
     # Stage 2
     # In stage 2, the flow label will be constant (0).
@@ -46,8 +61,8 @@ elif [ "$STAGE3" = true ]; then
     # Stage 3
     # The goal of this step is to delve into the cases from stage 2
     # We want to know if we get the same path if we use a different port-number. Mix of well-known ports
-    FLOW_LABELS=($FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1) # Do the experiment 4 times
-    #FLOW_LABELS=($FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
+    #FLOW_LABELS=($FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_1) # Do the experiment 4 times
+    FLOW_LABELS=($FLOW_LABEL_LOW_1 $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2)
     DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT) # get destination tcp-port from input args
 fi
 
@@ -59,7 +74,7 @@ if [ "$FULL_HITLIST" = true ]; then
     #HITLIST="/root/git/scripts/text-files/hitlist.txt"
 else
     # Short hitlist (Alexa top 500)
-    HITLIST="/root/git/scripts/text-files/ipv6-adress-list-alexa-top500-pruned.txt"
+    HITLIST="/root/git/scripts/text-files/ipv6-address-list-alexa-top500-pruned.txt"
 fi
 
 # other definitions
@@ -104,25 +119,45 @@ pt_run() {
     echo "paris-traceroute finished. Output saved to $CSV_FILEPATH$CSV_FILENAME."
 }
 
+#for i in $(seq 1 $N_ITERATIONS); do
+#for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+#N=1
+#let M=$N+9
+#while [ $N -lt $HITLIST_LENGTH ]; do
+#readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
+#for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+#for ADDRESS in ${my_array[@]}; do
+##pt_run "$ELEMENT" &
+#pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
+#done
+#wait
+#done
+#let N=$N+10
+#let M=$N+9
+#done
+#done
+#wait
+##create_tarball
+#done
+
 for i in $(seq 1 $N_ITERATIONS); do
     for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
         N=1
         let M=$N+9
         while [ $N -lt $HITLIST_LENGTH ]; do
-            readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
             for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+                readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
                 for ADDRESS in ${my_array[@]}; do
                     #pt_run "$ELEMENT" &
                     pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
                 done
                 wait
+                let N=$N+10
+                let M=$N+9
             done
-            let N=$N+10
-            let M=$N+9
         done
     done
     wait
     #create_tarball
 done
-
 echo "All done!"
