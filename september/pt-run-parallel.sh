@@ -148,7 +148,7 @@ for i in $(seq 1 $N_ITERATIONS); do
             #M=10
             #M=2
             #M=4
-            M=8
+            M=6
             while [ $N -lt $HITLIST_LENGTH ]; do
                 readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
                 for ADDRESS in ${my_array[@]}; do
@@ -160,8 +160,8 @@ for i in $(seq 1 $N_ITERATIONS); do
                 #let M=$N+9
                 #let N=$N+4
                 #let M=$M+4
-                let N=$N+8
-                let M=$M+8
+                let N=$N+6
+                let M=$M+6
             done
         done
     done
