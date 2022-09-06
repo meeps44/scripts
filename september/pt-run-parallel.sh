@@ -116,7 +116,7 @@ pt_run() {
     local l_FLOW_LABEL="$3"
 
     echo "Starting paris-traceroute"
-    sudo paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR
+    sudo paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
     echo "paris-traceroute finished. Output saved to $CSV_FILEPATH$CSV_FILENAME."
 }
 
