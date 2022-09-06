@@ -122,7 +122,7 @@ pt_run() {
 #for i in $(seq 1 $N_ITERATIONS); do
 #for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
 #N=1
-#let M=$N+9
+#M=10
 #while [ $N -lt $HITLIST_LENGTH ]; do
 #readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
 #for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
@@ -142,10 +142,10 @@ pt_run() {
 
 for i in $(seq 1 $N_ITERATIONS); do
     for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
-        N=1
-        let M=$N+9
-        while [ $N -lt $HITLIST_LENGTH ]; do
-            for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+        for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+            N=1
+            M=10
+            while [ $N -lt $HITLIST_LENGTH ]; do
                 readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
                 for ADDRESS in ${my_array[@]}; do
                     #pt_run "$ELEMENT" &
