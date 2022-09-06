@@ -33,7 +33,8 @@ STAGE3=false
 if [ "$STAGE1" = true ]; then
     # Stage 1
     # The goal of stage 1 is to figure out if the flow-label is maintained across all hops to a destination
-    FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
+    #FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
+    FLOW_LABELS=($FLOW_LABEL_MAX)
     DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT)
 elif [ "$STAGE2" = true ]; then
     # Stage 2
@@ -52,10 +53,10 @@ fi
 
 if [ "$FULL_HITLIST" = true ]; then
     # Short hitlist (20 lines)
-    #HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
+    HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
 
     # Long hitlist (15757 lines)
-    HITLIST="/root/git/scripts/text-files/hitlist.txt"
+    #HITLIST="/root/git/scripts/text-files/hitlist.txt"
 else
     # Short hitlist (Alexa top 500)
     HITLIST="/root/git/scripts/text-files/ipv6-adress-list-alexa-top500-pruned.txt"

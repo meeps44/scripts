@@ -3,7 +3,10 @@ import numpy as np
 
 
 def create_plot():
-    pass
+    # Load data into DataFrame
+    traceroute_stats = pd.read_csv('test_data.csv', sep=',')
+    print(traceroute_stats)
+    print(traceroute_stats.head())
 
 
 def main():
