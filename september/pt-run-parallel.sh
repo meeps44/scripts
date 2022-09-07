@@ -36,7 +36,7 @@ DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT)
 HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
 
 # Use large or small hitlist
-FULL_HITLIST=true
+FULL_HITLIST=false
 
 # Experiment stages
 STAGE1=true
@@ -47,8 +47,8 @@ if [ "$STAGE1" = true ]; then
     # Stage 1
     # The goal of stage 1 is to figure out if the flow-label is maintained across all hops to a destination
     #FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2)
-    #FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1 $FLOW_LABEL_2 $FLOW_LABEL_3 $FLOW_LABEL_4 $FLOW_LABEL_5)
-    FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1)
+    FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1 $FLOW_LABEL_2 $FLOW_LABEL_3 $FLOW_LABEL_4 $FLOW_LABEL_5)
+    #FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1)
     #FLOW_LABELS=($FLOW_LABEL_MAX)
     #DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT)
     DESTINATION_PORTS=($HTTPS_PORT)
@@ -147,10 +147,10 @@ for i in $(seq 1 $N_ITERATIONS); do
     for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
         for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
             N=1
-            #M=10
+            M=10
             #M=2
             #M=4
-            M=8
+            #M=8
             while [ $N -lt $HITLIST_LENGTH ]; do
                 readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
                 for ADDRESS in ${my_array[@]}; do
@@ -162,8 +162,10 @@ for i in $(seq 1 $N_ITERATIONS); do
                 #let M=$N+9
                 #let N=$N+4
                 #let M=$M+4
-                let N=$N+8
-                let M=$M+8
+                #let N=$N+8
+                #let M=$M+8
+                let N=$N+10
+                let M=$M+10
             done
         done
     done
