@@ -149,7 +149,7 @@ for i in $(seq 1 $N_ITERATIONS); do
         for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
             N=1
             #M=10
-            M=20
+            M=15
             #M=2
             #M=4
             #M=8
@@ -168,8 +168,8 @@ for i in $(seq 1 $N_ITERATIONS); do
                 #let M=$M+8
                 #let N=$N+10
                 #let M=$M+10
-                let N=$N+20
-                let M=$M+20
+                let N=$N+15
+                let M=$M+15
             done
         done
     done
