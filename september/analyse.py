@@ -9,10 +9,10 @@ def create_plot(traceroute_stats):
     plt.show()
 
 
-def load_csv():
+def load_csv(filename):
     # Load data into DataFrame
     traceroute_stats = pd.read_csv(
-        'test_data.csv', sep=',', parse_dates=['Timestamp'])
+        filename, sep=', ', parse_dates=['Timestamp'])
     # Print all rows
     print(traceroute_stats)
     # Print top rows
@@ -26,7 +26,8 @@ def load_csv():
 
 
 def main():
-    load_csv()
+    filename = "test_data.csv"
+    load_csv(filename)
     create_plot()
 
 

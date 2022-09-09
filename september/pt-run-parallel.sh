@@ -36,7 +36,7 @@ DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT)
 HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
 
 # Use large or small hitlist
-FULL_HITLIST=false
+FULL_HITLIST=true
 
 # Experiment stages
 STAGE1=true
@@ -88,6 +88,7 @@ CSV_FILEPATH="/root/csv/"
 CSV_FILENAME="$HOSTNAME-${DATE}.csv"
 echo "Creating $CSV_FILEPATH$CSV_FILENAME"
 touch $CSV_FILEPATH$CSV_FILENAME
+echo "Outgoing Flow Label, Outgoing Port, Timestamp, Source IP, Source ASN, Destination IP, Destination ASN, Hop Count, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN" >$CSV_FILEPATH$CSV_FILENAME
 
 create_tarball() {
     cd $TAR_DIR
@@ -147,7 +148,8 @@ for i in $(seq 1 $N_ITERATIONS); do
     for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
         for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
             N=1
-            M=10
+            #M=10
+            M=20
             #M=2
             #M=4
             #M=8
@@ -164,8 +166,10 @@ for i in $(seq 1 $N_ITERATIONS); do
                 #let M=$M+4
                 #let N=$N+8
                 #let M=$M+8
-                let N=$N+10
-                let M=$M+10
+                #let N=$N+10
+                #let M=$M+10
+                let N=$N+20
+                let M=$M+20
             done
         done
     done
