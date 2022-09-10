@@ -32,7 +32,7 @@ def load_multiple_csv(path):
         exit(1)
 
 
-def latex_convert(dataframe):
+def export_to_latex(dataframe):
     with open('table.tex', 'w') as file:
         file.write(dataframe.to_latex())
 
@@ -57,6 +57,7 @@ def main():
     traceroute_stats = load_single_csv(filename)
     print_stats(traceroute_stats)
     create_plot(traceroute_stats)
+    export_to_latex(traceroute_stats)
 
 
 if __name__ == "__main__":
