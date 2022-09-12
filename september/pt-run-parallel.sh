@@ -8,27 +8,46 @@ SSH_PORT=22
 DNS_PORT=53
 
 # flow-label definitions
+#00000000000000000000:
 FLOW_LABEL_MIN=0
+#00000000000000000001:
 FLOW_LABEL_LOW_1=1
+#00000000000000000010:
 FLOW_LABEL_LOW_2=2
+#00000000000000001010:
 FLOW_LABEL_LOW_3=10
+#00000000000100010101:
 FLOW_LABEL_MID_1=277
+#00011111111111111111:
 FLOW_LABEL_MID_2=131071
-FLOW_LABEL_HIGH_1=1048574
+#11111111111111111111:
 FLOW_LABEL_MAX=1048575
+
+##00000000000000000000:
+#FLOW_LABEL_0=0
+##00000000000000001000:
+#FLOW_LABEL_1=8
+##00000000000010000000:
+#FLOW_LABEL_2=128
+##00000000100000000000:
+#FLOW_LABEL_3=2048
+##00001000000000000000:
+#FLOW_LABEL_4=32768
+##10000000000000000000:
+#FLOW_LABEL_5=524288
 
 #00000000000000000000:
 FLOW_LABEL_0=0
-#00000000000000001000:
-FLOW_LABEL_1=8
-#00000000000010000000:
-FLOW_LABEL_2=128
-#00000000100000000000:
-FLOW_LABEL_3=2048
-#00001000000000000000:
-FLOW_LABEL_4=32768
-#10000000000000000000:
-FLOW_LABEL_5=524288
+#00000000000000001111:
+FLOW_LABEL_1=15
+#00000000000011110000:
+FLOW_LABEL_2=240
+#00000000111100000000:
+FLOW_LABEL_3=3840
+#00001111000000000000:
+FLOW_LABEL_4=61440
+#11110000000000000000:
+FLOW_LABEL_5=983040
 
 # default values
 FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2 $FLOW_LABEL_MAX)
@@ -105,8 +124,8 @@ create_tarball() {
         echo "Transfer completed successfully. Deleting local tarball..."
         rm $TAR_DIR/$l_TAR_FILENAME
         echo "Tarball deleted"
-        #echo "Cleaning up raw data..."
-        #find /root/csv/ -maxdepth 1 -name "*.csv" -print0 | xargs -0 rm
+        echo "Cleaning up raw data..."
+        find /root/csv/ -maxdepth 1 -name "*.csv" -print0 | xargs -0 rm
     else
         echo "Transfer to remote host failed"
     fi
@@ -147,21 +166,14 @@ for i in $(seq 1 $N_ITERATIONS); do
     for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
         for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
             N=1
-            #M=4
-            #M=8
             #M=10
             M=12
             while [ $N -lt $HITLIST_LENGTH ]; do
                 readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
                 for ADDRESS in ${my_array[@]}; do
-                    #pt_run "$ELEMENT" &
                     pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
                 done
                 wait
-                #let N=$N+4
-                #let M=$M+4
-                #let N=$N+8
-                #let M=$M+8
                 #let N=$N+10
                 #let M=$M+10
                 let N=$N+12
