@@ -2,9 +2,7 @@
 
 #sudo apt install libssl-dev -y
 apt install libssl-dev -y
-mkdir $HOME/csv
-mkdir $HOME/tarballs
-mkdir ~/git
+mkdir $HOME/csv $HOME/tarballs $HOME/git
 git -C $HOME/git clone https://github.com/meeps44/libparistraceroute.git
 cd $HOME/git/libparistraceroute
 mkdir m4
