@@ -21,14 +21,16 @@ def load_single_csv(filename):
 def load_multiple_csv(path):
     try:
         all_files = glob.glob(os.path.join(path, "*.csv"))
-        df = pd.concat((pd.read_csv(f) for f in all_files), ignore_index=True)
+        df: pd.DataFrame = pd.concat((pd.read_csv(f)
+                                     for f in all_files), ignore_index=True)
         return df
     except FileNotFoundError:
         print("Error: No such file or directory")
         exit(1)
     except NotADirectoryError:
         print("Error: Not a directory")
-        print("Please use the --file option to compare single files. Use the -h argument for more info.")
+        print("Please use the --file option to compare single files. \
+            Use the -h argument for more info.")
         exit(1)
 
 

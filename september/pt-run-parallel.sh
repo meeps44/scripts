@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+# Exit when any command fails
+#set -e
+## Keep track of the last executed command
+#trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
+## Echo an error message before exiting
+#trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 
 # port definitions
 TRACEROUTE_DEFAULT_PORT=33434
