@@ -41,22 +41,28 @@ def export_to_latex(dataframe):
 
 def print_stats(dataframe):
     # Print all rows
-    print(dataframe)
+    # print(dataframe)
     # Print top rows
     # print(dataframe.head())
     # Print column
-    #print(dataframe['Flow label'].head())
+    # print(dataframe['Flow label'].head())
     # Print multiple columns
-    #print(dataframe[['Flow label', 'Source IP']].head())
+    # print(dataframe[['Flow label', 'Source IP']].head())
     # Print data types of each column
     # print(dataframe.dtypes)
+    # Select row by index
+    print(dataframe.iloc[[413, 414]])
+    # Select row by value and print whole row
+    with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+        print(dataframe.loc[dataframe['Destination IP']
+              == "2001:410:112:32::1"])
 
 
 def main():
-    #filename = "test_data.csv"
+    # filename = "test_data.csv"
     filename = "/home/erlend/csv-storage/csv-storage/ubuntu-lon1-0-2022-09-12T20_27_07Z.csv"
-    #path = "/home/erlend/git/scripts/september/csv"
-    #traceroute_stats = load_multiple_csv(path)
+    # path = "/home/erlend/git/scripts/september/csv"
+    # traceroute_stats = load_multiple_csv(path)
     traceroute_stats = load_single_csv(filename)
     print_stats(traceroute_stats)
     # create_plot(traceroute_stats)

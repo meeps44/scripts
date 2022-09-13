@@ -96,10 +96,10 @@ fi
 
 if [ "$FULL_HITLIST" = true ]; then
     # Short hitlist (20 lines)
-    #HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
+    HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
 
     # Long hitlist (15757 lines)
-    HITLIST="/root/git/scripts/text-files/hitlist.txt"
+    #HITLIST="/root/git/scripts/text-files/hitlist.txt"
 else
     # Short hitlist (Alexa top 500)
     HITLIST="/root/git/scripts/text-files/ipv6-address-list-alexa-top500-pruned.txt"
