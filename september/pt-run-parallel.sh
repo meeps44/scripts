@@ -161,7 +161,8 @@ for i in $(seq 1 $N_ITERATIONS); do
         for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
             N=1
             #M=11
-            M=10
+            M=5
+            #M=10
             while [ $N -lt $HITLIST_LENGTH ]; do
                 readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
                 for ADDRESS in ${my_array[@]}; do
@@ -170,13 +171,15 @@ for i in $(seq 1 $N_ITERATIONS); do
                 wait
                 #let N=$N+11
                 #let M=$M+11
-                let N=$N+10
-                let M=$M+10
+                #let N=$N+10
+                #let M=$M+10
+                let N=$N+5
+                let M=$M+5
             done
         done
     done
     wait
 done
 echo "End time: $(date)" >>$HOME/time.txt
-create_tarball
+#create_tarball
 echo "All done!"
