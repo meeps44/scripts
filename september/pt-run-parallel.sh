@@ -112,8 +112,8 @@ N_ITERATIONS=1 # The number of iterations that you wish to run the experiment.
 HITLIST_LENGTH=$(wc -l <$HITLIST)
 DATE=$(date '+%Y-%m-%dT%H_%M_%SZ')
 CSV_FILEPATH="/root/csv/"
-CSV_FILENAME="$HOSTNAME-${DATE}.csv"
-TAR_FILENAME="tar-$CSV_FILENAME.tar.gz"
+CSV_FILENAME="$HOSTNAME-$DATE.csv"
+TAR_FILENAME="tar-$HOSTNAME-$DATE.tar.gz"
 echo "Creating $CSV_FILEPATH$CSV_FILENAME..."
 touch $CSV_FILEPATH$CSV_FILENAME
 if [ $? -eq 0 ]; then
@@ -128,7 +128,7 @@ create_tarball() {
     echo "Creating tarball..."
     #local l_TAR_FILENAME="tar-$HOSTNAME-${DATE}.tar.gz"
     tar -czvf $TAR_FILENAME -C /root/csv/ .
-    echo "Tarball saved to $TAR_DIR/$l_TAR_FILENAME."
+    echo "Tarball saved to $TAR_DIR/$TAR_FILENAME."
     echo "Transferring tarball to remote host..."
     scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR/$TAR_FILENAME 209.97.138.74:/root/csv-storage/$TAR_FILENAME
     if [ $? -eq 0 ]; then
