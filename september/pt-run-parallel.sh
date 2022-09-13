@@ -73,7 +73,7 @@ if [ "$STAGE1" = true ]; then
     # The goal of stage 1 is to figure out if the flow-label is maintained across all hops to a destination
     #FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2)
     #FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1 $FLOW_LABEL_2 $FLOW_LABEL_3 $FLOW_LABEL_4 $FLOW_LABEL_5)
-    FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1)
+    FLOW_LABELS=($FLOW_LABEL_0)
     #FLOW_LABELS=($FLOW_LABEL_MAX)
     #DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT)
     DESTINATION_PORTS=($HTTPS_PORT)
