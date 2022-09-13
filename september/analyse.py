@@ -43,23 +43,24 @@ def print_stats(dataframe):
     # Print all rows
     print(dataframe)
     # Print top rows
-    print(dataframe.head())
+    # print(dataframe.head())
     # Print column
-    print(dataframe['Flow label'].head())
+    #print(dataframe['Flow label'].head())
     # Print multiple columns
-    print(dataframe[['Flow label', 'Source IP']].head())
+    #print(dataframe[['Flow label', 'Source IP']].head())
     # Print data types of each column
-    print(dataframe.dtypes)
+    # print(dataframe.dtypes)
 
 
 def main():
-    filename = "test_data.csv"
+    #filename = "test_data.csv"
+    filename = "/home/erlend/csv-storage/csv-storage/ubuntu-lon1-0-2022-09-12T20_27_07Z.csv"
     #path = "/home/erlend/git/scripts/september/csv"
     #traceroute_stats = load_multiple_csv(path)
     traceroute_stats = load_single_csv(filename)
     print_stats(traceroute_stats)
-    create_plot(traceroute_stats)
-    export_to_latex(traceroute_stats)
+    # create_plot(traceroute_stats)
+    # export_to_latex(traceroute_stats)
 
 
 if __name__ == "__main__":
