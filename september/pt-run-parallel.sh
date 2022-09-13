@@ -72,8 +72,8 @@ if [ "$STAGE1" = true ]; then
     # Stage 1
     # The goal of stage 1 is to figure out if the flow-label is maintained across all hops to a destination
     #FLOW_LABELS=($FLOW_LABEL_MIN $FLOW_LABEL_LOW_3 $FLOW_LABEL_MID_2)
-    #FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1 $FLOW_LABEL_2 $FLOW_LABEL_3 $FLOW_LABEL_4 $FLOW_LABEL_5)
-    FLOW_LABELS=($FLOW_LABEL_0)
+    FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1 $FLOW_LABEL_2 $FLOW_LABEL_3 $FLOW_LABEL_4 $FLOW_LABEL_5)
+    #FLOW_LABELS=($FLOW_LABEL_0)
     #FLOW_LABELS=($FLOW_LABEL_MAX)
     #DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT)
     DESTINATION_PORTS=($HTTPS_PORT)
@@ -126,7 +126,6 @@ fi
 create_tarball() {
     cd $TAR_DIR
     echo "Creating tarball..."
-    #local l_TAR_FILENAME="tar-$HOSTNAME-${DATE}.tar.gz"
     tar -czvf $TAR_FILENAME -C /root/csv/ .
     echo "Tarball saved to $TAR_DIR/$TAR_FILENAME."
     echo "Transferring tarball to remote host..."
@@ -160,8 +159,7 @@ for i in $(seq 1 $N_ITERATIONS); do
     for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
         for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
             N=1
-            #M=11
-            M=5
+            M=11
             #M=10
             while [ $N -lt $HITLIST_LENGTH ]; do
                 readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
@@ -169,17 +167,13 @@ for i in $(seq 1 $N_ITERATIONS); do
                     pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
                 done
                 wait
-                #let N=$N+11
-                #let M=$M+11
-                #let N=$N+10
-                #let M=$M+10
-                let N=$N+5
-                let M=$M+5
+                let N=$N+11
+                let M=$M+11
             done
         done
     done
     wait
 done
 echo "End time: $(date)" >>$HOME/time.txt
-#create_tarball
+create_tarball
 echo "All done!"
