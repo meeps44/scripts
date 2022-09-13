@@ -152,7 +152,10 @@ pt_run() {
     echo "Paris-traceroute finished. Output saved to $CSV_FILEPATH$CSV_FILENAME."
 }
 
+TIME_FILE=$HOME/time.txt
+test -f $HOME/time.txt || touch $TIME_FILE
 echo "Start time: $(date)" >>$HOME/time.txt
+
 for i in $(seq 1 $N_ITERATIONS); do
     for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
         for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
