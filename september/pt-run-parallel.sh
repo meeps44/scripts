@@ -113,6 +113,7 @@ HITLIST_LENGTH=$(wc -l <$HITLIST)
 DATE=$(date '+%Y-%m-%dT%H_%M_%SZ')
 CSV_FILEPATH="/root/csv/"
 CSV_FILENAME="$HOSTNAME-${DATE}.csv"
+TAR_FILENAME="tar-$CSV_FILENAME.tar.gz"
 echo "Creating $CSV_FILEPATH$CSV_FILENAME..."
 touch $CSV_FILEPATH$CSV_FILENAME
 if [ $? -eq 0 ]; then
@@ -125,14 +126,14 @@ fi
 create_tarball() {
     cd $TAR_DIR
     echo "Creating tarball..."
-    local l_TAR_FILENAME="tar-$HOSTNAME-${DATE}.tar.gz"
-    tar -czvf ${l_TAR_FILENAME} -C /root/csv/ .
+    #local l_TAR_FILENAME="tar-$HOSTNAME-${DATE}.tar.gz"
+    tar -czvf $TAR_FILENAME -C /root/csv/ .
     echo "Tarball saved to $TAR_DIR/$l_TAR_FILENAME."
     echo "Transferring tarball to remote host..."
-    scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR/$l_TAR_FILENAME 209.97.138.74:/root/csv-storage/$l_TAR_FILENAME
+    scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR/$TAR_FILENAME 209.97.138.74:/root/csv-storage/$TAR_FILENAME
     if [ $? -eq 0 ]; then
         echo "Transfer completed successfully. Deleting local tarball..."
-        rm $TAR_DIR/$l_TAR_FILENAME
+        rm $TAR_DIR/$TAR_FILENAME
         echo "Tarball deleted."
         echo "Cleaning up raw data..."
         find /root/csv/ -maxdepth 1 -name "*.csv" -print0 | xargs -0 rm
