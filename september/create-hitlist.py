@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+import json
 import argparse
 import sys
 try:
@@ -10,10 +11,12 @@ except Exception as e:
     sys.exit(1)
 
 # Usage example:
-# python3 create-hitlist.py -n <> -i <> -r <> -f hitlist.txt 
+# python3 create-hitlist.py -n <> -i <> -r <> -f hitlist.txt
 
-def read_non_aliased(tree, fh):
-    return fill_tree(tree, fh)
+
+# def read_non_aliased(tree, fh):
+    # return fill_tree(tree, fh)
+
 
 def fill_tree(tree, fh):
     for line in fh:
@@ -28,26 +31,39 @@ def fill_tree(tree, fh):
 def main():
     parser = argparse.ArgumentParser()
     # Input files
-    parser.add_argument("-n", "--non-aliased-file", required=True, type=argparse.FileType('r'), \
-        help="File containing non-aliased prefixes")
-    parser.add_argument("-i", "--ip-address-file", required=True, type=argparse.FileType('r'), \
-        help="List of IPv6-addresses (https://ipv6hitlist.github.io/) \
-        to be matched against (non-)aliased prefixes")
-    parser.add_argument("-r", "--routeviews-file", required=True, \
-        help="File containing full RouteViews data")
+    # parser.add_argument("-n", "--non-aliased-file", required=True, type=argparse.FileType('r'),
+    # help="File containing non-aliased prefixes")
+    parser.add_argument("-i", "--ip-address-file", required=True, type=argparse.FileType('r'),
+                        help="List of IPv6-addresses (https://ipv6hitlist.github.io/) \
+        to be matched against non-aliased prefixes")
+    parser.add_argument("-r", "--routeviews-file", required=True,
+                        help="File containing RouteViews prefix2as data")
     # Output files
-    parser.add_argument("-f", "--hitlist-file", required=True, \
-        help="Output file to where the complete hitlist will be written")
-    parser.add_argument("-k", "--keyvalue-file", required=False, \
-        help="Output file to where the asn-hitlist pair will be written")
+    parser.add_argument("-f", "--hitlist-file", required=True,
+                        help="Output file to where the complete hitlist will be written")
+    parser.add_argument("-k", "--keyvalue-file", required=False,
+                        help="Output file to where the asn-hitlist pair will be written")
     args = parser.parse_args()
 
     # Store aliased and non-aliased prefixes in a single subnet tree
+    # Create subnet tree consisting of all prefixes in RouteViews prefix2as dataset
     tree = SubnetTree.SubnetTree()
-    # Read aliased and non-aliased prefixes
-    tree = read_non_aliased(tree, args.non_aliased_file)
+    with open(args.routeviews_file, 'r') as file:
+        data = file.readlines()
 
-    unique_as_numbers = set()
+        # TODO: strip ASN and add just the prefixes to list
+        prefixes = list()
+        for line in data:
+            line = line.strip()
+            line = line.split()
+            rv_prefix = line[0] + "/" + line[1]
+            prefixes.append(rv_prefix)
+        # Fill tree with routeviews data
+        tree = fill_tree(tree, prefixes)
+
+    # Read aliased and non-aliased prefixes
+    #tree = read_non_aliased(tree, args.non_aliased_file)
+
     hitlist_dict = {}
     ipaddress_asn_map = {}
 
@@ -58,41 +74,38 @@ def main():
             line = line.strip()
             line = line.split()
             key = line[0] + "/" + line[1]
-            #print(f"{key=}")
+            # print(f"{key=}")
             #print("Creating ipaddress_asn_map")
             ipaddress_asn_map[key] = line
 
-    # Read IP address file, match each address to longest prefix and write output to file
+    # Read input IP-address file and perform ASN-lookup on each IP-address.
+    # Save the result as a python-dictionary where each ASN is a key and the
+    # IP-address is the value.
     for ip_address in args.ip_address_file:
         ip_address = ip_address.strip()
         try:
-            #asn = str(get_asn(tree[ip_address], data))
             longest_matching_prefix = tree[ip_address]
-            #print(f"{longest_matching_prefix=}")
-            #print(f"ipaddress_asn_map value: {my_hashmap[longest_matching_prefix]}")
-            asn = ipaddress_asn_map[longest_matching_prefix]
-            asn = asn[2]
-            #print(f"{asn=}")
-            #unique_as_numbers.add(asn)
+            asn = ipaddress_asn_map[longest_matching_prefix][2]
 
             # Check if the prefix length is less than this line's prefix length
             if asn in hitlist_dict:
                 if hitlist_dict[asn][-2:] < asn[1]:
-                    hitlist_dict[asn] = str(f"{ip_address}/{longest_matching_prefix[-2:]}")
+                    hitlist_dict[asn] = str(
+                        f"{ip_address}/{longest_matching_prefix[-2:]}")
             else:
-                hitlist_dict[asn] = str(f"{ip_address}/{longest_matching_prefix[-2:]}")
-
-            # print(f"{asn} {longest_matching_prefix[-2:]} {ip_address} {longest_matching_prefix}")
+                hitlist_dict[asn] = str(
+                    f"{ip_address}/{longest_matching_prefix[-2:]}")
         except KeyError as e:
             print("Skipped line '" + ip_address + "'", file=sys.stderr)
-    
-    # Write all key-value pairs
-    with open(args.keyvalue_file, 'w') as file:
-        print(hitlist_dict)
 
-    # Write only the dictionary values
+    # Output ASN-IPaddress pairs to file in JSON-format:
+    with open(args.keyvalue_file, 'w') as file:
+        json.dump(hitlist_dict, file)
+
+    # Output only IP-addresses to file:
     with open(args.hitlist_file, 'w') as file:
         [file.write(value + "\n") for value in hitlist_dict.values()]
+
 
 if __name__ == "__main__":
     main()
