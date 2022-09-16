@@ -34,7 +34,7 @@ DATE=$(date '+%Y-%m-%dT%H_%M_%SZ')
 CSV_FILEPATH="/root/csv/"
 TAR_FILENAME="tar-$HOSTNAME-$DATE.tar.gz"
 
-# Default values
+# Flow label and port values
 FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1 $FLOW_LABEL_2 $FLOW_LABEL_3 $FLOW_LABEL_4)
 DESTINATION_PORTS=($HTTPS_PORT)
 HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
@@ -43,19 +43,17 @@ HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
 FULL_HITLIST=true
 
 # Experiment stages
-STAGE1=true
+# Stage 1
+# The goal of stage 1 is to figure out if the flow-label is maintained across all hops to a destination
+# Stage 2
+# In stage 2, the flow label will be constant (0).
+# The goal is to figure out if we can get a change in path by changing the port number
+# Stage 3
+# The goal of this step is to delve into the cases from stage 2
+# We want to know if we get the same path if we use a different port-number. Mix of well-known ports
 STAGE2=false
 
-if [ "$STAGE1" = true ]; then
-    # Stage 1
-    # The goal of stage 1 is to figure out if the flow-label is maintained across all hops to a destination
-    # Stage 3
-    # The goal of this step is to delve into the cases from stage 2
-    # We want to know if we get the same path if we use a different port-number. Mix of well-known ports
-    FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1 $FLOW_LABEL_2 $FLOW_LABEL_3 $FLOW_LABEL_4)
-    #DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT)
-    DESTINATION_PORTS=($HTTPS_PORT)
-elif [ "$STAGE2" = true ]; then
+if [ "$STAGE2" = true ]; then
     # Stage 2
     # In stage 2, the flow label will be constant (0).
     # The goal is to figure out if we can get a change in path by changing the port number
