@@ -13,3 +13,4 @@ make
 make install
 export PATH=$PATH:~/git/libparistraceroute/paris-traceroute
 ldconfig
+git -C $HOME/git clone https://github.com/meeps44/scripts.git
