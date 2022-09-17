@@ -25,15 +25,6 @@ FLOW_LABEL_3=983040 #(decimal), F0000 hex
 #1111 11111111 11111111:
 FLOW_LABEL_4=1048575 #(decimal), FFFFF hex
 
-# Other definitions:
-LOCALHOST_IP=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
-TAR_DIR="/root/tarballs"
-N_ITERATIONS=4 # The number of iterations that you wish to run the experiment.
-HITLIST_LENGTH=$(wc -l <$HITLIST)
-DATE=$(date '+%Y-%m-%dT%H_%M_%SZ')
-CSV_FILEPATH="/root/csv/"
-TAR_FILENAME="tar-$HOSTNAME-$DATE.tar.gz"
-
 # Flow label and port values
 FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1 $FLOW_LABEL_2 $FLOW_LABEL_3 $FLOW_LABEL_4)
 DESTINATION_PORTS=($HTTPS_PORT)
@@ -71,6 +62,15 @@ else
     # Short hitlist (Alexa top 500)
     HITLIST="/root/git/scripts/text-files/ipv6-address-list-alexa-top500-pruned.txt"
 fi
+
+# Other definitions:
+LOCALHOST_IP=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
+TAR_DIR="/root/tarballs"
+N_ITERATIONS=4 # The number of iterations that you wish to run the experiment.
+HITLIST_LENGTH=$(wc -l <$HITLIST)
+DATE=$(date '+%Y-%m-%dT%H_%M_%SZ')
+CSV_FILEPATH="/root/csv/"
+TAR_FILENAME="tar-$HOSTNAME-$DATE.tar.gz"
 
 create_output_file() {
     DATE=$(date '+%Y-%m-%dT%H_%M_%SZ')
