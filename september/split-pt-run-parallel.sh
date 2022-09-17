@@ -109,7 +109,8 @@ pt_run() {
     local l_FLOW_LABEL="$3"
 
     echo "Starting paris-traceroute."
-    sudo paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
+    sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
+    #sudo paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
     echo "Paris-traceroute finished. Output saved to $CSV_FILEPATH$CSV_FILENAME."
 }
 
