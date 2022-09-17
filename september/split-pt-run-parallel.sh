@@ -147,7 +147,8 @@ for i in $(seq 1 $N_ITERATIONS); do
     for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
         #create_output_file # Better placement?
         N=1
-        M=11
+        #M=11
+        M=10
         while [ $N -lt $HITLIST_LENGTH ]; do
             readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
             for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
@@ -156,12 +157,14 @@ for i in $(seq 1 $N_ITERATIONS); do
                 done
                 wait
             done
-            let N=$N+11
-            let M=$M+11
+            #let N=$N+11
+            #let M=$M+11
+            let N=$N+10
+            let M=$M+10
         done
     done
     wait
 done
 echo "End time: $(date)" >>$HOME/time.txt
-#create_tarball
+create_tarball
 echo "All done!"
