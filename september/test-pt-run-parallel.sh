@@ -31,7 +31,7 @@ DESTINATION_PORTS=($HTTPS_PORT)
 HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
 
 # Use large or small hitlist
-FULL_HITLIST=true
+#FULL_HITLIST=true
 
 # Experiment stages
 # Stage 1
@@ -52,16 +52,16 @@ if [ "$STAGE2" = true ]; then
     DESTINATION_PORTS=($TRACEROUTE_DEFAULT_PORT $SSH_PORT $HTTP_PORT $HTTPS_PORT $DNS_PORT)
 fi
 
-if [ "$FULL_HITLIST" = true ]; then
-    # Short hitlist (20 lines)
-    HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
+#if [ "$FULL_HITLIST" = true ]; then
+## Short hitlist (20 lines)
+#HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
 
-    # Long hitlist (15757 lines)
-    #HITLIST="/root/git/scripts/text-files/hitlist.txt"
-else
-    # Short hitlist (Alexa top 500)
-    HITLIST="/root/git/scripts/text-files/ipv6-address-list-alexa-top500-pruned.txt"
-fi
+## Long hitlist (15757 lines)
+##HITLIST="/root/git/scripts/text-files/hitlist.txt"
+#else
+## Short hitlist (Alexa top 500)
+#HITLIST="/root/git/scripts/text-files/ipv6-address-list-alexa-top500-pruned.txt"
+#fi
 
 # Other definitions:
 FLOW_LABEL_LIST="/root/git/scripts/text-files/flow_labels.txt"
