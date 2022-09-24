@@ -118,16 +118,7 @@ test -f /root/time.txt || touch /root/time.txt
 echo "Start time: $(date)" >>/root/time.txt
 create_output_file
 # Declare an array of string with type
-declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1.txt"
-    "/root/git/scripts/text-files/hitlist/hitlist2.txt"
-    "/root/git/scripts/text-files/hitlist/hitlist3.txt"
-    "/root/git/scripts/text-files/hitlist/hitlist4.txt"
-    "/root/git/scripts/text-files/hitlist/hitlist5.txt"
-    "/root/git/scripts/text-files/hitlist/hitlist6.txt"
-    "/root/git/scripts/text-files/hitlist/hitlist7.txt"
-    "/root/git/scripts/text-files/hitlist/hitlist8.txt"
-    "/root/git/scripts/text-files/hitlist/hitlist9.txt"
-    "/root/git/scripts/text-files/hitlist/hitlist10.txt")
+declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1.txt" "/root/git/scripts/text-files/hitlist/hitlist2.txt" "/root/git/scripts/text-files/hitlist/hitlist3.txt" "/root/git/scripts/text-files/hitlist/hitlist4.txt" "/root/git/scripts/text-files/hitlist/hitlist5.txt" "/root/git/scripts/text-files/hitlist/hitlist6.txt" "/root/git/scripts/text-files/hitlist/hitlist7.txt" "/root/git/scripts/text-files/hitlist/hitlist8.txt" "/root/git/scripts/text-files/hitlist/hitlist9.txt" "/root/git/scripts/text-files/hitlist/hitlist10.txt")
 
 # Iterate the string array using for loop
 for hitlist in ${StringArray[@]}; do
