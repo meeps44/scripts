@@ -23,12 +23,13 @@ pt_run() {
     local l_DESTINATION_ADDR_LIST="$1"
     local l_DESTINATION_PORT="$2"
     local l_FLOW_LABEL_LIST="$3"
+    local l_INDEX="$4"
 
-    echo "Starting paris-traceroute."
+    echo "Starting paris-traceroute $l_INDEX."
     #sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $N_ITERATIONS $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL_LIST $l_DESTINATION_ADDR_LIST >/dev/null
-    echo "/root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $N_ITERATIONS $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL_LIST $l_DESTINATION_ADDR_LIST"
+    #echo "/root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $N_ITERATIONS $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL_LIST $l_DESTINATION_ADDR_LIST"
     sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $N_ITERATIONS $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL_LIST $l_DESTINATION_ADDR_LIST >/dev/null
-    echo "Paris-traceroute finished. Output saved to $CSV_FILEPATH$CSV_FILENAME."
+    echo "Paris-traceroute $l_INDEX finished. Output saved to $CSV_FILEPATH$CSV_FILENAME."
 }
 
 # Declare an array of string with type
@@ -36,10 +37,13 @@ declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1.txt" "/ro
 #declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1.txt" "/root/git/scripts/text-files/hitlist/hitlist2.txt")
 
 # Iterate the string array using for loop
+INDEX=0
 for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
     for item in ${StringArray[@]}; do
+        INDEX=$((INDEX + 1))
+        #let "INDEX=INDEX+1"
         echo "$item"
-        pt_run "$item" "$DESTINATION_PORT" "$FLOW_LABEL_LIST" &
+        pt_run "$item" "$DESTINATION_PORT" "$FLOW_LABEL_LIST" $INDEX &
     done
     wait
 done
