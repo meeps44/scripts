@@ -54,19 +54,20 @@ fi
 
 if [ "$FULL_HITLIST" = true ]; then
     # Short hitlist (20 lines)
-    #HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
+    HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
 
     # Long hitlist (15757 lines)
-    HITLIST="/root/git/scripts/text-files/hitlist.txt"
+    #HITLIST="/root/git/scripts/text-files/hitlist.txt"
 else
     # Short hitlist (Alexa top 500)
     HITLIST="/root/git/scripts/text-files/ipv6-address-list-alexa-top500-pruned.txt"
 fi
 
 # Other definitions:
+FLOW_LABEL_LIST="/root/git/scripts/text-files/flow_labels.txt"
 LOCALHOST_IP=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
 TAR_DIR="/root/tarballs"
-N_ITERATIONS=4 # The number of iterations that you wish to run the experiment.
+N_ITERATIONS=4
 HITLIST_LENGTH=$(wc -l <$HITLIST)
 DATE=$(date '+%Y-%m-%dT%H_%M_%SZ')
 CSV_FILEPATH="/root/csv/"
@@ -104,42 +105,37 @@ create_tarball() {
 }
 
 pt_run() {
-    local l_DESTINATION_ADDR="$1"
+    local l_DESTINATION_ADDR_LIST="$1"
     local l_DESTINATION_PORT="$2"
-    local l_FLOW_LABEL="$3"
+    local l_FLOW_LABEL_LIST="$3"
 
     echo "Starting paris-traceroute."
-    sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
-    #sudo paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
+    sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $N_ITERATIONS $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL_LIST $l_DESTINATION_ADDR_LIST >/dev/null
     echo "Paris-traceroute finished. Output saved to $CSV_FILEPATH$CSV_FILENAME."
 }
 
-#TIME_FILE=/root/time.txt
 test -f /root/time.txt || touch /root/time.txt
 echo "Start time: $(date)" >>/root/time.txt
-
 create_output_file
-for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
-    #create_output_file # Better placement?
-    N=1
-    #M=11
-    M=10
-    while [ $N -lt $HITLIST_LENGTH ]; do
-        readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
-        for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
-            for i in $(seq 1 $N_ITERATIONS); do
-                for ADDRESS in ${my_array[@]}; do
-                    pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
-                done
-                wait
-            done
-        done
-        #let N=$N+11
-        #let M=$M+11
-        let N=$N+10
-        let M=$M+10
-    done
+# Declare an array of string with type
+declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1.txt"
+    "/root/git/scripts/text-files/hitlist/hitlist2.txt"
+    "/root/git/scripts/text-files/hitlist/hitlist3.txt"
+    "/root/git/scripts/text-files/hitlist/hitlist4.txt"
+    "/root/git/scripts/text-files/hitlist/hitlist5.txt"
+    "/root/git/scripts/text-files/hitlist/hitlist6.txt"
+    "/root/git/scripts/text-files/hitlist/hitlist7.txt"
+    "/root/git/scripts/text-files/hitlist/hitlist8.txt"
+    "/root/git/scripts/text-files/hitlist/hitlist9.txt"
+    "/root/git/scripts/text-files/hitlist/hitlist10.txt")
+
+# Iterate the string array using for loop
+for hitlist in ${StringArray[@]}; do
+    pt_run "$hitlist" "$DESTINATION_PORT" "$FLOW_LABEL_LIST" &
 done
+#for hitlist in $(seq 1 $N_INSTANCES); do
+#pt_run "$hitlist" "$DESTINATION_PORT" "$FLOW_LABEL_LIST" &
+#done
 wait
 echo "End time: $(date)" >>/root/time.txt
 create_tarball
