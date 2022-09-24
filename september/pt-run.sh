@@ -19,16 +19,22 @@ CSV_FILEPATH="/root/csv/"
 CSV_FILENAME="$HOSTNAME-$DATE.csv"
 TAR_FILENAME="tar-$HOSTNAME-$DATE.tar.gz"
 
+create_output_list() {
+    OUTPUT_LIST="$HOSTNAME-$DATE-$1.csv"
+}
+
 pt_run() {
     local l_DESTINATION_ADDR_LIST="$1"
     local l_DESTINATION_PORT="$2"
     local l_FLOW_LABEL_LIST="$3"
     local l_INDEX="$4"
+    local l_OUTPUT_LIST="$5"
 
     echo "Starting paris-traceroute $l_INDEX."
     #sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $N_ITERATIONS $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL_LIST $l_DESTINATION_ADDR_LIST >/dev/null
     #echo "/root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $N_ITERATIONS $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL_LIST $l_DESTINATION_ADDR_LIST"
-    sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $N_ITERATIONS $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL_LIST $l_DESTINATION_ADDR_LIST >/dev/null
+    #sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $N_ITERATIONS $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL_LIST $l_DESTINATION_ADDR_LIST >/dev/null
+    sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $N_ITERATIONS $LOCALHOST_IP $CSV_FILEPATH$l_OUTPUT_LIST $l_FLOW_LABEL_LIST $l_DESTINATION_ADDR_LIST >/dev/null
     echo "Paris-traceroute $l_INDEX finished. Output saved to $CSV_FILEPATH$CSV_FILENAME."
 }
 
@@ -41,9 +47,11 @@ INDEX=0
 for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
     for item in ${StringArray[@]}; do
         INDEX=$((INDEX + 1))
+        create_output_list "$INDEX"
         #let "INDEX=INDEX+1"
         echo "$item"
-        pt_run "$item" "$DESTINATION_PORT" "$FLOW_LABEL_LIST" $INDEX &
+        #pt_run "$item" "$DESTINATION_PORT" "$FLOW_LABEL_LIST" $INDEX &
+        pt_run "$item" "$DESTINATION_PORT" "$FLOW_LABEL_LIST" $INDEX $OUTPUT_LIST &
     done
     wait
 done
