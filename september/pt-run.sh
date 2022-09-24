@@ -32,13 +32,15 @@ pt_run() {
 }
 
 # Declare an array of string with type
-#declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1.txt" "/root/git/scripts/text-files/hitlist/hitlist2.txt" "/root/git/scripts/text-files/hitlist/hitlist3.txt" "/root/git/scripts/text-files/hitlist/hitlist4.txt" "/root/git/scripts/text-files/hitlist/hitlist5.txt" "/root/git/scripts/text-files/hitlist/hitlist6.txt" "/root/git/scripts/text-files/hitlist/hitlist7.txt" "/root/git/scripts/text-files/hitlist/hitlist8.txt" "/root/git/scripts/text-files/hitlist/hitlist9.txt" "/root/git/scripts/text-files/hitlist/hitlist10.txt")
-declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1.txt" "/root/git/scripts/text-files/hitlist/hitlist2.txt")
+declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1.txt" "/root/git/scripts/text-files/hitlist/hitlist2.txt" "/root/git/scripts/text-files/hitlist/hitlist3.txt" "/root/git/scripts/text-files/hitlist/hitlist4.txt" "/root/git/scripts/text-files/hitlist/hitlist5.txt" "/root/git/scripts/text-files/hitlist/hitlist6.txt" "/root/git/scripts/text-files/hitlist/hitlist7.txt" "/root/git/scripts/text-files/hitlist/hitlist8.txt" "/root/git/scripts/text-files/hitlist/hitlist9.txt" "/root/git/scripts/text-files/hitlist/hitlist10.txt")
+#declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1.txt" "/root/git/scripts/text-files/hitlist/hitlist2.txt")
 
 # Iterate the string array using for loop
-for item in ${StringArray[@]}; do
-    echo "$item"
-    pt_run "$item" "$DESTINATION_PORT" "$FLOW_LABEL_LIST" &
+for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+    for item in ${StringArray[@]}; do
+        echo "$item"
+        pt_run "$item" "$DESTINATION_PORT" "$FLOW_LABEL_LIST" &
+    done
+    wait
 done
-wait
 echo "All done!"
