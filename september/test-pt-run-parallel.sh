@@ -124,8 +124,10 @@ create_output_file
 declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1/xaa" "/root/git/scripts/text-files/hitlist/hitlist1/xab" "/root/git/scripts/text-files/hitlist/hitlist1/xac" "/root/git/scripts/text-files/hitlist/hitlist1/xad" "/root/git/scripts/text-files/hitlist/hitlist1/xae" "/root/git/scripts/text-files/hitlist/hitlist1/xaf" "/root/git/scripts/text-files/hitlist/hitlist1/xag" "/root/git/scripts/text-files/hitlist/hitlist1/xah" "/root/git/scripts/text-files/hitlist/hitlist1/xai" "/root/git/scripts/text-files/hitlist/hitlist1/xaj")
 
 # Iterate the string array using for loop
-for hitlist in ${StringArray[@]}; do
-    pt_run "$hitlist" "$DESTINATION_PORT" "$FLOW_LABEL_LIST" &
+for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+    for hitlist in ${StringArray[@]}; do
+        pt_run "$hitlist" "$DESTINATION_PORT" "$FLOW_LABEL_LIST" &
+    done
 done
 #for hitlist in $(seq 1 $N_INSTANCES); do
 #pt_run "$hitlist" "$DESTINATION_PORT" "$FLOW_LABEL_LIST" &
