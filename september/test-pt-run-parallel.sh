@@ -120,6 +120,9 @@ create_output_file
 # Declare an array of string with type
 #declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1.txt" "/root/git/scripts/text-files/hitlist/hitlist2.txt" "/root/git/scripts/text-files/hitlist/hitlist3.txt" "/root/git/scripts/text-files/hitlist/hitlist4.txt" "/root/git/scripts/text-files/hitlist/hitlist5.txt" "/root/git/scripts/text-files/hitlist/hitlist6.txt" "/root/git/scripts/text-files/hitlist/hitlist7.txt" "/root/git/scripts/text-files/hitlist/hitlist8.txt" "/root/git/scripts/text-files/hitlist/hitlist9.txt" "/root/git/scripts/text-files/hitlist/hitlist10.txt")
 
+#Prod:
+#declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1/xaa" "/root/git/scripts/text-files/hitlist/hitlist2/xab" "/root/git/scripts/text-files/hitlist/hitlist3/xac" "/root/git/scripts/text-files/hitlist/hitlist4/xad" "/root/git/scripts/text-files/hitlist/hitlist5/xae" "/root/git/scripts/text-files/hitlist/hitlist6/xaf" "/root/git/scripts/text-files/hitlist/hitlist7/xag" "/root/git/scripts/text-files/hitlist/hitlist8/xah" "/root/git/scripts/text-files/hitlist/hitlist9/xai" "/root/git/scripts/text-files/hitlist/hitlist10/xaj")
+
 #Test:
 declare -a StringArray=("/root/git/scripts/text-files/hitlist/hitlist1/xaa" "/root/git/scripts/text-files/hitlist/hitlist1/xab" "/root/git/scripts/text-files/hitlist/hitlist1/xac" "/root/git/scripts/text-files/hitlist/hitlist1/xad" "/root/git/scripts/text-files/hitlist/hitlist1/xae" "/root/git/scripts/text-files/hitlist/hitlist1/xaf" "/root/git/scripts/text-files/hitlist/hitlist1/xag" "/root/git/scripts/text-files/hitlist/hitlist1/xah" "/root/git/scripts/text-files/hitlist/hitlist1/xai" "/root/git/scripts/text-files/hitlist/hitlist1/xaj")
 
