@@ -54,10 +54,10 @@ fi
 
 if [ "$FULL_HITLIST" = true ]; then
     # Short hitlist (20 lines)
-    #HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
+    HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
 
     # Long hitlist (15757 lines)
-    HITLIST="/root/git/scripts/text-files/hitlist.txt"
+    #HITLIST="/root/git/scripts/text-files/hitlist.txt"
 else
     # Short hitlist (Alexa top 500)
     HITLIST="/root/git/scripts/text-files/ipv6-address-list-alexa-top500-pruned.txt"
@@ -115,8 +115,8 @@ pt_run() {
 }
 
 TIME_FILE=$HOME/time.txt
-test -f $HOME/time.txt || touch $TIME_FILE
-echo "Start time: $(date)" >>$HOME/time.txt
+test -f /root/time.txt || touch /root/time.txt
+echo "Start time: $(date)" >>/root/time.txt
 
 #for i in $(seq 1 $N_ITERATIONS); do
 #create_output_file
@@ -143,29 +143,25 @@ echo "Start time: $(date)" >>$HOME/time.txt
 #create_tarball
 #echo "All done!"
 
-for i in $(seq 1 $N_ITERATIONS); do
-    create_output_file
-    for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
-        #create_output_file # Better placement?
-        N=1
-        #M=11
-        M=10
-        while [ $N -lt $HITLIST_LENGTH ]; do
-            readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
+create_output_file
+for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+    N=1
+    M=10
+    while [ $N -lt $HITLIST_LENGTH ]; do
+        readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
+        for i in $(seq 1 $N_ITERATIONS); do
             for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
                 for ADDRESS in ${my_array[@]}; do
                     pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
                 done
                 wait
             done
-            #let N=$N+11
-            #let M=$M+11
-            let N=$N+10
-            let M=$M+10
         done
+        let N=$N+10
+        let M=$M+10
     done
-    wait
 done
+wait
 echo "End time: $(date)" >>$HOME/time.txt
 create_tarball
 echo "All done!"
