@@ -165,3 +165,26 @@ wait
 echo "End time: $(date)" >>$HOME/time.txt
 create_tarball
 echo "All done!"
+
+# Test:
+#for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+#N=1
+#M=10
+#while [ $N -lt $HITLIST_LENGTH ]; do
+#for i in $(seq 1 $N_ITERATIONS); do
+#for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+#readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
+#for ADDRESS in ${my_array[@]}; do
+#pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
+#done
+#wait
+#let N=$N+10
+#let M=$M+10
+#done
+#done
+#done
+#done
+#wait
+#echo "End time: $(date)" >>$HOME/time.txt
+#create_tarball
+#echo "All done!"
