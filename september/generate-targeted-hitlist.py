@@ -1,5 +1,7 @@
 import dataclasses
 
+# Usage: Generates a targeted hitlist based on flow label data.
+
 # Each path object is a list of tuples consisting of the hop number and
 # the hop address.
 # We are assuming that the paths all have the same

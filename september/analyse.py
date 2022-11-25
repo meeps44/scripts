@@ -11,17 +11,16 @@ def create_plot(dataframe):
     plt.show()
 
 
-def load_single_csv(filename):
-    # Load data into DataFrame
+def load_single_csv(filename) -> pd.DataFrame:
     df: pd.DataFrame = pd.read_csv(
         filename, sep=', ', parse_dates=['Timestamp'])
     return df
 
 
-def load_multiple_csv(path):
+def load_multiple_csv(path) -> pd.DataFrame:
     try:
         all_files = glob.glob(os.path.join(path, "*.csv"))
-        df: pd.DataFrame = pd.concat((pd.read_csv(f)
+        df: pd.DataFrame = pd.concat((pd.read_csv(f, low_memory=False)
                                      for f in all_files), ignore_index=True)
         return df
     except FileNotFoundError:
@@ -59,12 +58,12 @@ def print_stats(dataframe):
 
 
 def main():
-    # filename = "test_data.csv"
-    filename = "/home/erlend/csv-storage/csv-storage/ubuntu-lon1-0-2022-09-12T20_27_07Z.csv"
+    # filename = "/home/erlend/csv-storage/csv-storage/ubuntu-lon1-0-2022-09-12T20_27_07Z.csv"
+    # df = load_single_csv(filename)
     # path = "/home/erlend/git/scripts/september/csv"
-    # traceroute_stats = load_multiple_csv(path)
-    traceroute_stats = load_single_csv(filename)
-    print_stats(traceroute_stats)
+    path = "/home/erlend/git/scripts/september/tarballs/unzip"
+    df = load_multiple_csv(path)
+    print_stats(df)
     # create_plot(traceroute_stats)
     # export_to_latex(traceroute_stats)
 
