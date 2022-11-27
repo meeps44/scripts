@@ -50,7 +50,8 @@ def print_stats(dataframe):
     # Print data types of each column
     # print(dataframe.dtypes)
     # Select row by index
-    print(dataframe.iloc[[413, 414]])
+    # print(dataframe.iloc[[413, 414]])
+
     # Select row by value and print whole row
     with pd.option_context('display.max_rows', None, 'display.max_columns', None):
         print(dataframe.loc[dataframe['Destination IP']
@@ -59,10 +60,11 @@ def print_stats(dataframe):
 
 def main():
     # filename = "/home/erlend/csv-storage/csv-storage/ubuntu-lon1-0-2022-09-12T20_27_07Z.csv"
-    # df = load_single_csv(filename)
+    filename = "/home/erlend/git/scripts/september/tarballs/unzip/ubuntu-ams3-0-2022-09-26T11_53_32Z.csv"
+    df = load_single_csv(filename)
     # path = "/home/erlend/git/scripts/september/csv"
-    path = "/home/erlend/git/scripts/september/tarballs/unzip"
-    df = load_multiple_csv(path)
+    #path = "/home/erlend/git/scripts/september/tarballs/unzip"
+    #df = load_multiple_csv(path)
     print_stats(df)
     # create_plot(traceroute_stats)
     # export_to_latex(traceroute_stats)
