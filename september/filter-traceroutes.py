@@ -5,7 +5,7 @@ import numpy as np
 
 
 def filter_loops(df) -> pd.DataFrame:
-    """Filter all traceroute loops from a dataframe."""
+    """Remove from a dataframe all traceroute loops."""
     filtered_count: int = 0
     # Print the number of elements filtered
     print(filtered_count)
@@ -13,7 +13,7 @@ def filter_loops(df) -> pd.DataFrame:
 
 
 def filter_cycles(df) -> pd.DataFrame:
-    """Filter all traceroute cycles from a dataframe."""
+    """Filter from a dataframe all traceroute cycles."""
     filtered_count: int = 0
     # Print the number of elements filtered
     print(filtered_count)
@@ -21,7 +21,7 @@ def filter_cycles(df) -> pd.DataFrame:
 
 
 def filter_changed_flowlabel(df) -> pd.DataFrame:
-    """Filter all traceroute pairs containing a changed flow label from a dataframe."""
+    """Remove from a dataframe all traceroute pairs containing a changed flow label."""
     filtered_count: int = 0
     # Print the number of elements filtered
     print(filtered_count)
@@ -29,7 +29,7 @@ def filter_changed_flowlabel(df) -> pd.DataFrame:
 
 
 def filter_changed_path(df) -> pd.DataFrame:
-    """Filter all traceroute pairs containing a changed path from a dataframe."""
+    """Remove from a dataframe all traceroute pairs containing a changed path."""
     filtered_count: int = 0
     # Print the number of elements filtered
     print(filtered_count)
