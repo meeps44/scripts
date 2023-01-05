@@ -2,6 +2,20 @@
 
 # Example data: https://collaborating.tuhh.de/e-exk4/advent/-/blob/master/23-rseq/data.Ryzen7_PRO_5850U
 
+# Data format:
+# (source: https://collaborating.tuhh.de/e-exk4/advent/-/blob/master/23-rseq/rseq.c, line 236):
+
+# // Print out the result. We also check that the threads actually
+# // counted correctly (state)
+# printf("mode=%s threads=%d sum=%ld state=%s aborts=%ld cputime=%fs per_increment=%fns\n",
+#MODE, NTHREADS,
+# sum, (sum % ROUNDS_PER_THREAD) == 0 ? "ok" : "fail",
+# aborts,
+# delta,            // total cpu time that was spent
+# delta * 1e9 / sum // nanoseconds per increment
+# );
+
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
