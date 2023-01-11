@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 #sudo apt install libssl-dev -y
+apt update && apt -y install sqlite3 libsqlite3-dev
 apt -y install libssl-dev
 mkdir /root/csv /root/tarballs /root/git
 git -C /root/git clone https://github.com/meeps44/libparistraceroute.git
