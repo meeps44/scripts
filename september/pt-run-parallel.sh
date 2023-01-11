@@ -70,30 +70,17 @@ N_ITERATIONS=4 # The number of iterations that you wish to run the experiment.
 HITLIST_LENGTH=$(wc -l <$HITLIST)
 DATE=$(date '+%Y-%m-%dT%H_%M_%SZ')
 CSV_FILEPATH="/root/csv/"
+DB_FILEPATH="/root/db/"
+DB_FILENAME="db-$HOSTNAME-$DATE.db"
 TAR_FILENAME="tar-$HOSTNAME-$DATE.tar.gz"
-
-create_output_file() {
-    DATE=$(date '+%Y-%m-%dT%H_%M_%SZ')
-    CSV_FILENAME="$HOSTNAME-$DATE.csv"
-    echo "Creating $CSV_FILEPATH$CSV_FILENAME..."
-    touch $CSV_FILEPATH$CSV_FILENAME
-    if [ $? -eq 0 ]; then
-        echo "File $CSV_FILEPATH$CSV_FILENAME created successfully."
-        # TODO: Fix echo statement:
-        # echo "Outgoing Flow Label, Outgoing Port, Timestamp, Source IP, Source ASN, Destination IP, Destination ASN, Path Hash, Hop Count, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN, Hop Number, Hop Flow Label, Hop IP, Hop ASN" >$CSV_FILEPATH$CSV_FILENAME
-        echo "Outgoing Flow Label, Outgoing Port, Timestamp, Source IP, Source ASN, Destination IP, Destination ASN, Path Hash, Hop Count, Hop Number, Hop Flow Label, Hop IP, Hop ASN"
-    else
-        echo "File creation failed."
-    fi
-}
 
 create_tarball() {
     cd $TAR_DIR
     echo "Creating tarball..."
-    tar -czvf $TAR_FILENAME -C /root/csv/ .
+    tar -czvf $TAR_FILENAME -C /root/db/ .
     echo "Tarball saved to $TAR_DIR/$TAR_FILENAME."
     echo "Transferring tarball to remote host..."
-    scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR/$TAR_FILENAME 209.97.138.74:/root/csv-storage/$TAR_FILENAME
+    scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR/$TAR_FILENAME 209.97.138.74:/root/db-storage/$TAR_FILENAME
     if [ $? -eq 0 ]; then
         echo "Transfer completed successfully. Deleting local tarball..."
         rm $TAR_DIR/$TAR_FILENAME
@@ -109,22 +96,18 @@ pt_run() {
     local l_DESTINATION_ADDR="$1"
     local l_DESTINATION_PORT="$2"
     local l_FLOW_LABEL="$3"
+    local START_TIME=$(date '+%s')
 
     echo "Starting paris-traceroute."
     sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
-    #sudo paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
-    echo "Paris-traceroute finished. Output saved to $CSV_FILEPATH$CSV_FILENAME."
+    echo "Paris-traceroute finished. Output saved to $DB_FILEPATH$DB_FILENAME."
 }
 
-#TIME_FILE=/root/time.txt
 test -f /root/time.txt || touch /root/time.txt
 echo "Start time: $(date)" >>/root/time.txt
 
-create_output_file
 for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
-    #create_output_file # Better placement?
     N=1
-    #M=11
     M=10
     while [ $N -lt $HITLIST_LENGTH ]; do
         readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
@@ -136,8 +119,6 @@ for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
                 wait
             done
         done
-        #let N=$N+11
-        #let M=$M+11
         let N=$N+10
         let M=$M+10
     done
