@@ -99,7 +99,7 @@ pt_run() {
     local START_TIME=$(date '+%s')
 
     echo "Starting paris-traceroute."
-    sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
+    sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $START_TIME $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
     echo "Paris-traceroute finished. Output saved to $DB_FILEPATH$DB_FILENAME."
 }
 
