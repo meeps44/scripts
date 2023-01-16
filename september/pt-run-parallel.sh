@@ -31,7 +31,7 @@ DESTINATION_PORTS=($HTTPS_PORT)
 HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
 
 # Use large or small hitlist
-FULL_HITLIST=true
+FULL_HITLIST=false
 
 # Experiment stages
 # Stage 1
@@ -86,7 +86,8 @@ create_tarball() {
         rm $TAR_DIR/$TAR_FILENAME
         echo "Tarball deleted."
         echo "Cleaning up raw data..."
-        find /root/csv/ -maxdepth 1 -name "*.csv" -print0 | xargs -0 rm
+        #find /root/csv/ -maxdepth 1 -name "*.csv" -print0 | xargs -0 rm
+        find /root/db/ -maxdepth 1 -name "*.db" -print0 | xargs -0 rm
     else
         echo "Transfer to remote host failed."
     fi
@@ -99,7 +100,7 @@ pt_run() {
     local START_TIME=$(date '+%s')
 
     echo "Starting paris-traceroute."
-    sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $START_TIME $LOCALHOST_IP $CSV_FILEPATH$CSV_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
+    sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $START_TIME $LOCALHOST_IP $DB_FILEPATH$DB_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
     echo "Paris-traceroute finished. Output saved to $DB_FILEPATH$DB_FILENAME."
 }
 
@@ -125,5 +126,5 @@ for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
 done
 wait
 echo "End time: $(date)" >>/root/time.txt
-create_tarball
+# create_tarball
 echo "All done!"
