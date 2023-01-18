@@ -92,9 +92,9 @@ main() {
         M=$N_PARALLEL
         while [ $N -lt $HITLIST_LENGTH ]; do
             START_TIME=$(date '+%s')
-            readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
+            readarray -t ip_array < <(sed -n "${N},${M}p" $HITLIST)
             for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
-                for ADDRESS in ${my_array[@]}; do
+                for ADDRESS in ${ip_array[@]}; do
                     for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
                         pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
                     done
@@ -109,7 +109,26 @@ main() {
 
 test -f /root/time.log || touch /root/time.log
 echo "Start time: $(date)" >>/root/time.log
-main
+#main
+HITLIST_LENGTH=$(wc -l <$HITLIST)
+for i in $(seq 1 $N_ITERATIONS); do
+    N=1
+    M=$N_PARALLEL
+    while [ $N -lt $HITLIST_LENGTH ]; do
+        START_TIME=$(date '+%s')
+        readarray -t ip_array < <(sed -n "${N},${M}p" $HITLIST)
+        for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+            for ADDRESS in ${ip_array[@]}; do
+                for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+                    pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
+                done
+            done
+            wait
+        done
+        let N=$N+$N_PARALLEL
+        let M=$M+$N_PARALLEL
+    done
+done
 echo "End time: $(date)" >>/root/time.log
 transfer_db
 echo "All done!"
