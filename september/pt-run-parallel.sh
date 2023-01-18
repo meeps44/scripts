@@ -20,6 +20,7 @@ HTTP_PORT=80
 HTTPS_PORT=443
 SSH_PORT=22
 DNS_PORT=53
+DESTINATION_PORTS=($HTTP_PORT $HTTPS_PORT)
 
 # Flow-label definitions
 #0000 00000000 00000000:
@@ -35,7 +36,6 @@ FLOW_LABEL_4=1048575 #(decimal), FFFFF hex
 
 # Flow label and port value definitions:
 FLOW_LABELS=($FLOW_LABEL_0 $FLOW_LABEL_1 $FLOW_LABEL_2 $FLOW_LABEL_3 $FLOW_LABEL_4)
-DESTINATION_PORTS=($HTTPS_PORT)
 if [ "$TEST" = true ]; then
     # Short hitlist (20 lines)
     HITLIST="/root/git/scripts/text-files/short_hitlist.txt"
@@ -64,7 +64,7 @@ create_tarball() {
     fi
 }
 
-send_db() {
+transfer_db() {
     cd $TAR_DIR
     echo "Compressing DB and creating tarball..."
     tar -czvf $TAR_FILENAME -C /root/db/$DB_FILEPATH$DB_FILENAME .
@@ -89,23 +89,23 @@ pt_run() {
 }
 
 main() {
-    for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
-        N=1
-        M=$N_PARALLEL
-        while [ $N -lt $HITLIST_LENGTH ]; do
-            START_TIME=$(date '+%s')
-            readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
-            for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
-                for i in $(seq 1 $N_ITERATIONS); do
-                    for ADDRESS in ${my_array[@]}; do
+    N=1
+    M=$N_PARALLEL
+    while [ $N -lt $HITLIST_LENGTH ]; do
+        START_TIME=$(date '+%s')
+        readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
+        for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+            for i in $(seq 1 $N_ITERATIONS); do
+                for ADDRESS in ${my_array[@]}; do
+                    for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
                         pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
                     done
-                    wait
                 done
+                wait
             done
-            let N=$N+$N_PARALLEL
-            let M=$M+$N_PARALLEL
         done
+        let N=$N+$N_PARALLEL
+        let M=$M+$N_PARALLEL
     done
     wait
     echo "End time: $(date)" >>/root/time.log
@@ -114,5 +114,5 @@ main() {
 test -f /root/time.log || touch /root/time.log
 echo "Start time: $(date)" >>/root/time.log
 main
-send_db
+transfer_db
 echo "All done!"
