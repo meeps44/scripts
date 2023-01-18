@@ -89,13 +89,13 @@ pt_run() {
 }
 
 main() {
-    N=1
-    M=$N_PARALLEL
-    while [ $N -lt $HITLIST_LENGTH ]; do
-        START_TIME=$(date '+%s')
-        readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
-        for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
-            for i in $(seq 1 $N_ITERATIONS); do
+    for i in $(seq 1 $N_ITERATIONS); do
+        N=1
+        M=$N_PARALLEL
+        while [ $N -lt $HITLIST_LENGTH ]; do
+            START_TIME=$(date '+%s')
+            readarray -t my_array < <(sed -n "${N},${M}p" $HITLIST)
+            for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
                 for ADDRESS in ${my_array[@]}; do
                     for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
                         pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
@@ -103,9 +103,9 @@ main() {
                 done
                 wait
             done
+            let N=$N+$N_PARALLEL
+            let M=$M+$N_PARALLEL
         done
-        let N=$N+$N_PARALLEL
-        let M=$M+$N_PARALLEL
     done
     wait
     echo "End time: $(date)" >>/root/time.log
