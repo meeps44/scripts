@@ -6,7 +6,6 @@ LOCALHOST_IP=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1
 TAR_DIR="/root/tarballs"
 N_ITERATIONS=1 # The number of iterations that you wish to run the full experiment.
 N_PARALLEL=10  # Number of parallel Paris traceroute instances.
-HITLIST_LENGTH=$(wc -l <$HITLIST)
 DATE=$(date '+%Y-%m-%dT%H_%M_%SZ')
 DB_FILEPATH="/root/db/"
 DB_FILENAME="db-$HOSTNAME-$DATE.db"
@@ -87,6 +86,7 @@ pt_run() {
 }
 
 main() {
+    HITLIST_LENGTH=$(wc -l <$HITLIST)
     for i in $(seq 1 $N_ITERATIONS); do
         N=1
         M=$N_PARALLEL
@@ -105,7 +105,6 @@ main() {
             let M=$M+$N_PARALLEL
         done
     done
-    wait
 }
 
 test -f /root/time.log || touch /root/time.log
