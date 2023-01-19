@@ -3,7 +3,7 @@
 # Test definitions:
 TEST=true
 LOCALHOST_IP=$(hostname -I | grep -o -E "((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))")
-TAR_DIR="/root/tarballs"
+TAR_DIR="/root/tarballs/"
 N_ITERATIONS=2 # The number of iterations that you wish to run the full experiment.
 N_PARALLEL=8   # Number of parallel Paris traceroute instances.
 DATE=$(date '+%Y-%m-%dT%H_%M_%SZ')
@@ -47,12 +47,12 @@ create_tarball() {
     cd $TAR_DIR
     echo "Creating tarball..."
     tar -czvf $TAR_FILENAME -C /root/db/ .
-    echo "Tarball saved to $TAR_DIR/$TAR_FILENAME."
+    echo "Tarball saved to $TAR_DIR$TAR_FILENAME."
     echo "Transferring tarball to remote host..."
-    scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR/$TAR_FILENAME 209.97.138.74:/root/db-storage/$TAR_FILENAME
+    scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR$TAR_FILENAME 209.97.138.74:/root/db-storage/$TAR_FILENAME
     if [ $? -eq 0 ]; then
         echo "Transfer completed successfully. Deleting local tarball..."
-        rm $TAR_DIR/$TAR_FILENAME
+        rm $TAR_DIR$TAR_FILENAME
         echo "Tarball deleted."
         echo "Cleaning up raw data..."
         find /root/db/ -maxdepth 1 -name "*.db" -print0 | xargs -0 rm
@@ -64,10 +64,10 @@ create_tarball() {
 transfer_db() {
     cd $TAR_DIR
     echo "Creating tarball..."
-    tar -czvf $TAR_FILENAME -C /root/db/$DB_FILEPATH$DB_FILENAME .
-    echo "Tarball saved to $TAR_DIR/$TAR_FILENAME."
+    tar -czvf $TAR_FILENAME -C $DB_FILEPATH$DB_FILENAME .
+    echo "Tarball saved to $TAR_DIR$TAR_FILENAME."
     echo "Transferring tarball to remote host..."
-    scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR/$TAR_FILENAME 209.97.138.74:/root/db-storage/$TAR_FILENAME
+    scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR$TAR_FILENAME 209.97.138.74:/root/db-storage/$TAR_FILENAME
     if [ $? -eq 0 ]; then
         echo "Tarball transfer to remote host completed successfully."
     else
