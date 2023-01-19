@@ -46,7 +46,7 @@ fi
 create_tarball() {
     cd $TAR_DIR
     echo "Creating tarball..."
-    tar -czvf $TAR_FILENAME -C /root/db/ .
+    tar -czvf $TAR_FILENAME -C $DB_FILEPATH $DB_FILENAME
     echo "Tarball saved to $TAR_DIR$TAR_FILENAME."
     echo "Transferring tarball to remote host..."
     scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR$TAR_FILENAME 209.97.138.74:/root/db-storage/$TAR_FILENAME
@@ -64,7 +64,7 @@ create_tarball() {
 transfer_db() {
     cd $TAR_DIR
     echo "Creating tarball..."
-    tar -czvf $TAR_FILENAME -C $DB_FILEPATH$DB_FILENAME .
+    tar -czvf $TAR_FILENAME -C $DB_FILEPATH $DB_FILENAME
     echo "Tarball saved to $TAR_DIR$TAR_FILENAME."
     echo "Transferring tarball to remote host..."
     scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /root/.ssh/scp-key $TAR_DIR$TAR_FILENAME 209.97.138.74:/root/db-storage/$TAR_FILENAME
