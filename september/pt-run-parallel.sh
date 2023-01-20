@@ -87,23 +87,23 @@ pt_run() {
 
 main() {
     HITLIST_LENGTH=$(wc -l <$HITLIST)
-    for i in $(seq 1 $N_ITERATIONS); do
-        N=1
-        M=$N_PARALLEL
-        while [ $N -lt $HITLIST_LENGTH ]; do
-            readarray -t ip_array < <(sed -n "${N},${M}p" $HITLIST)
+    N=1
+    M=$N_PARALLEL
+    while [ $N -lt $HITLIST_LENGTH ]; do
+        readarray -t ip_array < <(sed -n "${N},${M}p" $HITLIST)
+        for ADDRESS in ${ip_array[@]}; do
+            START_TIME=$(date '+%s')
             for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
-                for ADDRESS in ${ip_array[@]}; do
-                    START_TIME=$(date '+%s')
-                    for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+                for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
+                    for i in $(seq 1 $N_ITERATIONS); do
                         pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" &
                     done
                 done
-                wait
             done
-            let N=$N+$N_PARALLEL
-            let M=$M+$N_PARALLEL
+            wait
         done
+        let N=$N+$N_PARALLEL
+        let M=$M+$N_PARALLEL
     done
 }
 
