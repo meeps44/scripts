@@ -11,6 +11,7 @@ class TracerouteStatistics:
     num_loops: int = 0
     num_fl_changes: int = 0
 
+
 def compare_path_hash(df: pd.DataFrame, flowlabel: int, start_time: int):
     """
     Compare the path hash of all paths in the dataset with the same START_TIME and SOURCE_FLOW_LABEL.
@@ -27,27 +28,31 @@ def compare_path_hash(df: pd.DataFrame, flowlabel: int, start_time: int):
                 break
     return indices
 
+
 def get_number_of_instances_where_path_stayed_consistent(df: pd.DataFrame, flowlabel: int):
-    match flowlabel:
-        case 0:
-            pass
-        case 255:
-            pass
-        case 65280:
-            pass
-        case 983040:
-            pass
-        case 1048575:
-            pass
+    if flowlabel == 0:
+        pass
+    elif flowlabel == 255:
+        pass
+    elif flowlabel == 65280:
+        pass
+    elif flowlabel == 983040:
+        pass
+    elif flowlabel == 1048575:
+        pass
+
 
 def get_number_of_equal_paths(df: pd.DataFrame, flowlabel: int):
     pass
 
-def get_hop_where_path_diverged(df: pd.DataFrame, flowlabel : int):
+
+def get_hop_where_path_diverged(df: pd.DataFrame, flowlabel: int):
     pass
+
 
 def main():
     pass
+
 
 if __name__ == "__main__":
     main()
