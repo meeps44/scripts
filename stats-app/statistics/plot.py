@@ -8,6 +8,21 @@ def plot():
     plt.show()
 
 
+def cdf_plot(df: pd.DataFrame):
+    pass
+
+def bar_plot(df: pd.DataFrame):
+    pass
+
+def scatter_plot(df: pd.DataFrame):
+    pass
+
+def line_plot(df: pd.DataFrame):
+    pass
+
+def histogram_plot(df: pd.DataFrame):
+    pass
+
 def main():
     plot()
 
