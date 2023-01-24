@@ -1,15 +1,19 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import numpy as np
 
 def plot():
     df = pd.read_csv('data.csv')
     df.plot(kind='scatter', x='Duration', y='Calories')
     plt.show()
 
-
 def cdf_plot(df: pd.DataFrame):
-    pass
+    """
+    https://stackoverflow.com/questions/25577352/plotting-cdf-of-a-pandas-series-in-python
+    """
+    ser = pd.Series(np.random.normal(size=1000))
+    ser.hist(cumulative=True, density=1, bins=100)
+    plt.show()
 
 def bar_plot(df: pd.DataFrame):
     pass
