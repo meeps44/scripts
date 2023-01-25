@@ -1,3 +1,4 @@
+from enum import Enum
 from filter import sqlite_init, sqlite_exec
 from dataclasses import dataclass
 from sqlite3 import connect
@@ -10,6 +11,17 @@ class TracerouteStatistics:
     num_cycles: int = 0
     num_loops: int = 0
     num_fl_changes: int = 0
+
+
+class VantagePoint(Enum):
+    ams3 = 1
+    blr1 = 2
+    fra1 = 3
+    lon1 = 4
+    nyc1 = 5
+    sfo3 = 6
+    sgp1 = 7
+    tor1 = 8
 
 
 def compare_path_hash(df: pd.DataFrame, flowlabel: int, start_time: int):
@@ -47,6 +59,42 @@ def get_number_of_equal_paths(df: pd.DataFrame, flowlabel: int):
 
 
 def get_hop_where_path_diverged(df: pd.DataFrame, flowlabel: int):
+    pass
+
+
+def get_number_of_unique_vp_source_asns():
+    pass
+
+
+def get_number_of_unique_destination_asns():
+    pass
+
+
+def get_total_number_of_traceroutes_performed():
+    pass
+
+
+def get_total_number_of_loops_in_dataset():
+    pass
+
+
+def get_number_of_loops_in_dataset_per_vp(vp: VantagePoint):
+    pass
+
+
+def get_number_of_times_flowlabel_changed_in_transit(vp: VantagePoint):
+    pass
+
+
+def get_total_number_of_times_flowlabel_changed_in_transit():
+    pass
+
+
+def get_percentage_of_time_path_was_equal(vp: VantagePoint):
+    pass
+
+
+def get_total_percentage_of_time_path_was_equal():
     pass
 
 
