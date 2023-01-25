@@ -1,7 +1,8 @@
 from enum import Enum
-import statistics.plot
-import statistics.filter
-import statistics.compare
+import stats.plot as plt
+import stats.filter as fil
+import stats.compare as cmp
+import glob
 from dataclasses import dataclass
 from sqlite3 import connect
 import pandas as pd
@@ -107,7 +108,7 @@ def get_total_percentage_of_time_path_was_equal():
 def get_number_of_asns_traversed(df: pd.DataFrame):
     # Insert code to be done before this #
     # Data from the DataFrame should be a pd.Series
-    plot.histogram_plot(df)
+    plt.histogram_plot(df)
 
 
 def main():
@@ -117,11 +118,11 @@ def main():
     ls: list = glob.glob(
         "/home/erlhap/test/python/paris-traceroute-filter/data/*.db")
     for db_file in ls:
-        conn = sqlite_init(db_file)
-        unique_start_times = get_unique_start_times(conn)
+        conn = fil.sqlite_init(db_file)
+        unique_start_times = fil.get_unique_start_times(conn)
         for time in unique_start_times:
             for fl in source_flow_labels:
-                df = sqlite_exec(
+                df = fil.sqlite_exec(
                     conn, f"SELECT PATH_HASH FROM TRACEROUTE_DATA WHERE START_TIME={time} AND SOURCE_FLOW_LABEL={fl}")
         print(df)
 
