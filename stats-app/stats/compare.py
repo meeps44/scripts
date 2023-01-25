@@ -22,19 +22,6 @@ def compare_path_hash(df: pd.DataFrame, flowlabel: int, start_time: int):
     return indices
 
 
-def get_number_of_instances_where_path_stayed_consistent(df: pd.DataFrame, flowlabel: int):
-    if flowlabel == 0:
-        pass
-    elif flowlabel == 255:
-        pass
-    elif flowlabel == 65280:
-        pass
-    elif flowlabel == 983040:
-        pass
-    elif flowlabel == 1048575:
-        pass
-
-
 def get_number_of_equal_paths(df: pd.DataFrame, flowlabel: int):
     pass
 
