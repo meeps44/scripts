@@ -1,3 +1,4 @@
+from definitions.classdefinitions import *
 import glob
 from dataclasses import dataclass
 from sqlite3 import connect

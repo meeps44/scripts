@@ -1,27 +1,8 @@
-from enum import Enum
+from definitions.classdefinitions import *
+import plot
 from filter import sqlite_init, sqlite_exec
-from dataclasses import dataclass
 from sqlite3 import connect
 import pandas as pd
-
-
-@dataclass
-class TracerouteStatistics:
-    num_rows_total: int = 0
-    num_cycles: int = 0
-    num_loops: int = 0
-    num_fl_changes: int = 0
-
-
-class VantagePoint(Enum):
-    ams3 = 1
-    blr1 = 2
-    fra1 = 3
-    lon1 = 4
-    nyc1 = 5
-    sfo3 = 6
-    sgp1 = 7
-    tor1 = 8
 
 
 def compare_path_hash(df: pd.DataFrame, flowlabel: int, start_time: int):
@@ -58,15 +39,19 @@ def get_number_of_equal_paths(df: pd.DataFrame, flowlabel: int):
     pass
 
 
-def get_hop_where_path_diverged(df: pd.DataFrame, flowlabel: int):
+def get_hop_where_path_diverged(df: pd.DataFrame, flowlabel: int, vp: VantagePoint):
     pass
 
 
-def get_number_of_unique_vp_source_asns():
+def get_total_hop_where_path_diverged(df: pd.DataFrame, flowlabel: int):
     pass
 
 
-def get_number_of_unique_destination_asns():
+def get_total_number_of_unique_vp_source_asns():
+    pass
+
+
+def get_total_number_of_unique_destination_asns():
     pass
 
 
@@ -96,6 +81,12 @@ def get_percentage_of_time_path_was_equal(vp: VantagePoint):
 
 def get_total_percentage_of_time_path_was_equal():
     pass
+
+
+def get_number_of_asns_traversed(df: pd.DataFrame):
+    # Insert code to be done before this #
+    # Data from the DataFrame should be a pd.Series
+    plot.histogram_plot(df)
 
 
 def main():
