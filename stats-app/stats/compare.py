@@ -22,60 +22,6 @@ def compare_path_hash(df: pd.DataFrame, flowlabel: int, start_time: int):
     return indices
 
 
-def get_number_of_equal_paths(df: pd.DataFrame, flowlabel: int):
-    pass
-
-
-def get_hop_where_path_diverged(df: pd.DataFrame, flowlabel: int, vp: VantagePoint):
-    pass
-
-
-def get_total_hop_where_path_diverged(df: pd.DataFrame, flowlabel: int):
-    pass
-
-
-def get_total_number_of_unique_vp_source_asns():
-    pass
-
-
-def get_total_number_of_unique_destination_asns():
-    pass
-
-
-def get_total_number_of_traceroutes_performed():
-    pass
-
-
-def get_total_number_of_loops_in_dataset():
-    pass
-
-
-def get_number_of_loops_in_dataset_per_vp(vp: VantagePoint):
-    pass
-
-
-def get_number_of_times_flowlabel_changed_in_transit(vp: VantagePoint):
-    pass
-
-
-def get_total_number_of_times_flowlabel_changed_in_transit():
-    pass
-
-
-def get_percentage_of_time_path_was_equal(vp: VantagePoint):
-    pass
-
-
-def get_total_percentage_of_time_path_was_equal():
-    pass
-
-
-def get_number_of_asns_traversed(df: pd.DataFrame):
-    # Insert code to be done before this #
-    # Data from the DataFrame should be a pd.Series
-    plot.histogram_plot(df)
-
-
 def main():
     pass
 

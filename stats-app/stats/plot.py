@@ -14,7 +14,10 @@ def cdf_plot(df: pd.DataFrame):
 
 
 def bar_plot(df: pd.DataFrame):
-    pass
+    x = np.array(["A", "B", "C", "D"])
+    y = np.array([3, 8, 1, 10])
+    plt.bar(x,y)
+    plt.show()
 
 
 def scatter_plot(df: pd.DataFrame):
@@ -24,11 +27,17 @@ def scatter_plot(df: pd.DataFrame):
 
 
 def line_plot(df: pd.DataFrame):
-    pass
+    y1 = np.array([3, 8, 1, 10])
+    y2 = np.array([6, 2, 7, 11])
+    plt.plot(y1)
+    plt.plot(y2)
+    plt.show()
 
 
 def histogram_plot(df: pd.DataFrame):
-    pass
+    # Note: df needs to be a series (not a dataframe)
+    plt.hist(df)
+    plt.show()
 
 
 def main():
