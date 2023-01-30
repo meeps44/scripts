@@ -1,4 +1,4 @@
-from definitions.classdefinitions import *
+from stats.definitions.classdefinitions import *
 from sqlite_load import *
 from dataclasses import dataclass
 from sqlite3 import connect

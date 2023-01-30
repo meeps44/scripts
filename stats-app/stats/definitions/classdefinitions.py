@@ -9,6 +9,29 @@ class TracerouteStatistics:
     num_loops: int = 0
     num_fl_changes: int = 0
 
+@dataclass
+class SourceIPAddresses:
+    ams3:str = ""
+    blr1:str = ""
+    fra1:str = ""
+    lon1:str = ""
+    nyc1:str = ""
+    sfo3:str = ""
+    sgp1:str = ""
+    tor1:str = ""
+
+    def to_dict():
+        ip_addresses = {
+            "ams3" : "",
+            "blr1" : "",
+            "fra1" : "",
+            "lon1" : "",
+            "nyc1" : "",
+            "sfo3" : "",
+            "sgp1" : "",
+            "tor1" : "",
+        }
+        return ip_addresses
 
 class VantagePoint(Enum):
     ams3 = 1
