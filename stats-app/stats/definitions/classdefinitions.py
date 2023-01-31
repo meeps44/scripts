@@ -1,5 +1,5 @@
 from enum import Enum
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 
 @dataclass
@@ -8,6 +8,7 @@ class TracerouteStatistics:
     num_cycles: int = 0
     num_loops: int = 0
     num_fl_changes: int = 0
+    num_asns_traversed: int = 0
 
 @dataclass
 class SourceIPAddresses:
@@ -20,18 +21,8 @@ class SourceIPAddresses:
     sgp1:str = ""
     tor1:str = ""
 
-    def to_dict():
-        ip_addresses = {
-            "ams3" : "",
-            "blr1" : "",
-            "fra1" : "",
-            "lon1" : "",
-            "nyc1" : "",
-            "sfo3" : "",
-            "sgp1" : "",
-            "tor1" : "",
-        }
-        return ip_addresses
+    def to_dict(self):
+        return {k: str(v) for k, v in asdict(self).items()}
 
 class VantagePoint(Enum):
     ams3 = 1
