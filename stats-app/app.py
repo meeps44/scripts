@@ -196,24 +196,26 @@ def print_stats(stats: TracerouteStatistics):
     pp.pprint(stats)
 
 
-def get_collective_unique_start_times(db_dir: str, source_flow_labels: list):
-    """
-    Get the unique values in the START_TIME column from all databases 
-    in a directory, and combine to a single dataframe.
-    """
-    ls: list[str] = glob.glob(db_dir)
-    base: pd.DataFrame = pd.DataFrame()
-    for db_file in ls:
-        conn = filter.sqlite_init(db_file)
-        unique_start_times = filter.get_unique_start_times(conn)
-        for time in unique_start_times:
-            for fl in source_flow_labels:
-                df = filter.sqlite_exec(
-                    conn, f"SELECT PATH_HASH FROM TRACEROUTE_DATA WHERE START_TIME={time} AND SOURCE_FLOW_LABEL={fl}")
-                base.concat(df)
-    return base
+#def get_unique_start_times(db_dir: str, source_flow_labels: list):
+    #"""
+    #Get the unique values in the START_TIME column from all databases 
+    #in a directory, and combine to a single dataframe.
+    #"""
+    #source_flow_labels = [0, 255, 1048575]
+    #ls: list[str] = glob.glob(db_dir)
+    #base: pd.DataFrame = pd.DataFrame()
+    #for db_file in ls:
+        #conn = filter.sqlite_init(db_file)
+        #unique_start_times = filter.get_unique_start_times(conn)
+        #for time in unique_start_times:
+            #for fl in source_flow_labels:
+                #df = filter.sqlite_exec(
+                    #conn, f"SELECT PATH_HASH FROM TRACEROUTE_DATA WHERE START_TIME={time} AND SOURCE_FLOW_LABEL={fl}")
+                #base.concat(df)
+    #return base
 
-def set_stats(df: pd.DataFrame) -> TracerouteStatistics:
+
+def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
     stats = TracerouteStatistics()
     stats.num_rows_total = get_num_rows(df)
     stats.num_loops = filter.count_loops(df)
@@ -227,13 +229,16 @@ def main():
     #db_dir = "/home/erlhap/test/python/paris-traceroute-filter/data/*.db"
     db_dir = "/home/erlhap/test/scripts/stats-app/sample-data/db/*.db"
     source_flow_labels = [0, 255, 1048575]
-    start_times: pd.DataFrame = get_collective_unique_start_times(db_dir, source_flow_labels)
+    #start_times: pd.DataFrame = get_collective_unique_start_times(db_dir, source_flow_labels)
     sql_connection = sq.sqlite_init()
     df: pd.DataFrame = sq.load_all(sql_connection, db_dir)
-    loops: list = filter.get_loops(df)
-    cycles: list = filter.get_cycles(df)
-    df = filter.remove_indices(loops)
-    df = filter.remove_indices(cycles)
+    start_times: pd.DataFrame = filter.get_unique_start_times(df)
+    stats: TracerouteStatistics = create_stats(df)
+    print(repr(stats))
+    loop_list: list = filter.get_loops(df)
+    cycles_list: list = filter.get_cycles(df)
+    df = filter.remove_indices(loop_list)
+    df = filter.remove_indices(cycles_list)
 
 
 if __name__ == "__main__":

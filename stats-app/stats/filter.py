@@ -76,7 +76,7 @@ def count_cycles(df: pd.DataFrame) -> int:
     for row_idx in df.index:
         hop_ip_str: str = df['HOP_IP_ADDRESSES'][row_idx]
         hop_ip_list: list = hop_ip_str.split(" ")
-        unique_list = get_unique(hop_ip_list)
+        unique_list = get_unique_list_items(hop_ip_list)
         for item in unique_list:
             count = hop_ip_list.count(item)
             if count >= 2:
@@ -85,7 +85,7 @@ def count_cycles(df: pd.DataFrame) -> int:
     return count
 
 
-def get_unique(input: list) -> list:
+def get_unique_list_items(input: list) -> list:
     """
     Get a list containing only the unique values from the input list.
     """
@@ -96,6 +96,14 @@ def get_unique(input: list) -> list:
     return unique_list
 
 
+def get_unique_start_times(df: pd.DataFrame):
+    """
+    Get the unique values in the START_TIME column from all databases 
+    in a directory, and combine to a single dataframe.
+    """
+    return df["START_TIME"].unique()
+
+
 def get_cycles(df: pd.DataFrame) -> list:
     """
     Get a list containing the indices of all rows that contain one or more cycles in the dataset.
@@ -104,7 +112,7 @@ def get_cycles(df: pd.DataFrame) -> list:
     for row_idx in df.index:
         hop_ip_str: str = df['HOP_IP_ADDRESSES'][row_idx]
         hop_ip_list: list = hop_ip_str.split(" ")
-        unique_list = get_unique(hop_ip_list)
+        unique_list = get_unique_list_items(hop_ip_list)
         for item in unique_list:
             count = hop_ip_list.count(item)
             if count >= 2:
@@ -115,19 +123,6 @@ def get_cycles(df: pd.DataFrame) -> list:
 
 def main():
     pass
-    #stats = TracerouteStatistics()
-    #source_flow_labels = [0, 255, 1048575]
-    ## Get all databases in directory.
-    #ls: list = glob.glob(
-        #"/home/erlhap/test/python/paris-traceroute-filter/data/*.db")
-    #for db_file in ls:
-        #conn = sqlite_init(db_file)
-        #unique_start_times = get_unique_start_times(conn)
-        #for time in unique_start_times:
-            #for fl in source_flow_labels:
-                #df = sqlite_exec(
-                    #conn, f"SELECT PATH_HASH FROM TRACEROUTE_DATA WHERE START_TIME={time} AND SOURCE_FLOW_LABEL={fl}")
-        #print(df)
 
 
 if __name__ == "__main__":
