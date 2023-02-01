@@ -6,3 +6,6 @@
 
 # Ignore tarballs
 *.tar.gz
+
+# Ignore python cache files
+*.pyc

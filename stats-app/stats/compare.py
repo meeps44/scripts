@@ -1,5 +1,4 @@
 from stats.definitions.classdefinitions import *
-from filter import sqlite_init, sqlite_exec
 from sqlite3 import connect
 import pandas as pd
 
