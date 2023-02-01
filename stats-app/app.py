@@ -215,14 +215,25 @@ def main():
     #start_times: pd.DataFrame = get_collective_unique_start_times(db_dir, source_flow_labels)
     #df: pd.DataFrame = sq.load_single(db_path)
     df: pd.DataFrame = sq.load_all(db_dir)
-    print(df)
-    num_loops: int = get_total_number_of_loops_in_dataset(df)
-    print(f"{num_loops=}")
-    num_cycles: int = filter.count_cycles(df)
-    print(f"{num_cycles=}")
-    num_path_flow_label_changes = filter.count_path_flow_label_changes(
-        filter.get_path_flow_label_changes(df))
-    print(f"{num_path_flow_label_changes=}")
+    print("Hop returned flow labels:")
+    ndf = df["HOP_RETURNED_FLOW_LABELS"]
+    dflist = ndf.iloc[[0]].values.tolist()
+    for item in dflist:
+        print(str(item))
+    print("src fl:")
+    src_fl: str = str(df["SOURCE_FLOW_LABEL"].iloc[[0]].values.tolist())
+    print(src_fl)
+    print(f"src_fl type: {type(src_fl)}")
+    # print(df)
+    #num_loops: int = get_total_number_of_loops_in_dataset(df)
+    # print(f"{num_loops=}")
+
+    #num_cycles: int = filter.count_cycles(df)
+    # print(f"{num_cycles=}")
+    # num_path_flow_label_changes = filter.count_path_flow_label_changes(
+    # filter.get_path_flow_label_changes(df))
+    # print(f"{num_path_flow_label_changes=}")
+
     #start_times: pd.DataFrame = filter.get_unique_start_times(df)
     #stats: TracerouteStatistics = create_stats(df)
     # print(repr(stats))

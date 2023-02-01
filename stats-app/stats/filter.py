@@ -10,10 +10,14 @@ def get_path_flow_label_changes(df: pd.DataFrame) -> list:
     Get a list containing the indices of all rows where the flow label changed en-route.
     """
     indices = list()
-    src_fl: str = df['SOURCE_FLOW_LABEL']
     for row_idx in df.index:
-        hrfl: str = df['HOP_RETURNED_FLOW_LABELS'][row_idx]
-        flow_labels: list = hrfl.split(" ")
+        src_fl: str = str(df["SOURCE_FLOW_LABEL"].iloc[[row_idx]])
+        ndf: pd.DataFrame = df["HOP_RETURNED_FLOW_LABELS"]
+        hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
+        flow_labels = hrfl.values.tolist()
+        #hrfl = ' '.join(hrfl_list)
+        #hrfl: str = df['HOP_RETURNED_FLOW_LABELS'][row_idx]
+        #flow_labels: list = hrfl.split(" ")
         for val in flow_labels:
             if src_fl != val:
                 indices.append(row_idx)
