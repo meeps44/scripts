@@ -129,31 +129,6 @@ def get_number_of_loops_in_dataset_per_vp(df: pd.DataFrame, vp: VantagePoint):
         return filter.count_loops(df)
 
 
-def get_number_of_times_flowlabel_changed_in_transit(df: pd.DataFrame, vp: VantagePoint):
-    if vp.ams3:
-        sfl: pd.Series = df[['SOURCE_FLOW_LABEL']]
-        dfl: pd.Series = df[['RECEIVED_FLOW_LABELS']]
-    elif vp.blr1:
-        pass
-    elif vp.fra1:
-        pass
-    elif vp.lon1:
-        pass
-    elif vp.nyc1:
-        pass
-    elif vp.sfo3:
-        pass
-    elif vp.sgp1:
-        pass
-    elif vp.tor1:
-        pass
-
-
-def get_total_number_of_times_flowlabel_changed_in_transit(df: pd.DataFrame):
-    sfl: pd.Series = df[['SOURCE_FLOW_LABEL']]
-    dfl: pd.Series = df[['RECEIVED_FLOW_LABELS']]
-
-
 def get_percentage_of_time_path_was_equal(df: pd.DataFrame, vp: VantagePoint):
     if vp.ams3:
         pass
@@ -226,8 +201,8 @@ def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
     stats.num_loops = filter.count_loops(df)
     stats.num_cycles = filter.count_cycles(df)
     stats.num_asns_traversed = get_total_number_of_asns_traversed(df)
-    stats.num_fl_changes = get_total_number_of_times_flowlabel_changed_in_transit(
-        df)
+    stats.num_fl_changes = filter.count_path_flow_label_changes(
+        filter.get_path_flow_label_changes(df))
     return stats
 
 
@@ -241,6 +216,13 @@ def main():
     #df: pd.DataFrame = sq.load_single(db_path)
     df: pd.DataFrame = sq.load_all(db_dir)
     print(df)
+    num_loops: int = get_total_number_of_loops_in_dataset(df)
+    print(f"{num_loops=}")
+    num_cycles: int = filter.count_cycles(df)
+    print(f"{num_cycles=}")
+    num_path_flow_label_changes = filter.count_path_flow_label_changes(
+        filter.get_path_flow_label_changes(df))
+    print(f"{num_path_flow_label_changes=}")
     #start_times: pd.DataFrame = filter.get_unique_start_times(df)
     #stats: TracerouteStatistics = create_stats(df)
     # print(repr(stats))

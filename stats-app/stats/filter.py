@@ -21,6 +21,10 @@ def get_path_flow_label_changes(df: pd.DataFrame) -> list:
     return indices
 
 
+def count_path_flow_label_changes(indices: list) -> list:
+    return len(indices)
+
+
 def count_loops(df: pd.DataFrame) -> int:
     """
     Count the number of loops in the dataset. If there are multiple 
