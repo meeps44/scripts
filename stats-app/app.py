@@ -190,10 +190,10 @@ def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
 
 
 def main():
-    db_dir = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db/*.db"
-    db_path = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db"
-    #db_dir = "/home/erlend/git/scripts/stats-app/sample-data/db/*.db"
-    #db_path = "/home/erlend/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
+    #db_dir = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db/*.db"
+    #db_path = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db"
+    db_dir = "/home/erlend/git/scripts/stats-app/sample-data/db/*.db"
+    db_path = "/home/erlend/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
     source_flow_labels = [0, 255, 1048575]
     #start_times: pd.DataFrame = get_collective_unique_start_times(db_dir, source_flow_labels)
     #df: pd.DataFrame = sq.load_single(db_path)
@@ -213,26 +213,27 @@ def main():
     num_cycles: int = filter.count_cycles(df)
     print(f"{num_cycles=}")
 
+    print("Number of flow label changes in transit:")
+    num_path_flow_label_changes: int = filter.count_path_flow_label_changes(df)
+    print(f"{num_path_flow_label_changes=}")
+
     #start_times: pd.DataFrame = filter.get_unique_start_times(df)
     #stats: TracerouteStatistics = create_stats(df)
     # print(repr(stats))
-    #loop_list: list = filter.get_loops(df)
-    #cycles_list: list = filter.get_cycles(df)
-    #df = filter.remove_indices(loop_list)
-    #df = filter.remove_indices(cycles_list)
 
-    print("Number of flow label changes in transit:")
-    num_path_flow_label_changes = filter.count_path_flow_label_changes(
-    filter.get_rows_with_path_flow_label_changes(df))
-    print(f"{num_path_flow_label_changes=}")
+    # Remove rows containing loops
+    df = filter.remove_indices(df, filter.get_loops(df))
+    # Remove rows containing cycles
+    df = filter.remove_indices(df, filter.get_cycles(df))
+    # Remove rows with flow label changes
+    df = filter.remove_indices(df,
+                               filter.get_rows_with_path_flow_label_changes(df))
 
     print("Distribution of equal paths with flow label 0:")
     print("Distribution of equal paths with flow label 255:")
     print("Distribution of equal paths with flow label 0:")
     print("Distribution of equal paths with flow label 0:")
     print("Distribution of equal paths with flow label 0:")
-
-
 
 
 if __name__ == "__main__":

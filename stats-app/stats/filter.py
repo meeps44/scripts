@@ -3,21 +3,24 @@ from stats.sqlite_load import *
 from dataclasses import dataclass
 from sqlite3 import connect
 import pandas as pd
+import logging
 
 
 def get_distribution_of_equal_paths_to_destination(df: pd.DataFrame, flowlabel: int, destination_addr: str):
     """
     Get the number of paths 
     """
-    unique_start_times:list = get_unique_start_times(df).values.tolist()
+    unique_start_times: list = get_unique_start_times(df).values.tolist()
     if flowlabel == 0:
-        df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (df["START_TIME"] == str(unique_start_times[0]))]
+        df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (
+            df["START_TIME"] == str(unique_start_times[0]))]
         df = df["PATH_HASH"]
         value_counts = df.value_counts()
         for start_time in unique_start_times[1:]:
             #df = df["START_TIME"] == str(start_time)
             #df = df["SOURCE_FLOW_LABEL"] == str(flowlabel)
-            df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (df["START_TIME"] == str(start_time))]
+            df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel))
+                    & (df["START_TIME"] == str(start_time))]
             df = df["PATH_HASH"]
             eqp = df.value_counts()
             # concat
@@ -31,6 +34,25 @@ def get_distribution_of_equal_paths_to_destination(df: pd.DataFrame, flowlabel: 
         pass
     elif flowlabel == 1048575:
         pass
+
+
+def count_path_flow_label_changes(df: pd.DataFrame) -> int:
+    """
+    Get a list containing the indices of all rows where the flow label changed en-route.
+    """
+    num_flow_label_changes: int = 0
+    for row_idx in df.index:
+        src_fl: str = str(df["SOURCE_FLOW_LABEL"].iloc[[row_idx]])
+        ndf: pd.DataFrame = df["HOP_RETURNED_FLOW_LABELS"]
+        hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
+        flow_labels = hrfl.values.tolist()
+        #hrfl = ' '.join(hrfl_list)
+        #hrfl: str = df['HOP_RETURNED_FLOW_LABELS'][row_idx]
+        #flow_labels: list = hrfl.split(" ")
+        for val in flow_labels:
+            if src_fl != val:
+                num_flow_label_changes = num_flow_label_changes + 1
+    return num_flow_label_changes
 
 
 def get_rows_with_path_flow_label_changes(df: pd.DataFrame) -> list:
@@ -53,10 +75,6 @@ def get_rows_with_path_flow_label_changes(df: pd.DataFrame) -> list:
     return indices
 
 
-def count_path_flow_label_changes(indices: list) -> list:
-    return len(indices)
-
-
 def count_loops(df: pd.DataFrame) -> int:
     """
     Count the number of loops in the dataset. If there are multiple 
@@ -66,7 +84,8 @@ def count_loops(df: pd.DataFrame) -> int:
     """
     nloops = 0
     for row_idx in df.index:
-        hop_ip_list: str = df["HOP_IP_ADDRESSES"].iloc[[row_idx]].values.tolist()
+        hop_ip_list: str = df["HOP_IP_ADDRESSES"].iloc[[
+            row_idx]].values.tolist()
         prev_ip = hop_ip_list[0]
         for idx, ip in enumerate(hop_ip_list):
             if idx != 0:
@@ -97,6 +116,8 @@ def get_loops(df: pd.DataFrame) -> list:
 
 
 def remove_indices(df: pd.DataFrame, indices: list):
+    logging.debug(
+        f"remove_indices: removed {len(indices)} rows from dataset")
     return df.drop(index=indices)
 
 
@@ -109,7 +130,8 @@ def count_cycles(df: pd.DataFrame) -> int:
     """
     count = 0
     for row_idx in df.index:
-        hop_ip_list: str = df["HOP_IP_ADDRESSES"].iloc[[row_idx]].values.tolist()
+        hop_ip_list: str = df["HOP_IP_ADDRESSES"].iloc[[
+            row_idx]].values.tolist()
         unique_list = get_unique_list_items(hop_ip_list)
         for item in unique_list:
             count = hop_ip_list.count(item)
