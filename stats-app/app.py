@@ -4,7 +4,6 @@ import stats.filter as filter
 import stats.compare as scmp
 import stats.sqlite_load as sq
 import prettyprinter as pp
-import glob
 import pandas as pd
 import logging
 
@@ -144,7 +143,7 @@ def get_number_of_asns_traversed(df: pd.DataFrame, vp: VantagePoint):
     number_of_asns: list = list()
     for row in df:
         number_of_asns.append()
-    splt.histogram_plot(df)
+    plot.histogram_plot(df)
 
 
 def get_total_number_of_asns_traversed(df: pd.DataFrame):
@@ -153,7 +152,7 @@ def get_total_number_of_asns_traversed(df: pd.DataFrame):
     number_of_asns: list = list()
     for row in df:
         number_of_asns.append()
-    splt.histogram_plot(df)
+    plot.histogram_plot(df)
 
 
 def print_stats(stats: TracerouteStatistics):
@@ -173,11 +172,11 @@ def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
 
 
 def main():
+    source_flow_labels = [0, 255, 65280, 983040, 1048575]
     #db_dir = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db/*.db"
     #db_path = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db"
     db_dir = "/home/erlend/git/scripts/stats-app/sample-data/db/*.db"
     db_path = "/home/erlend/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
-    source_flow_labels = [0, 255, 65280, 983040, 1048575]
     #start_times: pd.DataFrame = get_collective_unique_start_times(db_dir, source_flow_labels)
     #df: pd.DataFrame = sq.load_single(db_path)
     df: pd.DataFrame = sq.load_all(db_dir)
@@ -215,14 +214,12 @@ def main():
     df = filter.remove_indices(df,
                                filter.get_rows_with_path_flow_label_changes(df))
 
-    print("Distribution of equal paths with flow label 0:")
-    dist = filter.get_distribution_of_equal_paths_to_destination(
-        df, flowlabel=FlowLabels.FL_0)
-    plot.histogram(dist)
-    print("Distribution of equal paths with flow label 255:")
-    print("Distribution of equal paths with flow label 0:")
-    print("Distribution of equal paths with flow label 0:")
-    print("Distribution of equal paths with flow label 0:")
+    for flow_label in source_flow_labels:
+        print(f"Distribution of equal paths with flow label {flow_label}:")
+        dist = filter.get_distribution_of_equal_paths_to_destination(
+            df, flowlabel=flow_label)
+        print(dist)
+        plot.histogram(dist)
 
 
 if __name__ == "__main__":
