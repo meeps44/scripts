@@ -14,12 +14,12 @@ def get_distribution_of_equal_paths_to_destination(
     df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (
         df["START_TIME"] == str(unique_start_times[0]))]
     df = df["PATH_HASH"]
-    value_counts = df.value_counts()
+    value_counts: pd.Series = df.value_counts()
     for start_time in unique_start_times[1:]:
         df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel))
                 & (df["START_TIME"] == str(start_time))]
         df = df["PATH_HASH"]
-        eqp = df.value_counts()
+        eqp: pd.Series = df.value_counts()
         # concat
         value_counts = pd.concat([value_counts, eqp], axis=0)
     return value_counts
@@ -54,9 +54,6 @@ def get_rows_with_path_flow_label_changes(df: pd.DataFrame) -> list:
         ndf: pd.DataFrame = df["HOP_RETURNED_FLOW_LABELS"]
         hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
         flow_labels = hrfl.values.tolist()
-        #hrfl = ' '.join(hrfl_list)
-        #hrfl: str = df['HOP_RETURNED_FLOW_LABELS'][row_idx]
-        #flow_labels: list = hrfl.split(" ")
         for val in flow_labels:
             if src_fl != val:
                 indices.append(row_idx)
@@ -141,31 +138,12 @@ def get_unique_list_items(input: list) -> list:
     return unique_list
 
 
-# def get_unique_start_times(db_dir: str, source_flow_labels: list):
-    # """
-    # Get the unique values in the START_TIME column from all databases
-    # in a directory, and combine to a single dataframe.
-    # """
-    #source_flow_labels = [0, 255, 1048575]
-    #ls: list[str] = glob.glob(db_dir)
-    #base: pd.DataFrame = pd.DataFrame()
-    # for db_file in ls:
-    #conn = filter.sqlite_init(db_file)
-    #unique_start_times = filter.get_unique_start_times(conn)
-    # for time in unique_start_times:
-    # for fl in source_flow_labels:
-    # df = filter.sqlite_exec(
-    # conn, f"SELECT PATH_HASH FROM TRACEROUTE_DATA WHERE START_TIME={time} AND SOURCE_FLOW_LABEL={fl}")
-    # base.concat(df)
-    # return base
-
-
-def get_unique_start_times(df: pd.DataFrame):
+def get_unique_start_times(df: pd.DataFrame) -> list:
     """
     Get the unique values in the START_TIME column from all databases 
     in a directory, and combine to a single dataframe.
     """
-    return df["START_TIME"].unique()
+    return df["START_TIME"].unique().tolist()
 
 
 def get_cycles(df: pd.DataFrame) -> list:

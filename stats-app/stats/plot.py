@@ -34,8 +34,7 @@ def line(df: pd.DataFrame):
     plt.show()
 
 
-def histogram(df: pd.DataFrame):
-    # Note: df needs to be a series (not a dataframe)
+def histogram(df: pd.Series):
     plt.hist(df)
     plt.show()
 

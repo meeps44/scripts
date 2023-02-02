@@ -160,11 +160,11 @@ def main():
     num_path_flow_label_changes: int = filter.count_path_flow_label_changes(df)
     print(f"{num_path_flow_label_changes=}")
 
-    #stats: TracerouteStatistics = create_stats(df)
-    # print(repr(stats))
+    stats: TracerouteStatistics = create_stats(df)
+    print(repr(stats))
     df = remove_invalid_traces(df)
 
-    unique_st: list[str] = filter.get_unique_start_times(df).tolist()
+    unique_st: list[str] = filter.get_unique_start_times(df)
     for flow_label in source_flow_labels:
         print(f"Distribution of equal paths with flow label {flow_label}:")
         dist = filter.get_distribution_of_equal_paths_to_destination(
