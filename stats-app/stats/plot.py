@@ -13,20 +13,20 @@ def cdf_plot(df: pd.DataFrame):
     plt.show()
 
 
-def bar_plot(df: pd.DataFrame):
+def bar(df: pd.DataFrame):
     x = np.array(["A", "B", "C", "D"])
     y = np.array([3, 8, 1, 10])
-    plt.bar(x,y)
+    plt.bar(x, y)
     plt.show()
 
 
-def scatter_plot(df: pd.DataFrame):
+def scatter(df: pd.DataFrame):
     df = pd.read_csv('data.csv')
     df.plot(kind='scatter', x='Duration', y='Calories')
     plt.show()
 
 
-def line_plot(df: pd.DataFrame):
+def line(df: pd.DataFrame):
     y1 = np.array([3, 8, 1, 10])
     y2 = np.array([6, 2, 7, 11])
     plt.plot(y1)
@@ -34,7 +34,7 @@ def line_plot(df: pd.DataFrame):
     plt.show()
 
 
-def histogram_plot(df: pd.DataFrame):
+def histogram(df: pd.DataFrame):
     # Note: df needs to be a series (not a dataframe)
     plt.hist(df)
     plt.show()

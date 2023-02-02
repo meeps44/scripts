@@ -6,11 +6,12 @@ import pandas as pd
 import logging
 
 
-def get_distribution_of_equal_paths_to_destination(df: pd.DataFrame, flowlabel: int, destination_addr: str):
+def get_distribution_of_equal_paths_to_destination(
+        df: pd.DataFrame, flowlabel: int, destination_addr: str) -> pd.Series:
     """
     Get the number of paths 
     """
-    unique_start_times: list = get_unique_start_times(df).values.tolist()
+    unique_start_times: list[str] = get_unique_start_times(df).tolist()
     if flowlabel == 0:
         df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (
             df["START_TIME"] == str(unique_start_times[0]))]
@@ -152,7 +153,26 @@ def get_unique_list_items(input: list) -> list:
     return unique_list
 
 
-def get_unique_start_times(df: pd.DataFrame) -> pd.DataFrame:
+# def get_unique_start_times(db_dir: str, source_flow_labels: list):
+    # """
+    # Get the unique values in the START_TIME column from all databases
+    # in a directory, and combine to a single dataframe.
+    # """
+    #source_flow_labels = [0, 255, 1048575]
+    #ls: list[str] = glob.glob(db_dir)
+    #base: pd.DataFrame = pd.DataFrame()
+    # for db_file in ls:
+    #conn = filter.sqlite_init(db_file)
+    #unique_start_times = filter.get_unique_start_times(conn)
+    # for time in unique_start_times:
+    # for fl in source_flow_labels:
+    # df = filter.sqlite_exec(
+    # conn, f"SELECT PATH_HASH FROM TRACEROUTE_DATA WHERE START_TIME={time} AND SOURCE_FLOW_LABEL={fl}")
+    # base.concat(df)
+    # return base
+
+
+def get_unique_start_times(df: pd.DataFrame):
     """
     Get the unique values in the START_TIME column from all databases 
     in a directory, and combine to a single dataframe.

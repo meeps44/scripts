@@ -1,11 +1,12 @@
 from stats.definitions.classdefinitions import *
-import stats.plot as splt
+import stats.plot as plot
 import stats.filter as filter
 import stats.compare as scmp
 import stats.sqlite_load as sq
 import prettyprinter as pp
 import glob
 import pandas as pd
+import logging
 
 
 def get_number_of_instances_where_path_stayed_consistent(df: pd.DataFrame, flowlabel: int):
@@ -66,8 +67,9 @@ def get_total_hop_where_path_diverged(df: pd.DataFrame, flowlabel: int):
     pass
 
 
-def get_total_number_of_unique_vp_source_asns(df: pd.DataFrame):
-    pass
+def print_source_asns(df: pd.DataFrame):
+    src_asns = df["SOURCE_ASN"].unique()
+    print(src_asns)
 
 
 def get_total_number_of_unique_destination_asns(df: pd.DataFrame):
@@ -159,25 +161,6 @@ def print_stats(stats: TracerouteStatistics):
     pp.pprint(stats)
 
 
-# def get_unique_start_times(db_dir: str, source_flow_labels: list):
-    # """
-    # Get the unique values in the START_TIME column from all databases
-    # in a directory, and combine to a single dataframe.
-    # """
-    #source_flow_labels = [0, 255, 1048575]
-    #ls: list[str] = glob.glob(db_dir)
-    #base: pd.DataFrame = pd.DataFrame()
-    # for db_file in ls:
-    #conn = filter.sqlite_init(db_file)
-    #unique_start_times = filter.get_unique_start_times(conn)
-    # for time in unique_start_times:
-    # for fl in source_flow_labels:
-    # df = filter.sqlite_exec(
-    # conn, f"SELECT PATH_HASH FROM TRACEROUTE_DATA WHERE START_TIME={time} AND SOURCE_FLOW_LABEL={fl}")
-    # base.concat(df)
-    # return base
-
-
 def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
     stats = TracerouteStatistics()
     stats.num_rows_total = get_num_rows(df)
@@ -222,14 +205,19 @@ def main():
     # print(repr(stats))
 
     # Remove rows containing loops
+    logging.debug("Removing loops")
     df = filter.remove_indices(df, filter.get_loops(df))
     # Remove rows containing cycles
+    logging.debug("Removing cycles")
     df = filter.remove_indices(df, filter.get_cycles(df))
     # Remove rows with flow label changes
+    logging.debug("Removing rows with flow label changes")
     df = filter.remove_indices(df,
                                filter.get_rows_with_path_flow_label_changes(df))
 
     print("Distribution of equal paths with flow label 0:")
+    dist = filter.get_distribution_of_equal_paths_to_destination()
+    plot.histogram(dist)
     print("Distribution of equal paths with flow label 255:")
     print("Distribution of equal paths with flow label 0:")
     print("Distribution of equal paths with flow label 0:")
