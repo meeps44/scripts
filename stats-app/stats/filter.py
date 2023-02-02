@@ -5,7 +5,35 @@ from sqlite3 import connect
 import pandas as pd
 
 
-def get_path_flow_label_changes(df: pd.DataFrame) -> list:
+def get_distribution_of_equal_paths_to_destination(df: pd.DataFrame, flowlabel: int, destination_addr: str):
+    """
+    Get the number of paths 
+    """
+    unique_start_times:list = get_unique_start_times(df).values.tolist()
+    if flowlabel == 0:
+        df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (df["START_TIME"] == str(unique_start_times[0]))]
+        df = df["PATH_HASH"]
+        value_counts = df.value_counts()
+        for start_time in unique_start_times[1:]:
+            #df = df["START_TIME"] == str(start_time)
+            #df = df["SOURCE_FLOW_LABEL"] == str(flowlabel)
+            df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (df["START_TIME"] == str(start_time))]
+            df = df["PATH_HASH"]
+            eqp = df.value_counts()
+            # concat
+            value_counts = pd.concat([value_counts, eqp], axis=0)
+        return value_counts
+    elif flowlabel == 255:
+        pass
+    elif flowlabel == 65280:
+        pass
+    elif flowlabel == 983040:
+        pass
+    elif flowlabel == 1048575:
+        pass
+
+
+def get_rows_with_path_flow_label_changes(df: pd.DataFrame) -> list:
     """
     Get a list containing the indices of all rows where the flow label changed en-route.
     """
@@ -38,8 +66,7 @@ def count_loops(df: pd.DataFrame) -> int:
     """
     nloops = 0
     for row_idx in df.index:
-        hop_ip_str: str = df['HOP_IP_ADDRESSES'][row_idx]
-        hop_ip_list: list = hop_ip_str.split(" ")
+        hop_ip_list: str = df["HOP_IP_ADDRESSES"].iloc[[row_idx]].values.tolist()
         prev_ip = hop_ip_list[0]
         for idx, ip in enumerate(hop_ip_list):
             if idx != 0:
@@ -82,8 +109,7 @@ def count_cycles(df: pd.DataFrame) -> int:
     """
     count = 0
     for row_idx in df.index:
-        hop_ip_str: str = df['HOP_IP_ADDRESSES'][row_idx]
-        hop_ip_list: list = hop_ip_str.split(" ")
+        hop_ip_list: str = df["HOP_IP_ADDRESSES"].iloc[[row_idx]].values.tolist()
         unique_list = get_unique_list_items(hop_ip_list)
         for item in unique_list:
             count = hop_ip_list.count(item)
@@ -104,7 +130,7 @@ def get_unique_list_items(input: list) -> list:
     return unique_list
 
 
-def get_unique_start_times(df: pd.DataFrame):
+def get_unique_start_times(df: pd.DataFrame) -> pd.DataFrame:
     """
     Get the unique values in the START_TIME column from all databases 
     in a directory, and combine to a single dataframe.

@@ -21,23 +21,6 @@ def get_number_of_instances_where_path_stayed_consistent(df: pd.DataFrame, flowl
         pass
 
 
-def get_distribution_of_equal_paths_to_destination(df: pd.DataFrame, flowlabel: int, destination_addr: str):
-    """
-    Get the number of paths 
-    """
-    if flowlabel == 0:
-        df = df["time"] == "Dinner"
-        eqp = df.value_counts()
-        return eqp
-    elif flowlabel == 255:
-        pass
-    elif flowlabel == 65280:
-        pass
-    elif flowlabel == 983040:
-        pass
-    elif flowlabel == 1048575:
-        pass
-
 # def get_number_of_equal_paths_to_destination(df: pd.DataFrame, flowlabel: int, destination_addr: str):
     # """
     # Get the number of paths
@@ -207,10 +190,10 @@ def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
 
 
 def main():
-    #db_dir = "/home/erlhap/test/python/paris-traceroute-filter/data/*.db"
-    db_dir = "/home/erlend/git/scripts/stats-app/sample-data/db/*.db"
-    db_path = "/home/erlend/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
-    #db_dir = "/home/erlhap/test/scripts/stats-app/sample-data/db/*.db"
+    db_dir = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db/*.db"
+    db_path = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db"
+    #db_dir = "/home/erlend/git/scripts/stats-app/sample-data/db/*.db"
+    #db_path = "/home/erlend/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
     source_flow_labels = [0, 255, 1048575]
     #start_times: pd.DataFrame = get_collective_unique_start_times(db_dir, source_flow_labels)
     #df: pd.DataFrame = sq.load_single(db_path)
@@ -221,18 +204,14 @@ def main():
     for item in dflist:
         print(str(item))
     print("src fl:")
-    src_fl: str = str(df["SOURCE_FLOW_LABEL"].iloc[[0]].values.tolist())
-    print(src_fl)
-    print(f"src_fl type: {type(src_fl)}")
-    # print(df)
-    #num_loops: int = get_total_number_of_loops_in_dataset(df)
-    # print(f"{num_loops=}")
+    dflist = df["SOURCE_FLOW_LABEL"].iloc[[0]].values.tolist()
+    for item in dflist:
+        print(str(item))
 
-    #num_cycles: int = filter.count_cycles(df)
-    # print(f"{num_cycles=}")
-    # num_path_flow_label_changes = filter.count_path_flow_label_changes(
-    # filter.get_path_flow_label_changes(df))
-    # print(f"{num_path_flow_label_changes=}")
+    num_loops: int = filter.count_loops(df)
+    print(f"{num_loops=}")
+    num_cycles: int = filter.count_cycles(df)
+    print(f"{num_cycles=}")
 
     #start_times: pd.DataFrame = filter.get_unique_start_times(df)
     #stats: TracerouteStatistics = create_stats(df)
@@ -241,6 +220,19 @@ def main():
     #cycles_list: list = filter.get_cycles(df)
     #df = filter.remove_indices(loop_list)
     #df = filter.remove_indices(cycles_list)
+
+    print("Number of flow label changes in transit:")
+    num_path_flow_label_changes = filter.count_path_flow_label_changes(
+    filter.get_rows_with_path_flow_label_changes(df))
+    print(f"{num_path_flow_label_changes=}")
+
+    print("Distribution of equal paths with flow label 0:")
+    print("Distribution of equal paths with flow label 255:")
+    print("Distribution of equal paths with flow label 0:")
+    print("Distribution of equal paths with flow label 0:")
+    print("Distribution of equal paths with flow label 0:")
+
+
 
 
 if __name__ == "__main__":
