@@ -177,7 +177,7 @@ def main():
     #db_path = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db"
     db_dir = "/home/erlend/git/scripts/stats-app/sample-data/db/*.db"
     db_path = "/home/erlend/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
-    source_flow_labels = [0, 255, 1048575]
+    source_flow_labels = [0, 255, 65280, 983040, 1048575]
     #start_times: pd.DataFrame = get_collective_unique_start_times(db_dir, source_flow_labels)
     #df: pd.DataFrame = sq.load_single(db_path)
     df: pd.DataFrame = sq.load_all(db_dir)
@@ -216,7 +216,8 @@ def main():
                                filter.get_rows_with_path_flow_label_changes(df))
 
     print("Distribution of equal paths with flow label 0:")
-    dist = filter.get_distribution_of_equal_paths_to_destination()
+    dist = filter.get_distribution_of_equal_paths_to_destination(
+        df, flowlabel=FlowLabels.FL_0)
     plot.histogram(dist)
     print("Distribution of equal paths with flow label 255:")
     print("Distribution of equal paths with flow label 0:")
