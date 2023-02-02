@@ -145,21 +145,11 @@ def main():
     db_path = "/home/erlend/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
     #df: pd.DataFrame = sq.load_single(db_path)
     df: pd.DataFrame = sq.load_all(db_dir)
-    print("Hop returned flow labels:")
-    ndf = df["HOP_RETURNED_FLOW_LABELS"]
-    dflist = ndf.iloc[[0]].values.tolist()
-    for item in dflist:
-        print(str(item))
-    print("src fl:")
-    dflist = df["SOURCE_FLOW_LABEL"].iloc[[0]].values.tolist()
-    for item in dflist:
-        print(str(item))
 
     num_loops: int = filter.count_loops(df)
     print(f"{num_loops=}")
     num_cycles: int = filter.count_cycles(df)
     print(f"{num_cycles=}")
-
     print("Number of flow label changes in transit:")
     num_path_flow_label_changes: int = filter.count_path_flow_label_changes(df)
     print(f"{num_path_flow_label_changes=}")
