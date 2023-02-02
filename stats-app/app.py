@@ -171,6 +171,23 @@ def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
     return stats
 
 
+def remove_invalid_traces(df: pd.DataFrame):
+    """
+    Remove traces containing loops, cycles and flow label values
+    that changed in-transit.
+    """
+    # Remove rows containing loops
+    logging.debug("Removing loops")
+    df = filter.remove_indices(df, filter.get_loops(df))
+    # Remove rows containing cycles
+    logging.debug("Removing cycles")
+    df = filter.remove_indices(df, filter.get_cycles(df))
+    # Remove rows with flow label changes
+    logging.debug("Removing rows with flow label changes")
+    df = filter.remove_indices(df,
+                               filter.get_rows_with_path_flow_label_changes(df))
+
+
 def main():
     source_flow_labels = [0, 255, 65280, 983040, 1048575]
     #db_dir = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db/*.db"
@@ -202,17 +219,7 @@ def main():
     #start_times: pd.DataFrame = filter.get_unique_start_times(df)
     #stats: TracerouteStatistics = create_stats(df)
     # print(repr(stats))
-
-    # Remove rows containing loops
-    logging.debug("Removing loops")
-    df = filter.remove_indices(df, filter.get_loops(df))
-    # Remove rows containing cycles
-    logging.debug("Removing cycles")
-    df = filter.remove_indices(df, filter.get_cycles(df))
-    # Remove rows with flow label changes
-    logging.debug("Removing rows with flow label changes")
-    df = filter.remove_indices(df,
-                               filter.get_rows_with_path_flow_label_changes(df))
+    remove_invalid_traces(df)
 
     for flow_label in source_flow_labels:
         print(f"Distribution of equal paths with flow label {flow_label}:")
