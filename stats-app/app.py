@@ -137,6 +137,10 @@ def main():
     source_flow_labels = [0, 255, 65280, 983040, 1048575]
     #db_dir = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db/*.db"
     #db_path = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db"
+
+    #db_dir = "/home/erlend/db-storage/large-data/*.db"
+    #db_path = "/home/erlend/db-storage/large-data/db-ubuntu-ams3-0-2023-01-19T23_00_25Z.db"
+
     db_dir = "/home/erlend/git/scripts/stats-app/sample-data/db/*.db"
     db_path = "/home/erlend/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
     #df: pd.DataFrame = sq.load_single(db_path)
