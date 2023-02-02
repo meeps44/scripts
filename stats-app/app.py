@@ -21,24 +21,6 @@ def get_number_of_instances_where_path_stayed_consistent(df: pd.DataFrame, flowl
         pass
 
 
-# def get_number_of_equal_paths_to_destination(df: pd.DataFrame, flowlabel: int, destination_addr: str):
-    # """
-    # Get the number of paths
-    # """
-    # if flowlabel == 0:
-        #df = df["time"] == "Dinner"
-        #eqp = df.value_counts()
-        # return eqp
-    # elif flowlabel == 255:
-        # pass
-    # elif flowlabel == 65280:
-        # pass
-    # elif flowlabel == 983040:
-        # pass
-    # elif flowlabel == 1048575:
-        # pass
-
-
 def get_total_number_of_equal_paths(df: pd.DataFrame):
     pass
 
@@ -86,33 +68,6 @@ def get_total_number_of_loops_in_dataset(df: pd.DataFrame):
     return filter.count_loops(df)
 
 
-def get_number_of_loops_in_dataset_per_vp(df: pd.DataFrame, vp: VantagePoint):
-    if vp.ams3:
-        df = df['test']
-        return filter.count_loops(df)
-    elif vp.blr1:
-        df = df['test']
-        return filter.count_loops(df)
-    elif vp.fra1:
-        df = df['test']
-        return filter.count_loops(df)
-    elif vp.lon1:
-        df = df['test']
-        return filter.count_loops(df)
-    elif vp.nyc1:
-        df = df['test']
-        return filter.count_loops(df)
-    elif vp.sfo3:
-        df = df['test']
-        return filter.count_loops(df)
-    elif vp.sgp1:
-        df = df['test']
-        return filter.count_loops(df)
-    elif vp.tor1:
-        df = df['test']
-        return filter.count_loops(df)
-
-
 def get_percentage_of_time_path_was_equal(df: pd.DataFrame, vp: VantagePoint):
     if vp.ams3:
         pass
@@ -136,23 +91,12 @@ def get_total_percentage_of_time_path_was_equal(df: pd.DataFrame):
     pass
 
 
-# def get_number_of_asns_traversed(df: pd.DataFrame):
-def get_number_of_asns_traversed(df: pd.DataFrame, vp: VantagePoint):
+def get_asns_traversed(df: pd.DataFrame) -> list:
     # Insert code to be done before this #
     # Data from the DataFrame should be a pd.Series
-    number_of_asns: list = list()
+    asns_traversed: list[str] = list()
     for row in df:
-        number_of_asns.append()
-    plot.histogram_plot(df)
-
-
-def get_total_number_of_asns_traversed(df: pd.DataFrame):
-    # Insert code to be done before this #
-    # Data from the DataFrame should be a pd.Series
-    number_of_asns: list = list()
-    for row in df:
-        number_of_asns.append()
-    plot.histogram_plot(df)
+        asns_traversed.append()
 
 
 def print_stats(stats: TracerouteStatistics):
@@ -165,13 +109,13 @@ def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
     stats.num_rows_total = get_num_rows(df)
     stats.num_loops = filter.count_loops(df)
     stats.num_cycles = filter.count_cycles(df)
-    stats.num_asns_traversed = get_total_number_of_asns_traversed(df)
+    stats.num_asns_traversed = get_asns_traversed(df)
     stats.num_fl_changes = filter.count_path_flow_label_changes(
         filter.get_path_flow_label_changes(df))
     return stats
 
 
-def remove_invalid_traces(df: pd.DataFrame):
+def remove_invalid_traces(df: pd.DataFrame) -> pd.DataFrame:
     """
     Remove traces containing loops, cycles and flow label values
     that changed in-transit.
@@ -186,6 +130,7 @@ def remove_invalid_traces(df: pd.DataFrame):
     logging.debug("Removing rows with flow label changes")
     df = filter.remove_indices(df,
                                filter.get_rows_with_path_flow_label_changes(df))
+    return df
 
 
 def main():
@@ -194,7 +139,6 @@ def main():
     #db_path = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db"
     db_dir = "/home/erlend/git/scripts/stats-app/sample-data/db/*.db"
     db_path = "/home/erlend/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
-    #start_times: pd.DataFrame = get_collective_unique_start_times(db_dir, source_flow_labels)
     #df: pd.DataFrame = sq.load_single(db_path)
     df: pd.DataFrame = sq.load_all(db_dir)
     print("Hop returned flow labels:")
@@ -216,15 +160,15 @@ def main():
     num_path_flow_label_changes: int = filter.count_path_flow_label_changes(df)
     print(f"{num_path_flow_label_changes=}")
 
-    #start_times: pd.DataFrame = filter.get_unique_start_times(df)
     #stats: TracerouteStatistics = create_stats(df)
     # print(repr(stats))
-    remove_invalid_traces(df)
+    df = remove_invalid_traces(df)
 
+    unique_st: list[str] = filter.get_unique_start_times(df).tolist()
     for flow_label in source_flow_labels:
         print(f"Distribution of equal paths with flow label {flow_label}:")
         dist = filter.get_distribution_of_equal_paths_to_destination(
-            df, flowlabel=flow_label)
+            df, flowlabel=flow_label, unique_start_times=unique_st)
         print(dist)
         plot.histogram(dist)
 

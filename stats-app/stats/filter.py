@@ -7,34 +7,22 @@ import logging
 
 
 def get_distribution_of_equal_paths_to_destination(
-        df: pd.DataFrame, flowlabel: int, destination_addr: str) -> pd.Series:
+        df: pd.DataFrame, flowlabel: int, unique_start_times: list) -> pd.Series:
     """
     Get the number of paths 
     """
-    unique_start_times: list[str] = get_unique_start_times(df).tolist()
-    if flowlabel == 0:
-        df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (
-            df["START_TIME"] == str(unique_start_times[0]))]
+    df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (
+        df["START_TIME"] == str(unique_start_times[0]))]
+    df = df["PATH_HASH"]
+    value_counts = df.value_counts()
+    for start_time in unique_start_times[1:]:
+        df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel))
+                & (df["START_TIME"] == str(start_time))]
         df = df["PATH_HASH"]
-        value_counts = df.value_counts()
-        for start_time in unique_start_times[1:]:
-            #df = df["START_TIME"] == str(start_time)
-            #df = df["SOURCE_FLOW_LABEL"] == str(flowlabel)
-            df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel))
-                    & (df["START_TIME"] == str(start_time))]
-            df = df["PATH_HASH"]
-            eqp = df.value_counts()
-            # concat
-            value_counts = pd.concat([value_counts, eqp], axis=0)
-        return value_counts
-    elif flowlabel == 255:
-        pass
-    elif flowlabel == 65280:
-        pass
-    elif flowlabel == 983040:
-        pass
-    elif flowlabel == 1048575:
-        pass
+        eqp = df.value_counts()
+        # concat
+        value_counts = pd.concat([value_counts, eqp], axis=0)
+    return value_counts
 
 
 def count_path_flow_label_changes(df: pd.DataFrame) -> int:
