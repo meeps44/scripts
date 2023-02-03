@@ -1,5 +1,5 @@
-from stats.definitions.classdefinitions import *
-from stats.sqlite_load import *
+from app.definitions.classdefinitions import *
+from app.sqlite_load import *
 from dataclasses import dataclass
 from sqlite3 import connect
 import pandas as pd

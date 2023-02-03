@@ -1,9 +1,9 @@
 from os.path import expanduser
-from stats.definitions.classdefinitions import *
-import stats.plot as plot
-import stats.filter as filter
-import stats.compare as scmp
-import stats.sqlite_load as sq
+from app.definitions.classdefinitions import *
+import app.plot as plot
+import app.filter as filter
+import app.compare as scmp
+import app.sqlite_load as sq
 import prettyprinter as pp
 import pandas as pd
 import logging
