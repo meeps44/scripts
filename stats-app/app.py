@@ -1,3 +1,4 @@
+from os.path import expanduser
 from stats.definitions.classdefinitions import *
 import stats.plot as plot
 import stats.filter as filter
@@ -109,9 +110,9 @@ def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
     stats.num_rows_total = get_num_rows(df)
     stats.num_loops = filter.count_loops(df)
     stats.num_cycles = filter.count_cycles(df)
-    stats.num_asns_traversed = get_asns_traversed(df)
-    stats.num_fl_changes = filter.count_path_flow_label_changes(
-        filter.get_path_flow_label_changes(df))
+    #stats.num_asns_traversed = get_asns_traversed(df)
+    stats.num_fl_changes = len(
+        filter.get_rows_with_path_flow_label_changes(df))
     return stats
 
 
@@ -135,28 +136,40 @@ def remove_invalid_traces(df: pd.DataFrame) -> pd.DataFrame:
 
 def main():
     source_flow_labels = [0, 255, 65280, 983040, 1048575]
-    #db_dir = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db/*.db"
-    #db_path = "/home/erlhap/test/scripts/scripts/stats-app/sample-data/db"
+    home = expanduser("~")
+    #db_dir = home + "/test/scripts/scripts/stats-app/sample-data/db/*.db"
+    #db_path = home + "/test/scripts/scripts/stats-app/sample-data/db"
 
-    #db_dir = "/home/erlend/db-storage/large-data/*.db"
-    #db_path = "/home/erlend/db-storage/large-data/db-ubuntu-ams3-0-2023-01-19T23_00_25Z.db"
+    # Large data:
+    #db_dir = home + "/db-storage/large-data/*.db"
+    #db_path = home + "/db-storage/large-data/db-ubuntu-ams3-0-2023-01-19T23_00_25Z.db"
 
-    db_dir = "/home/erlend/git/scripts/stats-app/sample-data/db/*.db"
-    db_path = "/home/erlend/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
+    # Test/small data:
+    db_dir = home + "/git/scripts/stats-app/sample-data/db/*.db"
+    db_path = home + "/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
+
     #df: pd.DataFrame = sq.load_single(db_path)
     df: pd.DataFrame = sq.load_all(db_dir)
+    num_rows = get_num_rows(df)
+    print(f"{num_rows=}")
 
-    num_loops: int = filter.count_loops(df)
-    print(f"{num_loops=}")
-    num_cycles: int = filter.count_cycles(df)
-    print(f"{num_cycles=}")
-    print("Number of flow label changes in transit:")
-    num_path_flow_label_changes: int = filter.count_path_flow_label_changes(df)
-    print(f"{num_path_flow_label_changes=}")
+    #num_loops: int = filter.count_loops(df)
+    # print(f"{num_loops=}")
+    #num_cycles: int = filter.count_cycles(df)
+    # print(f"{num_cycles=}")
 
-    stats: TracerouteStatistics = create_stats(df)
-    print(repr(stats))
-    df = remove_invalid_traces(df)
+    #print("Number of flow label changes in transit:")
+    #num_path_flow_label_changes: int = filter.count_path_flow_label_changes(df)
+    # print(f"{num_path_flow_label_changes=}")
+
+    #print("Number of rows with flow label changes in transit:")
+    # num_path_flow_label_changes: int = len(
+    # filter.get_rows_with_path_flow_label_changes(df))
+    # print(f"{num_path_flow_label_changes=}")
+
+    #stats: TracerouteStatistics = create_stats(df)
+    # print(repr(stats))
+    #df = remove_invalid_traces(df)
 
     unique_st: list[str] = filter.get_unique_start_times(df)
     for flow_label in source_flow_labels:
@@ -164,7 +177,7 @@ def main():
         dist = filter.get_distribution_of_equal_paths_to_destination(
             df, flowlabel=flow_label, unique_start_times=unique_st)
         print(dist)
-        plot.histogram(dist)
+    # plot.histogram(dist)
 
 
 if __name__ == "__main__":

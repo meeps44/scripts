@@ -31,14 +31,21 @@ def count_path_flow_label_changes(df: pd.DataFrame) -> int:
     """
     num_flow_label_changes: int = 0
     for row_idx in df.index:
-        src_fl: str = str(df["SOURCE_FLOW_LABEL"].iloc[[row_idx]])
-        ndf: pd.DataFrame = df["HOP_RETURNED_FLOW_LABELS"]
-        hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
-        flow_labels = hrfl.values.tolist()
+        src_fl: str = str(df["SOURCE_FLOW_LABEL"].iloc[row_idx])
+        print(
+            f"Source flow label: {src_fl}\nSource flow label type:{type(src_fl)}")
+        #ndf: pd.Series = df["HOP_RETURNED_FLOW_LABELS"].iloc[row_idx]
+        #flow_labels: list = ndf.to_list()
+        ndf: str = df["HOP_RETURNED_FLOW_LABELS"].iloc[row_idx]
+        flow_labels: list = ndf.split(" ")
+        #hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
+        #flow_labels = ndf.values.tolist()
         #hrfl = ' '.join(hrfl_list)
         #hrfl: str = df['HOP_RETURNED_FLOW_LABELS'][row_idx]
-        #flow_labels: list = hrfl.split(" ")
+        print("Hop flow labels:")
         for val in flow_labels:
+            print(val)
+            (print(f"type: {type(val)}"))
             if src_fl != val:
                 num_flow_label_changes = num_flow_label_changes + 1
     return num_flow_label_changes
@@ -50,10 +57,12 @@ def get_rows_with_path_flow_label_changes(df: pd.DataFrame) -> list:
     """
     indices = list()
     for row_idx in df.index:
-        src_fl: str = str(df["SOURCE_FLOW_LABEL"].iloc[[row_idx]])
-        ndf: pd.DataFrame = df["HOP_RETURNED_FLOW_LABELS"]
-        hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
-        flow_labels = hrfl.values.tolist()
+        src_fl: str = str(df["SOURCE_FLOW_LABEL"].iloc[row_idx])
+        #ndf: pd.DataFrame = df["HOP_RETURNED_FLOW_LABELS"]
+        #hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
+        #flow_labels = hrfl.values.tolist()
+        ndf: str = df["HOP_RETURNED_FLOW_LABELS"].iloc[row_idx]
+        flow_labels: list = ndf.split(" ")
         for val in flow_labels:
             if src_fl != val:
                 indices.append(row_idx)
