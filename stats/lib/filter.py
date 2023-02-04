@@ -1,5 +1,5 @@
-from app.definitions.classdefinitions import *
-from app.sqlite_load import *
+from lib.definitions.classdefinitions import *
+from lib.sqlite_load import *
 from dataclasses import dataclass
 from sqlite3 import connect
 import pandas as pd

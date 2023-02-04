@@ -1,4 +1,4 @@
-from app.definitions.classdefinitions import *
+from lib.definitions.classdefinitions import *
 from sqlite3 import connect
 import pandas as pd
 

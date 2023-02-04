@@ -1,4 +1,4 @@
-from app.definitions.classdefinitions import *
+from lib.definitions.classdefinitions import *
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
