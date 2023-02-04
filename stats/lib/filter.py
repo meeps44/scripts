@@ -133,9 +133,19 @@ def count_cycles(df: pd.DataFrame) -> int:
         for item in unique_list:
             ip_count = hop_ip_list.count(item)
             if ip_count >= 2:
-                cycle_count = cycle_count + 1
+                print("Possible cycle detected")
+                if is_cycle(hop_ip_list):
+                    cycle_count = cycle_count + 1
                 # break # Uncomment this if we only want to count 1 cycle per row.
     return cycle_count
+
+
+def is_cycle(hop_ip_list: list) -> bool:
+    """
+    Checks whether there is a cycle in a given sequential list of 
+    ip addresses
+    """
+    pass
 
 
 def get_unique_list_items(input: list) -> list:
