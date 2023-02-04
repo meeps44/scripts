@@ -145,11 +145,9 @@ def is_cycle(hop_ip_list: list) -> bool:
     Checks whether there is a cycle in a given list of 
     sequential ip addresses
     """
-    tmp: str = ""
     for idx, ip in enumerate(hop_ip_list):
-        tmp = ip
         for inner_ip in hop_ip_list[idx+2:]:
-            if tmp == inner_ip and tmp != hop_ip_list[idx+1]:
+            if ip == inner_ip and ip != hop_ip_list[idx+1]:
                 return True
     return False
 
