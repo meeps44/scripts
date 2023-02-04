@@ -83,7 +83,7 @@ def count_loops(df: pd.DataFrame) -> int:
     for row_idx in df.index:
         hop_ip_list: str = df["HOP_IP_ADDRESSES"].iloc[[
             row_idx]].values.tolist()
-        prev_ip = hop_ip_list[0]
+        prev_ip: str = hop_ip_list[0]
         for idx, ip in enumerate(hop_ip_list):
             if idx != 0:
                 if ip == prev_ip:
@@ -125,17 +125,17 @@ def count_cycles(df: pd.DataFrame) -> int:
     A cycle is where the same IP address appears twice, separated by 
     at least one other IP address.
     """
-    count = 0
+    cycle_count = 0
     for row_idx in df.index:
         hop_ip_list: str = df["HOP_IP_ADDRESSES"].iloc[[
             row_idx]].values.tolist()
         unique_list = get_unique_list_items(hop_ip_list)
         for item in unique_list:
-            count = hop_ip_list.count(item)
-            if count >= 2:
-                count = count + 1
+            ip_count = hop_ip_list.count(item)
+            if ip_count >= 2:
+                cycle_count = cycle_count + 1
                 # break # Uncomment this if we only want to count 1 cycle per row.
-    return count
+    return cycle_count
 
 
 def get_unique_list_items(input: list) -> list:
