@@ -148,8 +148,8 @@ def main():
     db_dir = home + "/git/scripts/stats-app/sample-data/db/*.db"
     db_path = home + "/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
 
-    #df: pd.DataFrame = sq.load_single(db_path)
-    df: pd.DataFrame = sq.load_all(db_dir)
+    df: pd.DataFrame = sq.load_single(db_path)
+    #df: pd.DataFrame = sq.load_all(db_dir)
     num_rows = get_num_rows(df)
     print(f"{num_rows=}")
 

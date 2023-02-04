@@ -7,15 +7,17 @@ import logging
 
 
 def get_distribution_of_equal_paths_to_destination(
-        df: pd.DataFrame, flowlabel: int, unique_start_times: list) -> pd.Series:
+        df: pd.DataFrame, flowlabel: int, vp: VantagePoint) -> pd.Series:
     """
     Get the number of paths 
+    NOTE: df must be specific to a vantage point (not a cumulative df)
     """
+    unique_destination_addresses: list = get_unique_destination_addresses(df)
     df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (
-        df["START_TIME"] == str(unique_start_times[0]))]
+        df["START_TIME"] == str(unique_destination_addresses[0]))]
     df = df["PATH_HASH"]
     value_counts: pd.Series = df.value_counts()
-    for start_time in unique_start_times[1:]:
+    for start_time in unique_destination_addresses[1:]:
         df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel))
                 & (df["START_TIME"] == str(start_time))]
         df = df["PATH_HASH"]
@@ -153,6 +155,14 @@ def get_unique_start_times(df: pd.DataFrame) -> list:
     in a directory, and combine to a single dataframe.
     """
     return df["START_TIME"].unique().tolist()
+
+
+def get_unique_destination_addresses(df: pd.DataFrame) -> list:
+    """
+    Get the unique values in the START_TIME column from all databases 
+    in a directory, and combine to a single dataframe.
+    """
+    return df["DESTINATION_ADDRESS"].unique().tolist()
 
 
 def get_cycles(df: pd.DataFrame) -> list:
