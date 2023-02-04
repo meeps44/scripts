@@ -152,6 +152,18 @@ def is_cycle(hop_ip_list: list) -> bool:
     return False
 
 
+def count_cycles_2(hop_ip_list: list) -> int:
+    """
+    Counts the number of cycles in a given list of 
+    sequential ip addresses.
+    """
+    num_cycles: int = 0
+    for idx, ip in enumerate(hop_ip_list):
+        if ip in hop_ip_list[idx+2:] and ip != hop_ip_list[idx+1]:
+            num_cycles += 1
+    return num_cycles
+
+
 def get_unique_list_items(input: list) -> list:
     """
     Get a list containing only the unique values from the input list.
