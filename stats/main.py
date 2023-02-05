@@ -145,8 +145,8 @@ def main():
     #db_path = home + "/db-storage/large-data/db-ubuntu-ams3-0-2023-01-19T23_00_25Z.db"
 
     # Test/small data:
-    db_dir = home + "/git/scripts/stats-app/sample-data/db/*.db"
-    db_path = home + "/git/scripts/stats-app/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
+    db_dir = home + "/git/scripts/stats/sample-data/db/*.db"
+    db_path = home + "/git/scripts/stats/sample-data/db/db-ubuntu-fra1-0-2023-01-22T17_04_15Z.db"
 
     df: pd.DataFrame = sq.load_single(db_path)
     #df: pd.DataFrame = sq.load_all(db_dir)
@@ -171,13 +171,12 @@ def main():
     # print(repr(stats))
     #df = remove_invalid_traces(df)
 
-    unique_st: list[str] = filter.get_unique_start_times(df)
     for flow_label in source_flow_labels:
         print(f"Distribution of equal paths with flow label {flow_label}:")
         dist = filter.get_distribution_of_equal_paths_to_destination(
-            df, flowlabel=flow_label, unique_start_times=unique_st)
-        print(dist)
-    # plot.histogram(dist)
+            df, flowlabel=flow_label)
+        # print(dist.to_string())
+        # plot.histogram(dist)
 
 
 if __name__ == "__main__":

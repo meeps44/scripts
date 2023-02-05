@@ -5,22 +5,25 @@ from sqlite3 import connect
 import pandas as pd
 import logging
 
+logging.basicConfig(level=logging.DEBUG)
+
 
 def get_distribution_of_equal_paths_to_destination(
-        df: pd.DataFrame, flowlabel: int, vp: VantagePoint) -> pd.Series:
+        df: pd.DataFrame, flowlabel: int) -> pd.Series:
     """
     Get the number of paths 
     NOTE: df must be specific to a vantage point (not a cumulative df)
     """
     unique_destination_addresses: list = get_unique_destination_addresses(df)
-    start_df: pd.DataFrame = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (
+    start_df: pd.DataFrame = df[(df["SOURCE_FLOW_LABEL"] == flowlabel) & (
         df["DESTINATION_IP"] == str(unique_destination_addresses[0]))]
     base: pd.Series = start_df["PATH_HASH"].value_counts()
     for addr in unique_destination_addresses[1:]:
-        next_df: pd.DataFrame = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel))
+        next_df: pd.DataFrame = df[(df["SOURCE_FLOW_LABEL"] == flowlabel)
                                    & (df["DESTINATION_IP"] == str(addr))]
         overlay: pd.Series = next_df["PATH_HASH"].value_counts()
         base = pd.concat([base, overlay], axis=0)
+    logging.debug(f"base value_counts: {base.to_string()}")
     return base
 
 
@@ -128,8 +131,7 @@ def count_cycles(df: pd.DataFrame) -> int:
     """
     cycle_count = 0
     for row_idx in df.index:
-        hop_ip_str: str = df["HOP_IP_ADDRESSES"].iloc[row_idx]
-        hop_ip_list: list = hop_ip_str.split(" ")
+        hop_ip_list: list = get_hop_ip_list(df, row_idx)
         unique_list = get_unique_list_items(hop_ip_list)
         for item in unique_list:
             ip_count = hop_ip_list.count(item)
@@ -187,7 +189,7 @@ def get_unique_destination_addresses(df: pd.DataFrame) -> list:
     Get the unique values in the START_TIME column from all databases 
     in a directory, and combine to a single dataframe.
     """
-    return df["DESTINATION_ADDRESS"].unique().tolist()
+    return df["DESTINATION_IP"].unique().tolist()
 
 
 def get_cycle_indices(df: pd.DataFrame) -> list:
