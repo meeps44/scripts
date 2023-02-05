@@ -123,10 +123,10 @@ def remove_invalid_traces(df: pd.DataFrame) -> pd.DataFrame:
     """
     # Remove rows containing loops
     logging.debug("Removing loops")
-    df = filter.remove_indices(df, filter.get_loops(df))
+    df = filter.remove_indices(df, filter.get_loop_indices(df))
     # Remove rows containing cycles
     logging.debug("Removing cycles")
-    df = filter.remove_indices(df, filter.get_cycles(df))
+    df = filter.remove_indices(df, filter.get_cycle_indices(df))
     # Remove rows with flow label changes
     logging.debug("Removing rows with flow label changes")
     df = filter.remove_indices(df,

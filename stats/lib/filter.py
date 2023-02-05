@@ -78,26 +78,30 @@ def count_loops(df: pd.DataFrame) -> int:
     """
     nloops = 0
     for row_idx in df.index:
-        hop_ip_list: str = df["HOP_IP_ADDRESSES"].iloc[[
-            row_idx]].values.tolist()
+        #hop_ip_list: list = df["HOP_IP_ADDRESSES"].iloc[row_idx].tolist()
+        hop_ip_list: list = get_hop_ip_list(df, row_idx)
         prev_ip: str = hop_ip_list[0]
-        for idx, ip in enumerate(hop_ip_list):
-            if idx != 0:
-                if ip == prev_ip:
-                    print("Loop detected!")
-                    nloops += 1
+        for ip in hop_ip_list[1:]:
+            if ip == prev_ip:
+                print("Loop detected!")
+                nloops += 1
             prev_ip = ip
     return nloops
 
 
-def get_loops(df: pd.DataFrame) -> list:
+def get_hop_ip_list(df: pd.DataFrame, row_idx: int) -> list:
+    hop_ip_str: str = df['HOP_IP_ADDRESSES'][row_idx]
+    hop_ip_list: list = hop_ip_str.split(" ")
+    return hop_ip_list
+
+
+def get_loop_indices(df: pd.DataFrame) -> list:
     """
     Get a list containing the indices of all rows that contain loops in the dataset.
     """
     indices = list()
     for row_idx in df.index:
-        hop_ip_str: str = df['HOP_IP_ADDRESSES'][row_idx]
-        hop_ip_list: list = hop_ip_str.split(" ")
+        hop_ip_list: list = get_hop_ip_list(df, row_idx)
         prev_ip = hop_ip_list[0]
         for idx, ip in enumerate(hop_ip_list):
             if idx != 0:
@@ -124,15 +128,14 @@ def count_cycles(df: pd.DataFrame) -> int:
     """
     cycle_count = 0
     for row_idx in df.index:
-        hop_ip_list: str = df["HOP_IP_ADDRESSES"].iloc[[
-            row_idx]].values.tolist()
+        hop_ip_str: str = df["HOP_IP_ADDRESSES"].iloc[row_idx]
+        hop_ip_list: list = hop_ip_str.split(" ")
         unique_list = get_unique_list_items(hop_ip_list)
         for item in unique_list:
             ip_count = hop_ip_list.count(item)
             if ip_count >= 2:
                 if is_cycle(hop_ip_list):
                     cycle_count += 1
-                # break # Uncomment this if we only want to count 1 cycle per row.
     return cycle_count
 
 
@@ -187,20 +190,31 @@ def get_unique_destination_addresses(df: pd.DataFrame) -> list:
     return df["DESTINATION_ADDRESS"].unique().tolist()
 
 
-def get_cycles(df: pd.DataFrame) -> list:
+def get_cycle_indices(df: pd.DataFrame) -> list:
     """
     Get a list containing the indices of all rows that contain one or more cycles in the dataset.
     """
     indices = list()
+    # for row_idx in df.index:
+    #hop_ip_str: str = df['HOP_IP_ADDRESSES'][row_idx]
+    #hop_ip_list: list = hop_ip_str.split(" ")
+    #unique_list = get_unique_list_items(hop_ip_list)
+    # for item in unique_list:
+    #count = hop_ip_list.count(item)
+    # if count >= 2:
+    # indices.append(row_idx)
+    # break
+    # return indices
     for row_idx in df.index:
-        hop_ip_str: str = df['HOP_IP_ADDRESSES'][row_idx]
-        hop_ip_list: list = hop_ip_str.split(" ")
+        hop_ip_list: list = get_hop_ip_list(df, row_idx)
         unique_list = get_unique_list_items(hop_ip_list)
         for item in unique_list:
-            count = hop_ip_list.count(item)
-            if count >= 2:
-                indices.append(row_idx)
-                break
+            ip_count = hop_ip_list.count(item)
+            if ip_count >= 2:
+                if is_cycle(hop_ip_list):
+                    indices.append(row_idx)
+                    # Uncomment this if we only want to count 1 cycle per row.
+                    break
     return indices
 
 
