@@ -13,18 +13,15 @@ def get_distribution_of_equal_paths_to_destination(
     NOTE: df must be specific to a vantage point (not a cumulative df)
     """
     unique_destination_addresses: list = get_unique_destination_addresses(df)
-    df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (
-        df["START_TIME"] == str(unique_destination_addresses[0]))]
-    df = df["PATH_HASH"]
-    value_counts: pd.Series = df.value_counts()
-    for start_time in unique_destination_addresses[1:]:
-        df = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel))
-                & (df["START_TIME"] == str(start_time))]
-        df = df["PATH_HASH"]
-        eqp: pd.Series = df.value_counts()
-        # concat
-        value_counts = pd.concat([value_counts, eqp], axis=0)
-    return value_counts
+    start_df: pd.DataFrame = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel)) & (
+        df["DESTINATION_IP"] == str(unique_destination_addresses[0]))]
+    base: pd.Series = start_df["PATH_HASH"].value_counts()
+    for addr in unique_destination_addresses[1:]:
+        next_df: pd.DataFrame = df[(df["SOURCE_FLOW_LABEL"] == str(flowlabel))
+                                   & (df["DESTINATION_IP"] == str(addr))]
+        overlay: pd.Series = next_df["PATH_HASH"].value_counts()
+        base = pd.concat([base, overlay], axis=0)
+    return base
 
 
 def count_path_flow_label_changes(df: pd.DataFrame) -> int:
@@ -49,7 +46,7 @@ def count_path_flow_label_changes(df: pd.DataFrame) -> int:
             print(val)
             (print(f"type: {type(val)}"))
             if src_fl != val:
-                num_flow_label_changes = num_flow_label_changes + 1
+                num_flow_label_changes += 1
     return num_flow_label_changes
 
 
@@ -88,7 +85,7 @@ def count_loops(df: pd.DataFrame) -> int:
             if idx != 0:
                 if ip == prev_ip:
                     print("Loop detected!")
-                    nloops = nloops + 1
+                    nloops += 1
             prev_ip = ip
     return nloops
 
@@ -133,9 +130,8 @@ def count_cycles(df: pd.DataFrame) -> int:
         for item in unique_list:
             ip_count = hop_ip_list.count(item)
             if ip_count >= 2:
-                print("Possible cycle detected")
                 if is_cycle(hop_ip_list):
-                    cycle_count = cycle_count + 1
+                    cycle_count += 1
                 # break # Uncomment this if we only want to count 1 cycle per row.
     return cycle_count
 
