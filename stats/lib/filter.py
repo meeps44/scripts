@@ -18,12 +18,12 @@ def get_distribution_of_equal_paths_to_destination(
     start_df: pd.DataFrame = df[(df["SOURCE_FLOW_LABEL"] == flowlabel) & (
         df["DESTINATION_IP"] == str(unique_destination_addresses[0]))]
     base: pd.Series = start_df["PATH_HASH"].value_counts()
+    logging.debug(f"base value_counts: {base.to_string()}")
     for addr in unique_destination_addresses[1:]:
         next_df: pd.DataFrame = df[(df["SOURCE_FLOW_LABEL"] == flowlabel)
                                    & (df["DESTINATION_IP"] == str(addr))]
         overlay: pd.Series = next_df["PATH_HASH"].value_counts()
         base = pd.concat([base, overlay], axis=0)
-    logging.debug(f"base value_counts: {base.to_string()}")
     return base
 
 
