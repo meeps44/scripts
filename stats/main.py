@@ -1,4 +1,5 @@
 from os.path import expanduser
+import matplotlib.pyplot as plt
 from lib.definitions.classdefinitions import *
 import lib.plot as plot
 import lib.filter as filter
@@ -175,6 +176,7 @@ def main():
         print(f"Distribution of equal paths with flow label {flow_label}:")
         dist = filter.get_distribution_of_equal_paths_to_destination(
             df, flowlabel=flow_label)
+        plt.bar([str(i) for i in dist.index], dist)
         # print(dist.to_string())
         # plot.histogram(dist)
 

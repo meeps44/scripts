@@ -5,7 +5,7 @@ from sqlite3 import connect
 import pandas as pd
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 def get_distribution_of_equal_paths_to_destination(
@@ -23,7 +23,7 @@ def get_distribution_of_equal_paths_to_destination(
                                    & (df["DESTINATION_IP"] == str(addr))]
         overlay: pd.Series = next_df["PATH_HASH"].value_counts()
         base = pd.concat([base, overlay], axis=0)
-    logging.debug(f"base value_counts:\n{base.value_counts().to_string()}")
+    logging.info(f"base value_counts:\n{base.value_counts().to_string()}")
     return base.value_counts()
 
 
@@ -117,7 +117,7 @@ def get_loop_indices(df: pd.DataFrame) -> list:
 
 
 def remove_indices(df: pd.DataFrame, indices: list):
-    logging.debug(
+    logging.info(
         f"remove_indices: removed {len(indices)} rows from dataset")
     return df.drop(index=indices)
 
