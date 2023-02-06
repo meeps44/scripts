@@ -8,6 +8,24 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 
+def get_value_counts(df: pd.DataFrame, flowlabel: int) -> pd.Series:
+    """
+    Get the number of paths 
+    NOTE: df must be specific to a vantage point (not a cumulative df)
+    """
+    unique_destination_addresses: list = get_unique_destination_addresses(df)
+    start_df: pd.DataFrame = df[(df["SOURCE_FLOW_LABEL"] == flowlabel) & (
+        df["DESTINATION_IP"] == str(unique_destination_addresses[0]))]
+    base: pd.Series = start_df["PATH_HASH"].value_counts()
+    for addr in unique_destination_addresses[1:]:
+        next_df: pd.DataFrame = df[(df["SOURCE_FLOW_LABEL"] == flowlabel)
+                                   & (df["DESTINATION_IP"] == str(addr))]
+        overlay: pd.Series = next_df["PATH_HASH"].value_counts()
+        base = pd.concat([base, overlay], axis=0)
+    logging.info(f"base value_counts:\n{base.value_counts().to_string()}")
+    return base
+
+
 def get_distribution_of_equal_paths_to_destination(
         df: pd.DataFrame, flowlabel: int) -> pd.Series:
     """
