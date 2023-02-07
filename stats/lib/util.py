@@ -14,12 +14,12 @@ def get_unique_source_asns(df: pd.DataFrame) -> pd.Series:
     return df["SOURCE_ASN"].unique()
 
 
-def get_filenames(db_dir:str) -> list:
+def get_filenames(db_dir: str) -> list:
     ls: list = glob.glob(db_dir)
     return ls
 
 
-def get_vantage_points(filenames:list) -> list:
+def get_vantage_points(filenames: list) -> list:
     vps = list()
     for file in filenames:
         result = re.search("[a-z]{3}[0-9]", file)
@@ -37,6 +37,7 @@ def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
         filter.get_rows_with_path_flow_label_changes(df))
     return stats
 
+
 def get_total_number_of_loops_in_dataset(df: pd.DataFrame):
     return filter.count_loops(df)
 
@@ -48,8 +49,20 @@ def get_num_rows(df: pd.DataFrame) -> int:
     return len(df)
 
 
-def get_hop_where_path_diverged(df: pd.DataFrame, flowlabel: int, destination_address: str):
-    pass
+def get_hop_number_where_paths_diverged(df: pd.DataFrame, flowlabel: int, destination_address: str):
+    # First check if the paths are equal by comparing the hash
+    if something:
+        print("Paths are equal!")
+        return None
+    # If we are here, the paths are not equal:
+    path1 = list()  # list of (ip, hop_number)-tuples
+    path2 = list()  # list of (ip, hop_number)-tuples
+    try:
+        for idx, tup in enumerate(path1):
+            if tup != path2[idx]:
+                return idx+1  # incrementing by 1 since idx starts at 0
+    except IndexError:
+        return idx
 
 
 def get_asns_traversed(df: pd.DataFrame) -> list:
@@ -65,5 +78,9 @@ def print_stats(stats: TracerouteStatistics):
     pp.pprint(stats)
 
 
-def get_total_number_of_equal_paths(df: pd.DataFrame):
+def get_total_number_of_equal_paths(df: pd.DataFrame, flowlabel: int):
+    pass
+
+
+def get_total_number_of_unequal_paths(df: pd.DataFrame, flowlabel: int):
     pass
