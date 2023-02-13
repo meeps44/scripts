@@ -26,15 +26,16 @@ class SourceIPAddresses:
         return {k: str(v) for k, v in asdict(self).items()}
 
 
-class VantagePoint(Enum):
-    ams3 = 1
-    blr1 = 2
-    fra1 = 3
-    lon1 = 4
-    nyc1 = 5
-    sfo3 = 6
-    sgp1 = 7
-    tor1 = 8
+@dataclass
+class VantagePoint:
+    ams: str = "ams3"
+    blr: str = "blr1"
+    fra: str = "fra1"
+    lon: str = "lon1"
+    nyc: str = "nyc1"
+    sfo: str = "sfo3"
+    sgp: str = "sgp1"
+    tor: str = "tor1"
 
 
 class FlowLabels(IntEnum):
