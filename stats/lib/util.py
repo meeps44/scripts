@@ -32,7 +32,7 @@ def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
     stats.num_rows_total = get_num_rows(df)
     stats.num_loops = filter.count_loops(df)
     stats.num_cycles = filter.count_cycles(df)
-    #stats.num_asns_traversed = get_asns_traversed(df)
+    # stats.num_asns_traversed = get_asns_traversed(df)
     stats.num_fl_changes = len(
         filter.get_rows_with_path_flow_label_changes(df))
     return stats
@@ -49,19 +49,49 @@ def get_num_rows(df: pd.DataFrame) -> int:
     return len(df)
 
 
-def get_hop_number_where_paths_diverged(df: pd.DataFrame, flowlabel: int, destination_address: str):
-    # First check if the paths are equal by comparing the hash
-    if something:
-        print("Paths are equal!")
-        return None
-    # If we are here, the paths are not equal:
-    path1 = list()  # list of (ip, hop_number)-tuples
-    path2 = list()  # list of (ip, hop_number)-tuples
+def list_compare(list1, list2) -> int:
+    """
+    Compare two ordered lists and get the index where they diverge.
+    Returns None if the lists are equal.
+    """
+    max_len = max(len(list1), len(list2))
     try:
-        for idx, tup in enumerate(path1):
-            if tup != path2[idx]:
-                return idx+1  # incrementing by 1 since idx starts at 0
+        for idx in range(max_len):
+            if list1[idx] != list2[idx]:
+                return idx  # incrementing by 1 since idx starts at 0
+        # If we got this far, the lists are equal
+        return None
     except IndexError:
+        return idx
+
+
+def get_max_len(list_of_lists: list) -> int:
+    max_len = 0
+    for item in list_of_lists:
+        max_len = max(len(item), max_len)
+    return max_len
+
+
+def get_index_where_lists_diverge(list_of_lists: list) -> int:
+    """
+    In a set of n lists, get the first index where the lists diverge.
+    E.g.:
+    path1 = [1,2,3]
+    path2 = [1,5,3]
+    path3 = [1,2,4]
+    The lists first differ at index 1.
+    """
+    max_len = get_max_len(list_of_lists)
+    try:
+        for idx in range(max_len):
+            tmp = list_of_lists[0][idx]
+            for li in list_of_lists[1:]:
+                if tmp != li[idx]:
+                    print("The lists are not equal!")
+                    return idx
+        return None
+    except IndexError:
+        print("The lists are not equal!")
         return idx
 
 
@@ -78,12 +108,9 @@ def print_stats(stats: TracerouteStatistics):
     pp.pprint(stats)
 
 
-def get_total_number_of_equal_paths(df: pd.DataFrame, flowlabel: int):
-    pass
-
-
-def get_total_number_of_unequal_paths(df: pd.DataFrame, flowlabel: int):
-    pass
+def get_total_number_of_paths(df: pd.DataFrame, flowlabel: int):
+    df = df[df["source_flow_label"] == flowlabel]
+    return get_num_rows(df)
 
 
 def get_value_counts(df: pd.DataFrame, flowlabel: int) -> pd.Series:
@@ -132,14 +159,14 @@ def count_path_flow_label_changes(df: pd.DataFrame) -> int:
         src_fl: str = str(df["SOURCE_FLOW_LABEL"].iloc[row_idx])
         print(
             f"Source flow label: {src_fl}\nSource flow label type:{type(src_fl)}")
-        #ndf: pd.Series = df["HOP_RETURNED_FLOW_LABELS"].iloc[row_idx]
-        #flow_labels: list = ndf.to_list()
+        # ndf: pd.Series = df["HOP_RETURNED_FLOW_LABELS"].iloc[row_idx]
+        # flow_labels: list = ndf.to_list()
         ndf: str = df["HOP_RETURNED_FLOW_LABELS"].iloc[row_idx]
         flow_labels: list = ndf.split(" ")
-        #hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
-        #flow_labels = ndf.values.tolist()
-        #hrfl = ' '.join(hrfl_list)
-        #hrfl: str = df['HOP_RETURNED_FLOW_LABELS'][row_idx]
+        # hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
+        # flow_labels = ndf.values.tolist()
+        # hrfl = ' '.join(hrfl_list)
+        # hrfl: str = df['HOP_RETURNED_FLOW_LABELS'][row_idx]
         print("Hop flow labels:")
         for val in flow_labels:
             print(val)
@@ -156,9 +183,9 @@ def get_rows_with_path_flow_label_changes(df: pd.DataFrame) -> list:
     indices = list()
     for row_idx in df.index:
         src_fl: str = str(df["SOURCE_FLOW_LABEL"].iloc[row_idx])
-        #ndf: pd.DataFrame = df["HOP_RETURNED_FLOW_LABELS"]
-        #hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
-        #flow_labels = hrfl.values.tolist()
+        # ndf: pd.DataFrame = df["HOP_RETURNED_FLOW_LABELS"]
+        # hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
+        # flow_labels = hrfl.values.tolist()
         ndf: str = df["HOP_RETURNED_FLOW_LABELS"].iloc[row_idx]
         flow_labels: list = ndf.split(" ")
         for val in flow_labels:
@@ -177,7 +204,7 @@ def count_loops(df: pd.DataFrame) -> int:
     """
     nloops = 0
     for row_idx in df.index:
-        #hop_ip_list: list = df["HOP_IP_ADDRESSES"].iloc[row_idx].tolist()
+        # hop_ip_list: list = df["HOP_IP_ADDRESSES"].iloc[row_idx].tolist()
         hop_ip_list: list = get_hop_ip_list(df, row_idx)
         prev_ip: str = hop_ip_list[0]
         for ip in hop_ip_list[1:]:
@@ -287,16 +314,6 @@ def get_cycle_indices(df: pd.DataFrame) -> list:
     Get a list containing the indices of all rows that contain one or more cycles in the dataset.
     """
     indices = list()
-    # for row_idx in df.index:
-    #hop_ip_str: str = df['HOP_IP_ADDRESSES'][row_idx]
-    #hop_ip_list: list = hop_ip_str.split(" ")
-    #unique_list = get_unique_list_items(hop_ip_list)
-    # for item in unique_list:
-    #count = hop_ip_list.count(item)
-    # if count >= 2:
-    # indices.append(row_idx)
-    # break
-    # return indices
     for row_idx in df.index:
         hop_ip_list: list = get_hop_ip_list(df, row_idx)
         unique_list = get_unique_list_items(hop_ip_list)
