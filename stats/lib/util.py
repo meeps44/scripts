@@ -103,9 +103,9 @@ def get_asns_traversed(df: pd.DataFrame) -> list:
         asns_traversed.append(row)
 
 
-def print_stats(stats: TracerouteStatistics):
-    pp.install_extras()
-    pp.pprint(stats)
+# def print_stats(stats: TracerouteStatistics):
+    # pp.install_extras()
+    # pp.pprint(stats)
 
 
 def get_total_number_of_paths(df: pd.DataFrame, flowlabel: int):

@@ -1,5 +1,6 @@
 from enum import Enum, IntEnum
 from dataclasses import dataclass, asdict
+import prettyprinter as pp
 
 
 @dataclass
@@ -9,6 +10,10 @@ class TracerouteStatistics:
     num_loops: int = 0
     num_fl_changes: int = 0
     num_asns_traversed: int = 0
+
+    def pretty_print(self):
+        pp.install_extras()
+        pp.pprint(self)
 
 
 @dataclass
@@ -24,6 +29,18 @@ class SourceIPAddresses:
 
     def to_dict(self):
         return {k: str(v) for k, v in asdict(self).items()}
+
+
+@dataclass
+class Databases:
+    ams: str = "db-ubuntu-ams3-0-2023-01-19T23_00_25Z.db"
+    blr: str = "db-ubuntu-blr1-0-2023-01-19T23_00_25Z.db"
+    fra: str = "db-ubuntu-fra1-0-2023-01-19T23_00_25Z.db"
+    lon: str = "db-ubuntu-lon1-0-2023-01-19T23_00_25Z.db"
+    nyc: str = "db-ubuntu-nyc1-0-2023-01-19T23_00_25Z.db"
+    sfo: str = "db-ubuntu-sfo3-0-2023-01-19T23_00_25Z.db"
+    sgp: str = "db-ubuntu-sgp1-0-2023-01-19T23_00_25Z.db"
+    tor: str = "db-ubuntu-tor1-0-2023-01-19T23_00_25Z.db"
 
 
 @dataclass
