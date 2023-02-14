@@ -18,14 +18,14 @@ class TracerouteStatistics:
 
 @dataclass
 class SourceIPAddresses:
-    ams3: str = ""
-    blr1: str = ""
-    fra1: str = ""
-    lon1: str = ""
-    nyc1: str = ""
-    sfo3: str = ""
-    sgp1: str = ""
-    tor1: str = ""
+    ams3: str = "2a03:b0c0:2:d0::dd6:f001"
+    blr1: str = "2400:6180:100:d0::896:a001"
+    fra1: str = "2a03:b0c0:3:d0::1771:d001"
+    lon1: str = "2a03:b0c0:1:d0::12c1:a001"
+    nyc1: str = "2604:a880:400:d0::2573:a001"
+    sfo3: str = "2604:a880:4:1d0::76a:b000"
+    sgp1: str = "2400:6180:0:d0::1662:6001"
+    tor1: str = "2604:a880:cad:d0::e4c:a001"
 
     def to_dict(self):
         return {k: str(v) for k, v in asdict(self).items()}
