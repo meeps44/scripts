@@ -1,4 +1,4 @@
-import prettyprinter as pp
+# import prettyprinter as pp
 import pandas as pd
 from lib.definitions.classdefinitions import *
 import lib.plot as plot
@@ -30,16 +30,18 @@ def get_vantage_points(filenames: list) -> list:
 def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
     stats = TracerouteStatistics()
     stats.num_rows_total = get_num_rows(df)
-    stats.num_loops = filter.count_loops(df)
-    stats.num_cycles = filter.count_cycles(df)
+    stats.num_loops = count_loops(df)
+    stats.num_loop_rows = 0
+    stats.num_cycles = count_cycles(df)
+    stats.num_cycle_rows = 0
     # stats.num_asns_traversed = get_asns_traversed(df)
     stats.num_fl_changes = len(
-        filter.get_rows_with_path_flow_label_changes(df))
+        get_rows_with_path_flow_label_changes(df))
     return stats
 
 
 def get_total_number_of_loops_in_dataset(df: pd.DataFrame):
-    return filter.count_loops(df)
+    return count_loops(df)
 
 
 def get_num_rows(df: pd.DataFrame) -> int:
@@ -87,11 +89,9 @@ def get_index_where_lists_diverge(list_of_lists: list) -> int:
             tmp = list_of_lists[0][idx]
             for li in list_of_lists[1:]:
                 if tmp != li[idx]:
-                    print("The lists are not equal!")
                     return idx
         return None
     except IndexError:
-        print("The lists are not equal!")
         return idx
 
 
@@ -167,7 +167,6 @@ def count_path_flow_label_changes(df: pd.DataFrame) -> int:
         # flow_labels = ndf.values.tolist()
         # hrfl = ' '.join(hrfl_list)
         # hrfl: str = df['HOP_RETURNED_FLOW_LABELS'][row_idx]
-        print("Hop flow labels:")
         for val in flow_labels:
             print(val)
             (print(f"type: {type(val)}"))
@@ -209,7 +208,6 @@ def count_loops(df: pd.DataFrame) -> int:
         prev_ip: str = hop_ip_list[0]
         for ip in hop_ip_list[1:]:
             if ip == prev_ip:
-                print("Loop detected!")
                 nloops += 1
             prev_ip = ip
     return nloops
@@ -232,7 +230,6 @@ def get_loop_indices(df: pd.DataFrame) -> list:
         for idx, ip in enumerate(hop_ip_list):
             if idx != 0:
                 if ip == prev_ip:
-                    print("Loop detected!")
                     indices.append(row_idx)
                     break
             prev_ip = ip

@@ -1,19 +1,16 @@
 from enum import Enum, IntEnum
 from dataclasses import dataclass, asdict
-import prettyprinter as pp
 
 
 @dataclass
 class TracerouteStatistics:
     num_rows_total: int = 0
     num_cycles: int = 0
+    num_cycle_rows: int = 0
     num_loops: int = 0
+    num_loop_rows: int = 0
     num_fl_changes: int = 0
     num_asns_traversed: int = 0
-
-    def pretty_print(self):
-        pp.install_extras()
-        pp.pprint(self)
 
 
 @dataclass
