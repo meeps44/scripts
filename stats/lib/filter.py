@@ -13,7 +13,7 @@ def remove_invalid_traces(df: pd.DataFrame) -> pd.DataFrame:
     that changed in-transit.
     """
     loop_indices: list = util.get_loop_indices(df)
-    cycle_indices: list = util.get_loop_indices(df)
+    cycle_indices: list = util.get_cycle_indices(df)
     fl_change_indices: list = util.get_rows_with_path_flow_label_changes(df)
     merged_list = loop_indices + cycle_indices + fl_change_indices
     # Remove duplicate entries
