@@ -10,6 +10,10 @@ import glob
 import re
 
 
+# def create_hop_divergence_number_cdf(df: pd.DataFrame, flow_label: int, vantage_point: VantagePoint):
+# pass
+
+
 def get_unique_source_asns(df: pd.DataFrame) -> pd.Series:
     return df["SOURCE_ASN"].unique()
 
