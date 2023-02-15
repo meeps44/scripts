@@ -15,15 +15,12 @@ def remove_invalid_traces(df: pd.DataFrame) -> pd.DataFrame:
     loop_indices: list = util.get_loop_indices(df)
     cycle_indices: list = util.get_loop_indices(df)
     fl_change_indices: list = util.get_rows_with_path_flow_label_changes(df)
-    # Remove rows containing loops
-    logging.critical("Removing loops")
-    df = remove_indices(df, loop_indices)
-    # Remove rows containing cycles
-    logging.critical("Removing cycles")
-    df = remove_indices(df, cycle_indices)
-    # Remove rows with flow label changes
-    logging.critical("Removing rows with flow label changes")
-    df = remove_indices(df, fl_change_indices)
+    merged_list = loop_indices + cycle_indices + fl_change_indices
+    # Remove duplicate entries
+    merged_list = list(dict.fromkeys(merged_list))
+    # Remove rows with invalid entries
+    logging.critical("Removing rows with invalid traces")
+    df = remove_indices(df, merged_list)
     return df
 
 
