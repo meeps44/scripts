@@ -71,6 +71,10 @@ def list_compare(list1, list2) -> int:
         return idx
 
 
+def create_list_of_lists(df: pd.DataFrame):
+    pass
+
+
 def hop_list_to_list_of_tuples(df: pd.DataFrame, row_number: int) -> list:
     """
     Converts one ["HOP_IP_ADDRESSES", "HOP_NUMBERS"]-entry (one row) into a 
