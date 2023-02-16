@@ -80,13 +80,15 @@ def hop_list_to_list_of_tuples(df: pd.DataFrame, row_number: int) -> list:
     """
     # hop_ip_addresses = df["HOP_IP_ADDRESSES"].iloc[row_number]
     # hop_numbers = df["HOP_NUMBERS"].iloc[row_number]
-    hop_ip_addresses = df[["HOP_IP_ADDRESSES",
-                           "HOP_NUMBERS"]].iloc[row_number].values.tolist()
+    hop_ip_addresses_df = df[["HOP_IP_ADDRESSES",
+                              "HOP_NUMBERS"]].iloc[row_number]
+    hop_ip_addresses_list = str(
+        hop_ip_addresses_df.iloc[0]['HOP_IP_ADDRESSES']).split()
+    hop_numbers_list = str(
+        hop_ip_addresses_df.iloc[0]['HOP_NUMBERS']).split()
     list_of_tuples = list()
-    # for idx, val in enumerate(hop_ip_addresses):
-    # list_of_tuples.append(tuple((val, hop_numbers[idx])))
-    for val in hop_ip_addresses:
-        list_of_tuples.append(tuple((val[0], val[1])))
+    for idx, val in enumerate(hop_ip_addresses_list):
+        list_of_tuples.append(tuple((val, hop_numbers_list[idx])))
     return list_of_tuples
 
 
