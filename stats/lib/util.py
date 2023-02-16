@@ -71,6 +71,25 @@ def list_compare(list1, list2) -> int:
         return idx
 
 
+def hop_list_to_list_of_tuples(df: pd.DataFrame, row_number: int) -> list:
+    """
+    Converts one ["HOP_IP_ADDRESSES", "HOP_NUMBERS"]-entry into a list of
+    lists in the format [[ip, hop_number], [ip2, hop_number2], ...]
+    Input: df[["HOP_IP_ADDRESSES", "HOP_NUMBERS"]]
+    Output: list_of_lists
+    """
+    # hop_ip_addresses = df["HOP_IP_ADDRESSES"].iloc[row_number]
+    # hop_numbers = df["HOP_NUMBERS"].iloc[row_number]
+    hop_ip_addresses = df[["HOP_IP_ADDRESSES",
+                           "HOP_NUMBERS"]].iloc[row_number].values.tolist()
+    list_of_tuples = list()
+    # for idx, val in enumerate(hop_ip_addresses):
+    # list_of_tuples.append(tuple((val, hop_numbers[idx])))
+    for val in hop_ip_addresses:
+        list_of_tuples.append(tuple((val[0], val[1])))
+    return list_of_tuples
+
+
 def get_max_len(list_of_lists: list) -> int:
     max_len = 0
     for item in list_of_lists:
