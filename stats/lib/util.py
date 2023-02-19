@@ -13,6 +13,14 @@ import re
 # def create_hop_divergence_number_cdf(df: pd.DataFrame, flow_label: int, vantage_point: VantagePoint):
 # pass
 
+def get_all_unique_asns_in_dataset(df: pd.DataFrame):
+    pass
+
+
+def get_number_of_asn_hops_to_destination(df: pd.DataFrame, flow_label: int, vp: VantagePoint):
+    # plot_histogram(df)
+    pass
+
 
 def get_unique_source_asns(df: pd.DataFrame) -> pd.Series:
     return df["SOURCE_ASN"].unique()
