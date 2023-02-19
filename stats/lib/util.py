@@ -10,8 +10,9 @@ import glob
 import re
 
 
-# def create_hop_divergence_number_cdf(df: pd.DataFrame, flow_label: int, vantage_point: VantagePoint):
-# pass
+def create_list_of_lists(df: pd.DataFrame):
+    pass
+
 
 def get_all_unique_asns_in_dataset(df: pd.DataFrame):
     pass
@@ -77,10 +78,6 @@ def list_compare(list1, list2) -> int:
         return None
     except IndexError:
         return idx
-
-
-def create_list_of_lists(df: pd.DataFrame):
-    pass
 
 
 def hop_list_to_list_of_tuples(df: pd.DataFrame, row_number: int) -> list:
