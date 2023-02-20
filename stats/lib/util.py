@@ -140,6 +140,26 @@ def get_max_len(list_of_lists: list) -> int:
     return max_len
 
 
+def get_lowest_hop_number_where_lists_diverge(list_of_lists: list) -> int:
+    """
+    Get the smallest hop number where a list divergence was detected.
+    list_of_lists is a list in the format:
+    [[(hop_address1, hop_number1), (hop_address2, hop_number2), ...], 
+    [(hop_address1, hop_number1), (hop_address2, hop_number2), ...], ...]
+    """
+    max_len = get_max_len(list_of_lists)
+    for idx in range(max_len):
+        tmp = list_of_lists[0][idx]
+        for li in list_of_lists[1:]:
+            if tmp != li[idx]:
+                hop_numbers = list()
+                for i in list_of_lists:
+                    # get the second item in the tuple, aka the hop_number
+                    hop_numbers.append(i[idx][1])
+                return min(hop_numbers)
+    return None
+
+
 def get_index_where_lists_diverge(list_of_lists: list) -> int:
     """
     In a set of n lists, get the first index where the lists diverge.
