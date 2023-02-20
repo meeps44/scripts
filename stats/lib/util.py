@@ -19,8 +19,9 @@ def create_list_of_lists(df: pd.DataFrame) -> list:
     print("create_list_of_lists")
     print("df.index len: ", len(df.index))
     df = df.reset_index()  # make sure indexes pair with number of rows
-    for idx, row in df.iterrows():
-        hop_list = hop_list_to_list_of_tuples(df, idx)
+    for row in df.itertuples():
+        # hop_list = hop_list_to_list_of_tuples(df, idx)
+        hop_list = hop_list_to_list_of_tuples(row)
         print(f"{hop_list=}")
         list_of_lists.append(hop_list)
         print(f"{list_of_lists=}")
