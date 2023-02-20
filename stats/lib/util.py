@@ -1,4 +1,3 @@
-# import prettyprinter as pp
 import pandas as pd
 from lib.definitions.classdefinitions import *
 import lib.plot as plot
@@ -10,17 +9,52 @@ import glob
 import re
 
 
-def create_list_of_lists(df: pd.DataFrame):
-    pass
+def create_list_of_lists(df: pd.DataFrame) -> list:
+    """
+    Create a list of hop_lists with hop number N to a single
+    destination address in the format:
+    [[hop_number1, hop_number2, ...], [hop_number1, hop_number2, ...], ...]
+    """
+    list_of_lists = list()
+    for row_idx in df.index:
+        hop_list = hop_list_to_list_of_tuples(df, row_idx)
+        list_of_lists.append(hop_list)
+    return list_of_lists
 
 
-def get_all_unique_asns_in_dataset(df: pd.DataFrame):
-    pass
+def get_all_unique_asns_in_dataset(df: pd.DataFrame) -> list:
+    """
+    Get the unique values in the START_TIME column from all databases 
+    in a directory, and combine to a single dataframe.
+    """
+    df = df[["SOURCE_ASN", "DESTINATION_ASN", "HOP_ASNS"]]
+    src_df = df["SOURCE_ASN"].unique()
+    dst_df = df["DESTINATION_ASN"].unique()
+    hop_asn_list = list()
+    for row_idx in df.index:
+        hal: list = str(df["HOP_ASNS"].iloc[row_idx]).split()
+        for asn in hal:
+            hop_asn_list.append(asn)
+    unique = list(set(src_df.tolist() + dst_df.tolist() + hop_asn_list))
+    return unique
 
 
-def get_number_of_asn_hops_to_destination(df: pd.DataFrame, flow_label: int, vp: VantagePoint):
-    # plot_histogram(df)
-    pass
+def get_distribution_of_number_of_asn_hops_to_destination(df: pd.DataFrame, flow_label: int, destination: str) -> list:
+    """
+    Get a distribution of the number of ASN hops to a destination address.
+    Can be plotted to a histogram.
+    """
+    df = df["DESTINATION_IP"]
+    df = df[df["DESTINATION_IP"] == destination]
+    num_asn_hops: list = list()
+    for row_idx in df.index:
+        hop_asn_list = list()
+        hal: list = str(df["HOP_ASNS"].iloc[row_idx]).split()
+        for asn in hal:
+            if asn != "NULL":
+                hop_asn_list.append(asn)
+        num_asn_hops.append(len(hop_asn_list))
+    return hop_asn_list
 
 
 def get_unique_source_asns(df: pd.DataFrame) -> pd.Series:
@@ -127,7 +161,7 @@ def get_index_where_lists_diverge(list_of_lists: list) -> int:
         return idx
 
 
-def get_asns_traversed(df: pd.DataFrame) -> list:
+def get_asns_traversed(df: pd.Series) -> list:
     # Insert code to be done before this #
     # Data from the DataFrame should be a pd.Series
     asns_traversed: list[str] = list()

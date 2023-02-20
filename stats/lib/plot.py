@@ -4,11 +4,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def cdf(sr: pd.Series):
+def cdf(data: pd.Series):
     """
     https://stackoverflow.com/questions/25577352/plotting-cdf-of-a-pandas-series-in-python
-    """
+    https://www.tutorialspoint.com/how-to-plot-cdf-in-matplotlib-in-python
     sr.hist(cumulative=True, density=1, bins=100)
+    """
+    count, bins_count = np.histogram(data, bins=10)
+    pdf = count / sum(count)
+    cdf = np.cumsum(pdf)
+    plt.plot(bins_count[1:], cdf, label="CDF")
+    plt.legend()
+    plt.show()
 
 
 def bar(sr: pd.Series):
