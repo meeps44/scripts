@@ -18,9 +18,12 @@ def create_list_of_lists(df: pd.DataFrame) -> list:
     list_of_lists = list()
     print("create_list_of_lists")
     print("df.index len: ", len(df.index))
-    for row_idx in df.index:
-        hop_list = hop_list_to_list_of_tuples(df, row_idx)
+    df = df.reset_index()  # make sure indexes pair with number of rows
+    for idx, row in df.iterrows():
+        hop_list = hop_list_to_list_of_tuples(df, idx)
+        print(f"{hop_list=}")
         list_of_lists.append(hop_list)
+        print(f"{list_of_lists=}")
     return list_of_lists
 
 
@@ -123,17 +126,19 @@ def hop_list_to_list_of_tuples(df: pd.DataFrame, row_number: int) -> list:
     Input: df[["HOP_IP_ADDRESSES", "HOP_NUMBERS"]]
     Output: list_of_lists
     """
-    df = df[["HOP_IP_ADDRESSES",
-             "HOP_NUMBERS"]].iloc[row_number]
     hop_ip_addresses_list = str(
-        df.iloc[0, 10]).split()
+        df.iloc[row_number, 9]).split()
     print(f"{hop_ip_addresses_list=}")
     hop_numbers_list = str(
-        df.iloc[0, 10]).split()
+        df.iloc[row_number, 10]).split()
     print(f"{hop_numbers_list=}")
     list_of_tuples = list()
     for idx, val in enumerate(hop_ip_addresses_list):
+        print(f"{idx=}")
+        print(f"{val=}")
+        print(f"{hop_numbers_list[idx]=}")
         list_of_tuples.append(tuple((val, hop_numbers_list[idx])))
+    print(f"{list_of_tuples=}")
     return list_of_tuples
 
 
