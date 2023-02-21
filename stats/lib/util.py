@@ -16,15 +16,15 @@ def create_list_of_lists(df: pd.DataFrame) -> list:
     [[hop_number1, hop_number2, ...], [hop_number1, hop_number2, ...], ...]
     """
     list_of_lists = list()
-    print("create_list_of_lists")
-    print("df.index len: ", len(df.index))
+    # print("create_list_of_lists")
+    # print("df.index len: ", len(df.index))
     df = df.reset_index()  # make sure indexes pair with number of rows
     for row in df.itertuples():
         # hop_list = hop_list_to_list_of_tuples(df, idx)
         hop_list = hop_list_to_list_of_tuples(row)
-        print(f"{hop_list=}")
+        # print(f"{hop_list=}")
         list_of_lists.append(hop_list)
-        print(f"{list_of_lists=}")
+        # print(f"{list_of_lists=}")
     return list_of_lists
 
 
@@ -120,26 +120,25 @@ def list_compare(list1, list2) -> int:
         return idx
 
 
-def hop_list_to_list_of_tuples(df: pd.DataFrame, row_number: int) -> list:
+def hop_list_to_list_of_tuples(row) -> list:
     """
     Converts one ["HOP_IP_ADDRESSES", "HOP_NUMBERS"]-entry (one row) into a 
     list of lists in the format [[ip, hop_number], [ip2, hop_number2], ...].
     Input: df[["HOP_IP_ADDRESSES", "HOP_NUMBERS"]]
     Output: list_of_lists
     """
-    hop_ip_addresses_list = str(
-        df.iloc[row_number, 9]).split()
-    print(f"{hop_ip_addresses_list=}")
-    hop_numbers_list = str(
-        df.iloc[row_number, 10]).split()
-    print(f"{hop_numbers_list=}")
+    # print(f"{row=}")
+    hop_ip_addresses_list = str(row[11]).split()
+    # print(f"{hop_ip_addresses_list=}")
+    hop_numbers_list = str(row[12]).split()
+    # print(f"{hop_numbers_list=}")
     list_of_tuples = list()
     for idx, val in enumerate(hop_ip_addresses_list):
-        print(f"{idx=}")
-        print(f"{val=}")
-        print(f"{hop_numbers_list[idx]=}")
+        # print(f"{idx=}")
+        # print(f"{val=}")
+        # print(f"{hop_numbers_list[idx]=}")
         list_of_tuples.append(tuple((val, hop_numbers_list[idx])))
-    print(f"{list_of_tuples=}")
+    # print(f"{list_of_tuples=}")
     return list_of_tuples
 
 
