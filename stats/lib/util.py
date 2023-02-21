@@ -33,7 +33,6 @@ def get_all_unique_asns_in_dataset(df: pd.DataFrame) -> list:
     Get the unique values in the START_TIME column from all databases 
     in a directory, and combine to a single dataframe.
     """
-    df = df[["SOURCE_ASN", "DESTINATION_ASN", "HOP_ASNS"]]
     src_df = df["SOURCE_ASN"].unique()
     dst_df = df["DESTINATION_ASN"].unique()
     hop_asn_list = list()
@@ -47,20 +46,25 @@ def get_all_unique_asns_in_dataset(df: pd.DataFrame) -> list:
 
 def get_distribution_of_number_of_asn_hops_to_destination(df: pd.DataFrame, flow_label: int, destination: str) -> list:
     """
-    Get a distribution of the number of ASN hops to a destination address.
+    Get a distribution of the number of ASN hops to a destination address 
+    with the given flow label.
     Can be plotted to a histogram.
     """
-    df = df["DESTINATION_IP"]
-    df = df[df["DESTINATION_IP"] == destination]
+    # dst_df = df[df["DESTINATION_IP"] == destination]
+    dst_df = df[(df["SOURCE_FLOW_LABEL"] == flow_label)
+                & (df["DESTINATION_IP"] == destination)]
     num_asn_hops: list = list()
-    for row_idx in df.index:
-        hop_asn_list = list()
-        hal: list = str(df["HOP_ASNS"].iloc[row_idx]).split()
+    for row in dst_df.itertuples():
+        hop_asn_list: list = list()
+        hal: list = str(row[13]).split()
         for asn in hal:
+            print(f"{asn=}")
             if asn != "NULL":
                 hop_asn_list.append(asn)
         num_asn_hops.append(len(hop_asn_list))
-    return hop_asn_list
+    # TODO: need to count num_asn_hops to get a distribution of the values
+    return num_asn_hops
+    # return hop_asn_list
 
 
 def get_unique_source_asns(df: pd.DataFrame) -> pd.Series:
@@ -151,6 +155,10 @@ def get_max_len(list_of_lists: list) -> int:
 
 def get_lowest_hop_number_where_lists_diverge(list_of_lists: list) -> int:
     """
+    Assumes:
+    list_of_lists contains only rows to 1 destination with only 1 constant 
+    flow label.
+
     Get the smallest hop number where a list divergence was detected.
     list_of_lists is a list in the format:
     [[(hop_address1, hop_number1), (hop_address2, hop_number2), ...], 
@@ -165,6 +173,8 @@ def get_lowest_hop_number_where_lists_diverge(list_of_lists: list) -> int:
                 for i in list_of_lists:
                     # get the second item in the tuple, aka the hop_number
                     hop_numbers.append(i[idx][1])
+                # print(f"{list_of_lists=}")
+                # print(f"{hop_numbers=}")
                 return min(hop_numbers)
     return None
 
