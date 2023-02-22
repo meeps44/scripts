@@ -1,6 +1,9 @@
+import numpy as np
 import pandas as pd
 from lib.definitions.classdefinitions import *
-import lib.plot as plt
+import seaborn as sns
+import matplotlib.pyplot as plt
+import lib.plot as stats_plt
 import lib.filter as filter
 import lib.compare as scmp
 import lib.sqlite_load as sq
@@ -30,19 +33,23 @@ def create_hop_divergence_number_cdf(df: pd.DataFrame, flow_label: int, vantage_
         # divergence_data.append( util.get_index_where_lists_diverge(list_of_lists) )
         divergence_data.append(
             get_lowest_hop_number_where_lists_diverge(list_of_lists))
-        print("destination: " + dst)
+        # print("destination: " + dst)
         # print("flow label: " + str( flow_label ))
-        print("get_distribution_of_number_of_asn_hops_to_destination:" + str(get_distribution_of_number_of_asn_hops_to_destination(
-            df, flow_label, dst)))
-    # print(f"{divergence_data=}")
+        # print("get_distribution_of_number_of_asn_hops_to_destination:" + str(get_distribution_of_number_of_asn_hops_to_destination(
+        # df, flow_label, dst)))
+    print(f"{divergence_data=}")
+    print("Number of traces to the same destination with the same flow label that did not diverge:")
+    ndiv_count = divergence_data.count(None)
+    print(f"{ ndiv_count= }")
+    print(f"Total number of traces in divergence dataset:")
+    print(f"{ len(divergence_data)= }")
+    # Remove None values before plotting CDF
+    res = [int(i) for i in divergence_data if i != None]
+    print(f"{res=}")
     # Plot CDF
-    # count, bins_count = np.histogram(divergence_data, bins=10)
-    # pdf = count / sum(count)
-    # cdf = np.cumsum(pdf)
-    # plt.plot(bins_count[1:], cdf, label="CDF")
-    # plt.legend()
-    # plt.title(f"Vantage point: {vantage_point} \nFlow label: {flow_label}")
-    # plt.show()
+    sns.ecdfplot(data=res, label="Divergence number")
+    plt.legend()
+    plt.show()
 
 
 def create_list_of_lists(df: pd.DataFrame) -> list:
@@ -204,11 +211,10 @@ def get_lowest_hop_number_where_lists_diverge(list_of_lists: list) -> int:
             if tmp != li[idx]:
                 hop_numbers = list()
                 for i in list_of_lists:
-                    # get the second item in the tuple, aka the hop_number
+                    # Get the second item in the tuple, aka the hop_number
                     hop_numbers.append(i[idx][1])
-                # print(f"{list_of_lists=}")
-                # print(f"{hop_numbers=}")
                 return min(hop_numbers)
+    # If we got this far, the hops did not diverge
     return None
 
 
