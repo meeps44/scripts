@@ -9,3 +9,6 @@
 
 # Ignore python cache files
 *.pyc
+
+# Ignore ipynb checkpoints
+stats/jupyter-notebooks/.ipynb_checkpoints

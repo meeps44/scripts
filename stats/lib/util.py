@@ -1,12 +1,48 @@
 import pandas as pd
 from lib.definitions.classdefinitions import *
-import lib.plot as plot
+import lib.plot as plt
 import lib.filter as filter
 import lib.compare as scmp
 import lib.sqlite_load as sq
 import logging
 import glob
 import re
+
+
+def create_flow_label_distribution(df: pd.DataFrame, flow_label: int, vantage_point: VantagePoint):
+    dist = get_distribution_of_equal_paths_to_destination(
+        df, flowlabel=flow_label)
+    fig, ax = plt.subplots()
+    bars = ax.bar([str(i) for i in dist.index], dist)
+    ax.bar_label(bars)
+    plt.title(f"Vantage point: {vantage_point} \nFlow label: {flow_label}")
+
+
+def create_hop_divergence_number_cdf(df: pd.DataFrame, flow_label: int, vantage_point: VantagePoint):
+    divergence_data = list()
+    unique_destination_addresses: list = get_unique_destination_addresses(df)
+    # print(f"unique_destination_addresses len: {len(unique_destination_addresses)}")
+    for dst in unique_destination_addresses:
+        dst_df = df[(df["SOURCE_FLOW_LABEL"] == flow_label)
+                    & (df["DESTINATION_IP"] == dst)]
+        list_of_lists = create_list_of_lists(dst_df)
+        # print(f"{list_of_lists=}")
+        # divergence_data.append( util.get_index_where_lists_diverge(list_of_lists) )
+        divergence_data.append(
+            get_lowest_hop_number_where_lists_diverge(list_of_lists))
+        print("destination: " + dst)
+        # print("flow label: " + str( flow_label ))
+        print("get_distribution_of_number_of_asn_hops_to_destination:" + str(get_distribution_of_number_of_asn_hops_to_destination(
+            df, flow_label, dst)))
+    # print(f"{divergence_data=}")
+    # Plot CDF
+    # count, bins_count = np.histogram(divergence_data, bins=10)
+    # pdf = count / sum(count)
+    # cdf = np.cumsum(pdf)
+    # plt.plot(bins_count[1:], cdf, label="CDF")
+    # plt.legend()
+    # plt.title(f"Vantage point: {vantage_point} \nFlow label: {flow_label}")
+    # plt.show()
 
 
 def create_list_of_lists(df: pd.DataFrame) -> list:
@@ -44,13 +80,12 @@ def get_all_unique_asns_in_dataset(df: pd.DataFrame) -> list:
     return unique
 
 
-def get_distribution_of_number_of_asn_hops_to_destination(df: pd.DataFrame, flow_label: int, destination: str) -> list:
+def get_distribution_of_number_of_asn_hops_to_destination(df: pd.DataFrame, flow_label: int, destination: str) -> pd.Series:
     """
     Get a distribution of the number of ASN hops to a destination address 
     with the given flow label.
     Can be plotted to a histogram.
     """
-    # dst_df = df[df["DESTINATION_IP"] == destination]
     dst_df = df[(df["SOURCE_FLOW_LABEL"] == flow_label)
                 & (df["DESTINATION_IP"] == destination)]
     num_asn_hops: list = list()
@@ -62,9 +97,7 @@ def get_distribution_of_number_of_asn_hops_to_destination(df: pd.DataFrame, flow
             if asn != "NULL":
                 hop_asn_list.append(asn)
         num_asn_hops.append(len(hop_asn_list))
-    # TODO: need to count num_asn_hops to get a distribution of the values
-    return num_asn_hops
-    # return hop_asn_list
+    return pd.Series(num_asn_hops).value_counts()
 
 
 def get_unique_source_asns(df: pd.DataFrame) -> pd.Series:
