@@ -13,15 +13,15 @@ import re
 
 
 def get_num_fl_changes_rows(df: pd.DataFrame) -> int:
-    pass
+    return len(get_rows_with_path_flow_label_changes(df))
 
 
 def get_num_loop_rows(df: pd.DataFrame) -> int:
-    pass
+    return len(get_loop_indices(df))
 
 
 def get_num_cycle_rows(df: pd.DataFrame) -> int:
-    pass
+    return len(get_cycle_indices(df))
 
 
 def create_flow_label_distribution(df: pd.DataFrame, flow_label: int, vantage_point: VantagePoint):
