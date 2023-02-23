@@ -10,7 +10,9 @@ class TracerouteStatistics:
     num_loops: int = 0
     num_loop_rows: int = 0
     num_fl_changes: int = 0
+    num_fl_change_rows: int = 0
     num_asns_traversed: int = 0
+    num_unique_asns_in_dataset: int = 0
 
 
 @dataclass

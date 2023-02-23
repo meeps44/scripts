@@ -12,6 +12,18 @@ import glob
 import re
 
 
+def get_num_fl_changes_rows(df: pd.DataFrame) -> int:
+    pass
+
+
+def get_num_loop_rows(df: pd.DataFrame) -> int:
+    pass
+
+
+def get_num_cycle_rows(df: pd.DataFrame) -> int:
+    pass
+
+
 def create_flow_label_distribution(df: pd.DataFrame, flow_label: int, vantage_point: VantagePoint):
     dist = get_distribution_of_equal_paths_to_destination(
         df, flowlabel=flow_label)
@@ -37,15 +49,15 @@ def create_hop_divergence_number_cdf(df: pd.DataFrame, flow_label: int, vantage_
         # print("flow label: " + str( flow_label ))
         # print("get_distribution_of_number_of_asn_hops_to_destination:" + str(get_distribution_of_number_of_asn_hops_to_destination(
         # df, flow_label, dst)))
-    print(f"{divergence_data=}")
-    print("Number of traces to the same destination with the same flow label that did not diverge:")
+    # print(f"{divergence_data=}")
+    # print("Number of traces to the same destination with the same flow label that did not diverge:")
     ndiv_count = divergence_data.count(None)
-    print(f"{ ndiv_count= }")
-    print(f"Total number of traces in divergence dataset:")
-    print(f"{ len(divergence_data)= }")
+    # print(f"{ ndiv_count= }")
+    # print(f"Total number of traces in divergence dataset:")
+    # print(f"{ len(divergence_data)= }")
     # Remove None values before plotting CDF
     res = [int(i) for i in divergence_data if i != None]
-    print(f"{res=}")
+    # print(f"{res=}")
     # Plot CDF
     sns.ecdfplot(data=res, label="Divergence number")
     plt.legend()
@@ -128,12 +140,13 @@ def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
     stats = TracerouteStatistics()
     stats.num_rows_total = get_num_rows(df)
     stats.num_loops = count_loops(df)
-    stats.num_loop_rows = 0
+    stats.num_loop_rows = get_num_loop_rows(df)
     stats.num_cycles = count_cycles(df)
-    stats.num_cycle_rows = 0
-    # stats.num_asns_traversed = get_asns_traversed(df)
+    stats.num_cycle_rows = get_num_cycle_rows(df)
+    stats.num_unique_asns_in_dataset = len(get_all_unique_asns_in_dataset(df))
     stats.num_fl_changes = len(
         get_rows_with_path_flow_label_changes(df))
+    stats.num_fl_change_rows = get_num_fl_changes_rows(df)
     return stats
 
 
@@ -245,11 +258,6 @@ def get_asns_traversed(df: pd.Series) -> list:
     asns_traversed: list[str] = list()
     for row in df:
         asns_traversed.append(row)
-
-
-# def print_stats(stats: TracerouteStatistics):
-    # pp.install_extras()
-    # pp.pprint(stats)
 
 
 def get_total_number_of_paths(df: pd.DataFrame, flowlabel: int):
