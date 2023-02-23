@@ -12,6 +12,20 @@ import glob
 import re
 
 
+def count_invalid_traces(df: pd.DataFrame) -> int:
+    """
+    Count traces containing loops, cycles and flow label values
+    that changed in-transit.
+    """
+    loop_indices: list = get_loop_indices(df)
+    cycle_indices: list = get_cycle_indices(df)
+    fl_change_indices: list = get_rows_with_path_flow_label_changes(df)
+    merged_list = loop_indices + cycle_indices + fl_change_indices
+    # Remove duplicate entries
+    merged_list = list(dict.fromkeys(merged_list))
+    return len(merged_list)
+
+
 def get_num_fl_changes_rows(df: pd.DataFrame) -> int:
     return len(get_rows_with_path_flow_label_changes(df))
 
@@ -147,6 +161,7 @@ def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
     stats.num_fl_changes = len(
         get_rows_with_path_flow_label_changes(df))
     stats.num_fl_change_rows = get_num_fl_changes_rows(df)
+    stats.num_invalid_rows = count_invalid_traces(df)
     return stats
 
 
@@ -419,16 +434,16 @@ def is_cycle(hop_ip_list: list) -> bool:
     return False
 
 
-def count_cycles_2(hop_ip_list: list) -> int:
-    """
-    Counts the number of cycles in a given list of 
-    sequential ip addresses.
-    """
-    num_cycles: int = 0
-    for idx, ip in enumerate(hop_ip_list):
-        if ip in hop_ip_list[idx+2:] and ip != hop_ip_list[idx+1]:
-            num_cycles += 1
-    return num_cycles
+# def count_cycles_2(hop_ip_list: list) -> int:
+    # """
+    # Counts the number of cycles in a given list of
+    # sequential ip addresses.
+    # """
+    # num_cycles: int = 0
+    # for idx, ip in enumerate(hop_ip_list):
+    # if ip in hop_ip_list[idx+2:] and ip != hop_ip_list[idx+1]:
+    # num_cycles += 1
+    # return num_cycles
 
 
 def get_unique_list_items(input: list) -> list:
