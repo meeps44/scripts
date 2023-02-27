@@ -12,6 +12,10 @@ import glob
 import re
 
 
+def get_cycle_ip_addresses(df: pd.DataFrame):
+    pass
+
+
 def get_cycle_hop_numbers(df: pd.DataFrame):
     pass
 
