@@ -12,6 +12,14 @@ import glob
 import re
 
 
+def get_cycle_hop_numbers(df: pd.DataFrame):
+    pass
+
+
+def get_loop_ip_address_histogram(df: pd.DataFrame):
+    pass
+
+
 def count_invalid_traces(df: pd.DataFrame) -> int:
     """
     Count traces containing loops, cycles and flow label values
