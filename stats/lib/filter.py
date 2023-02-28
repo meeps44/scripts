@@ -49,6 +49,19 @@ def find_invalid_traces(df: pd.DataFrame):
     return merged_list
 
 
+def count_invalid_traces(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Count traces containing loops, cycles and flow label values
+    that changed in-transit.
+    """
+    loop_indices: list = util.get_loop_indices(df)
+    cycle_indices: list = util.get_cycle_indices(df)
+    fl_change_indices: list = util.get_rows_with_path_flow_label_changes(df)
+    merged_list = loop_indices + cycle_indices + fl_change_indices
+    merged_list = list(dict.fromkeys(merged_list))
+    return len(merged_list)
+
+
 def remove_invalid_traces(df: pd.DataFrame) -> pd.DataFrame:
     """
     Remove traces containing loops, cycles and flow label values
