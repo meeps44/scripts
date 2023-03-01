@@ -13,6 +13,7 @@ class TracerouteStatistics:
     num_fl_change_rows: int = 0
     num_unique_asns_in_dataset: int = 0
     num_invalid_rows: int = 0
+    n_traceroutes_to_the_same_destination_with_the_same_flow_label: int = 2
 
 
 @dataclass
