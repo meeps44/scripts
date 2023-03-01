@@ -10,18 +10,72 @@ import lib.sqlite_load as sq
 import logging
 import glob
 import re
+import numpy as np
 
 
-def get_cycle_ip_addresses(df: pd.DataFrame):
-    pass
+def get_flow_label_change_hop_ip_distribution(df: pd.DataFrame, flow_label: np.int64) -> list:
+    """
+    NB! Do not use. Is buggy.
+    Get a distribution of the hop IP-address where a change in flow label was detected.
+    """
+    hop_ip_distribution = list()
+    # indices = get_rows_with_path_flow_label_changes(df)
+    # print(f"indices len: {len(indices)}")
+
+    for row_idx in df.index:
+        row: pd.Series = df.iloc[row_idx]
+        src_fl = row["SOURCE_FLOW_LABEL"]
+        if src_fl != flow_label:
+            continue
+        flow_labels_str: str = row["HOP_RETURNED_FLOW_LABELS"]
+        flow_labels: list = flow_labels_str.split()
+        hop_ip_addresses_str: str = row["HOP_IP_ADDRESSES"]
+        hop_ip_addresses: list = hop_ip_addresses_str.split()
+        hop_numbers_str: str = row["HOP_NUMBERS"]
+        hop_numbers: list = hop_numbers_str.split()
+        for hop_idx, hop_fl in enumerate(flow_labels):
+            if src_fl != hop_fl:
+                # if we want a tuple:
+                # hop_ip_distribution.append(tuple(hop_ip_addresses[hop_idx], hop_numbers[hop_idx]))
+                hop_ip_distribution.append(hop_ip_addresses[hop_idx])
+    return hop_ip_distribution
 
 
-def get_cycle_hop_numbers(df: pd.DataFrame):
-    pass
+def get_cycle_ip_addresses(df: pd.DataFrame) -> list:
+    """
+    Count the number of cycles in the dataset. If there are multiple 
+    cycles in each row, each will be counted as a separate cycle.
+    A cycle is where the same IP address appears twice, separated by 
+    at least one other IP address.
+    """
+    cycle_ip_addresses = list()
+    for row_idx in df.index:
+        hop_ip_list: list = get_hop_ip_list(df, row_idx)
+        unique_list = get_unique_list_items(hop_ip_list)
+        for ip in unique_list:
+            ip_count = hop_ip_list.count(ip)
+            if ip_count >= 2:
+                if is_cycle(hop_ip_list):
+                    cycle_ip_addresses.append(ip)
+    return cycle_ip_addresses
 
 
-def get_loop_ip_address_histogram(df: pd.DataFrame):
-    pass
+def get_loop_ip_addresses(df: pd.DataFrame) -> list:
+    """
+    Get a list of the loops in the dataset. If there are multiple 
+    loops in each row, each will be counted as a separate loops.
+    Loop defintion:
+    If the same IP address appears twice or more in a row: we call this a loop.
+    """
+    loop_ip_addresses = list()
+    for row_idx in df.index:
+        hop_ip_list: list = get_hop_ip_list(df, row_idx)
+        prev_ip: str = hop_ip_list[0]
+        for ip in hop_ip_list[1:]:
+            if ip == prev_ip:
+                loop_ip_addresses.append(ip)
+            prev_ip = ip
+    return loop_ip_addresses
 
 
 def count_invalid_traces(df: pd.DataFrame) -> int:
@@ -50,7 +104,11 @@ def get_num_cycle_rows(df: pd.DataFrame) -> int:
     return len(get_cycle_indices(df))
 
 
-def create_flow_label_distribution(df: pd.DataFrame, flow_label: int, vantage_point: VantagePoint):
+def create_equal_paths_distribution(df: pd.DataFrame, flow_label: int, vantage_point: VantagePoint):
+    """
+    Create a bar plot of the distribution of equal paths to
+    each destination.
+    """
     dist = get_distribution_of_equal_paths_to_destination(
         df, flowlabel=flow_label)
     fig, ax = plt.subplots()
@@ -163,6 +221,10 @@ def get_vantage_points(filenames: list) -> list:
 
 
 def create_stats(df: pd.DataFrame) -> TracerouteStatistics:
+    """
+    Create a new TracerouteStatistics-object and initialize
+    it with values from the given dataframe.
+    """
     stats = TracerouteStatistics()
     stats.num_rows_total = get_num_rows(df)
     stats.num_loops = count_loops(df)
@@ -227,6 +289,9 @@ def hop_list_to_list_of_tuples(row) -> list:
 
 
 def get_max_len(list_of_lists: list) -> int:
+    """
+    Get the length of the longest list out of N lists.
+    """
     max_len = 0
     for item in list_of_lists:
         max_len = max(len(item), max_len)
@@ -336,19 +401,9 @@ def count_path_flow_label_changes(df: pd.DataFrame) -> int:
     num_flow_label_changes: int = 0
     for row_idx in df.index:
         src_fl: str = str(df["SOURCE_FLOW_LABEL"].iloc[row_idx])
-        print(
-            f"Source flow label: {src_fl}\nSource flow label type:{type(src_fl)}")
-        # ndf: pd.Series = df["HOP_RETURNED_FLOW_LABELS"].iloc[row_idx]
-        # flow_labels: list = ndf.to_list()
         ndf: str = df["HOP_RETURNED_FLOW_LABELS"].iloc[row_idx]
         flow_labels: list = ndf.split(" ")
-        # hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
-        # flow_labels = ndf.values.tolist()
-        # hrfl = ' '.join(hrfl_list)
-        # hrfl: str = df['HOP_RETURNED_FLOW_LABELS'][row_idx]
         for val in flow_labels:
-            print(val)
-            (print(f"type: {type(val)}"))
             if src_fl != val:
                 num_flow_label_changes += 1
     return num_flow_label_changes
@@ -382,7 +437,6 @@ def count_loops(df: pd.DataFrame) -> int:
     """
     nloops = 0
     for row_idx in df.index:
-        # hop_ip_list: list = df["HOP_IP_ADDRESSES"].iloc[row_idx].tolist()
         hop_ip_list: list = get_hop_ip_list(df, row_idx)
         prev_ip: str = hop_ip_list[0]
         for ip in hop_ip_list[1:]:

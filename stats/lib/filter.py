@@ -20,7 +20,7 @@ def find_associated_traces(df: pd.DataFrame) -> list:
     return associated_rows
 
 
-def find_sibling_indices(row, df) -> list:
+def find_sibling_indices(row, df: pd.DataFrame) -> list:
     """
     Returns the indices (row-numbers) of a row's sibling.
     """
@@ -49,6 +49,10 @@ def find_invalid_traces(df: pd.DataFrame):
     return merged_list
 
 
+def count_sibling_indices(df: pd.DataFrame) -> int:
+    return len(find_invalid_traces(df))
+
+
 def count_invalid_traces(df: pd.DataFrame) -> pd.DataFrame:
     """
     Count traces containing loops, cycles and flow label values
@@ -70,7 +74,9 @@ def remove_invalid_traces(df: pd.DataFrame) -> pd.DataFrame:
     loop_indices: list = util.get_loop_indices(df)
     cycle_indices: list = util.get_cycle_indices(df)
     fl_change_indices: list = util.get_rows_with_path_flow_label_changes(df)
-    merged_list = loop_indices + cycle_indices + fl_change_indices
+    m1 = loop_indices + cycle_indices + fl_change_indices
+    sibling_indices: list = find_associated_traces(df)
+    merged_list = m1 + sibling_indices
     # Remove duplicate entries
     merged_list = list(dict.fromkeys(merged_list))
     # Remove rows with invalid entries

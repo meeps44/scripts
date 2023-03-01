@@ -54,7 +54,8 @@ class VantagePoint:
     tor: str = "tor1"
 
 
-class FlowLabels(IntEnum):
+# class FlowLabels(IntEnum):
+class FlowLabels():
     FL_0 = 0
     FL_255 = 255
     FL_65280 = 65280
