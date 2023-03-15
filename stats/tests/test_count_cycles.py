@@ -1,5 +1,31 @@
+import time
 import pytest
 import pandas as pd
+from os.path import expanduser
+
+home = expanduser("~")
+db_name = "sample-200.csv"
+db_location = home + "/git/scripts/stats/tests/sample-data/" + db_name
+
+data: pd.DataFrame = pd.read_csv(db_location)
+
+
+def get_cycle_indices(df: pd.DataFrame) -> list:
+    """
+    Get a list containing the indices of all rows that contain one or more cycles in the dataset.
+    """
+    indices = list()
+    for row_idx in df.index:
+        hop_ip_list: list = get_hop_ip_list(df, row_idx)
+        unique_list = get_unique_list_items(hop_ip_list)
+        for item in unique_list:
+            ip_count = hop_ip_list.count(item)
+            if ip_count >= 2:
+                if is_cycle(hop_ip_list):
+                    indices.append(row_idx)
+                    # Uncomment this if we only want to count 1 cycle per row.
+                    break
+    return indices
 
 
 def is_cycle(hop_ip_list: list) -> bool:
@@ -47,7 +73,50 @@ def count_cycles(df: pd.DataFrame) -> int:
             if ip_count >= 2:
                 if is_cycle(hop_ip_list):
                     cycle_count += 1
+                    print("Cycle list:")
+                    print(unique_list)
+                    time.sleep(1000)
     return cycle_count
+
+
+def fixed_count_cycles(df: pd.DataFrame) -> int:
+    """
+    This function only gets 1 cycle per IP-address.
+    For instance, if there is a IP-address list in the form [A, B, A, A, A],
+    only 1 cycle would be counted.
+    If there is a IP-address list in the form [A, B, A, A, A, B],
+    it would count 2 cycles.
+    """
+    cycle_count = 0
+    for row in df.itertuples():
+        hop_ip_addresses = tuple(row[10].split())
+        # hop_numbers = tuple(row[11].split())
+        # columns = zip(hop_ip_addresses, hop_numbers)
+        length = len(hop_ip_addresses)
+        for idx, column in enumerate(hop_ip_addresses):
+            i = idx
+            # Incrementing by one to avoid comparing against the next IP-address (which would make it a loop)
+            i += 1
+            while i < length:
+                if column == hop_ip_addresses[i]:
+                    print("cycle detected")
+                    cycle_count += 1
+                    break
+                else:
+                    print("cycle not detected")
+                i += 1
+            time.sleep(1000)
+    return cycle_count
+
+
+# print("Counting cycles")
+# num_cycles = count_cycles(data)
+# print(f"Num cycles: {num_cycles}")
+# print("Getting cycle indices")
+# cycle_indices = get_cycle_indices(data)
+# print(f"Cycle indices:\n{cycle_indices}")
+
+fixed_count_cycles(data)
 
 
 def f():
