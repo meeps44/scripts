@@ -405,9 +405,6 @@ def get_rows_with_path_flow_label_changes(df: pd.DataFrame) -> list:
     indices = list()
     for row_idx in df.index:
         src_fl: str = str(df["SOURCE_FLOW_LABEL"].iloc[row_idx])
-        # ndf: pd.DataFrame = df["HOP_RETURNED_FLOW_LABELS"]
-        # hrfl: pd.DataFrame = ndf.iloc[[row_idx]]
-        # flow_labels = hrfl.values.tolist()
         ndf: str = df["HOP_RETURNED_FLOW_LABELS"].iloc[row_idx]
         flow_labels: list = ndf.split(" ")
         for val in flow_labels:
