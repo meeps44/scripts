@@ -46,7 +46,16 @@ def get_divergence_hop_ip(df: pd.DataFrame) -> str:
     longest_list_len = get_length_of_longest_list(zipped_list)
     for i in longest_list_len:
         if zipped_list[0][i] != zipped_list[1][i]:
-            return (zipped_list[0][i][0], zipped_list[0][i][0])
+            if i != 0:
+                # We are returning the previous IP (the last IP that was equal),
+                # as we are assuming that this is the load balancer that caused the
+                # paths to diverge.
+                return zipped_list[0][i-1][0]
+            else:
+                # If the paths diverge at the first hop, we return the hop IP
+                # of the first hop.
+                return zipped_list[0][i][0]
+                # return (zipped_list[0][i-1][0], zipped_list[0][i-1][0])
     # If we got this far, the lists are equal
     return None
 
