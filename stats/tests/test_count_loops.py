@@ -10,7 +10,7 @@ db_location = home + "/git/scripts/stats/tests/sample-data/" + db_name
 data: pd.DataFrame = pd.read_csv(db_location)
 
 
-def get_loop_indices(df: pd.DataFrame) -> list:
+def get_loop_rows(df: pd.DataFrame) -> list:
     """
     Get a list containing the indices of all rows that contain loops in the dataset.
     """
@@ -59,7 +59,7 @@ print("Counting loops")
 num_loops = count_loops(data)
 print(f"Num loops: {num_loops}")
 print("Getting loop indices")
-loop_indices = get_loop_indices(data)
+loop_indices = get_loop_rows(data)
 print(f"Loop indices:\n{loop_indices}")
 
 

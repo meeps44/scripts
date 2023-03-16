@@ -69,6 +69,50 @@ def count_cycles(df: pd.DataFrame) -> int:
     return cycle_count
 
 
+def get_cycle_hashes(df: pd.DataFrame) -> list:
+    cycle_hashes = list()
+    for row in df.itertuples():
+        break_out_flag = False
+        hop_ip_addresses = tuple(row[10].split())
+        length = len(hop_ip_addresses)
+        for idx, column in enumerate(hop_ip_addresses):
+            if break_out_flag:
+                break
+            i = idx
+            # Incrementing by one to avoid comparing against the next IP-address (which would make it a loop)
+            i += 2
+            while i < length:
+                if column == hop_ip_addresses[i]:
+                    cycle_hashes.append(row[8])
+                    break_out_flag = True
+                    break
+                i += 1
+    return cycle_hashes
+
+
+def get_loop_rows(df: pd.DataFrame) -> list:
+    """
+    Get a list containing the indices of all rows that contain loops in the dataset.
+    """
+    loop_indices = list()
+    for row in df.itertuples():
+        break_out_flag = False
+        hop_ip_addresses = tuple(row[10].split())
+        length = len(hop_ip_addresses)
+        for idx, ip in enumerate(hop_ip_addresses):
+            if break_out_flag:
+                break
+            i = idx
+            i += 1
+            while i < length:
+                if ip == hop_ip_addresses[i]:
+                    loop_indices.append(row[0])
+                    break_out_flag = True
+                    break
+                i += 1
+    return loop_indices
+
+
 def get_cycle_rows(df: pd.DataFrame) -> list:
     cycle_indices = list()
     for row in df.itertuples():
@@ -104,7 +148,30 @@ cycle_count = count_cycles(data)
 print(f"cycle count: {cycle_count}")
 cycle_indices = get_cycle_rows(data)
 print(f"len cycle indices: {len(cycle_indices)}")
-print(f"total row len: {len(data.index)}")
+number_of_rows = len(data.index)
+print(f"number of rows: {number_of_rows}")
+cycle_percentage = float(len(cycle_indices)) / float(number_of_rows)
+print(f"cycle percentage: {cycle_percentage}")
+
+loop_indices = get_loop_rows(data)
+print(f"len loop rows: {len(loop_indices)}")
+
+combined_indices = loop_indices + cycle_indices
+unique_combined_indices = set(combined_indices)
+print(
+    f"number of rows that contain either a loop or a cycle: {len(unique_combined_indices)}")
+# print(f"number of cycle rows that also contain a loop: {len(cycle_hashes)}")
+# print(f"number of cycle rows that don't contain a loop: {len(cycle_hashes)}")
+
+# unique_hashes = data["PATH_HASH"].unique()
+# print(f"total number of unique hashes in the dataset: {len(unique_hashes)}")
+
+cycle_hashes = get_cycle_hashes(data)
+print(f"number of hashes with a cycle: {len(cycle_hashes)}")
+unique_cycle_hashes = set(cycle_hashes)
+print(f"number of unique hashes with a cycle: {len(unique_cycle_hashes)}")
+cycle_percentage = float(len(unique_cycle_hashes)) / float(number_of_rows)
+print(f"cycle percentage: {cycle_percentage}")
 
 
 def f():
