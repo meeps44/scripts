@@ -26,6 +26,10 @@ def get_unique_routers_where_a_path_change_occurred(df: pd.DataFrame) -> list:
                     & (df["DESTINATION_IP"] == dst)]
 
 
+def get_divergence_hop_number(df: pd.DataFrame) -> str:
+    pass
+
+
 def get_divergence_hop_ip(df: pd.DataFrame) -> str:
     """
     Compare two rows and get the hop IP where they diverge.
@@ -57,6 +61,8 @@ def get_divergence_hop_ip(df: pd.DataFrame) -> str:
                 # Erlend note: Maybe not correct, as the load balancer
                 # that caused the paths to diverge in this case is the
                 # load balancer with TTL=1
+                # The better thing to do would be to return the IP
+                # address of the default gateway.
                 return tuple({zipped_list[0][i][0], zipped_list[0][i][0]})
                 # return zipped_list[0][i][0]
                 # return (zipped_list[0][i-1][0], zipped_list[0][i-1][0])
