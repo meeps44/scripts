@@ -133,7 +133,6 @@ def get_cycle_rows(df: pd.DataFrame) -> list:
                 i += 1
     return cycle_indices
 
-
     # print("Counting cycles")
     # num_cycles = count_cycles(data)
     # print(f"Num cycles: {num_cycles}")
@@ -163,8 +162,46 @@ print(
 # print(f"number of cycle rows that also contain a loop: {len(cycle_hashes)}")
 # print(f"number of cycle rows that don't contain a loop: {len(cycle_hashes)}")
 
+print(f"Which IP-addresses loop?")
+print(f"How many IP-addresses loop?")
+print(f"Which IP-addresses cycle?")
+print(f"How many IP-addresses cycle?")
+
+
+def get_loop_addresses(df: pd.DataFrame) -> list:
+    loop_addresses = list()
+    for row in df.itertuples():
+        hop_ip_addresses = tuple(row[10].split())
+        length = len(hop_ip_addresses)
+        for idx, ip in enumerate(hop_ip_addresses):
+            i = idx
+            i += 1
+            while i < length:
+                if ip == hop_ip_addresses[i]:
+                    loop_addresses.append(ip)
+                i += 1
+    return loop_addresses
+
+
+def get_cycle_addresses(df: pd.DataFrame) -> list:
+    cycle_addresses = list()
+    for row in df.itertuples():
+        hop_ip_addresses = tuple(row[10].split())
+        length = len(hop_ip_addresses)
+        for idx, ip in enumerate(hop_ip_addresses):
+            i = idx
+            # Incrementing by one to avoid comparing against the next IP-address (which would make it a loop)
+            i += 2
+            while i < length:
+                if ip == hop_ip_addresses[i]:
+                    cycle_addresses.append(ip)
+                    break
+                i += 1
+    return cycle_addresses
+
 # unique_hashes = data["PATH_HASH"].unique()
 # print(f"total number of unique hashes in the dataset: {len(unique_hashes)}")
+
 
 cycle_hashes = get_cycle_hashes(data)
 print(f"number of hashes with a cycle: {len(cycle_hashes)}")
