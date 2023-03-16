@@ -142,7 +142,6 @@ def get_cycle_rows(df: pd.DataFrame) -> list:
                 i += 1
     return cycle_indices
 
-
     # print("Counting cycles")
     # num_cycles = count_cycles(data)
     # print(f"Num cycles: {num_cycles}")
@@ -217,15 +216,15 @@ print(f"{len(looping_addresses)}")
 print(f"How many unique IP-addresses loop?")
 print(f"{len(set(looping_addresses))}")
 
-cycling_addresses = get_cycle_addresses(data)
+cycle_addresses = get_cycle_addresses(data)
 # print(f"Which IP-addresses cycle?")
-# print(f"{cycling_addresses}")
-# plt.hist(cycling_addresses)
+# print(f"{cycle_addresses}")
+# plt.hist(cycle_addresses)
 # plt.show()
 print(f"How many IP-addresses cycle?")
-print(f"{len(cycling_addresses)}")
+print(f"{len(cycle_addresses)}")
 print(f"How many unique IP-addresses cycle?")
-print(f"{len(set(cycling_addresses))}")
+print(f"{len(set(cycle_addresses))}")
 print(f"How many unique hop IP-addresses are there in total?")
 print(f"{len(get_all_unique_hop_ip_addresses(data))}")
 
@@ -234,9 +233,10 @@ print(f"{len(get_all_unique_hop_ip_addresses(data))}")
 
 
 cycle_hashes = get_cycle_hashes(data)
-print(f"number of hashes with a cycle: {len(cycle_hashes)}")
+print(f"number of paths (hashes) with a cycle: {len(cycle_hashes)}")
 unique_cycle_hashes = set(cycle_hashes)
-print(f"number of unique hashes with a cycle: {len(unique_cycle_hashes)}")
+print(
+    f"number of unique paths (hashes) with a cycle: {len(unique_cycle_hashes)}")
 cycle_percentage = float(len(unique_cycle_hashes)) / float(number_of_rows)
 print(f"cycle percentage: {cycle_percentage}")
 
