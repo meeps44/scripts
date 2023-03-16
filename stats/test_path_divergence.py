@@ -52,9 +52,13 @@ def get_divergence_hop_ip(df: pd.DataFrame) -> str:
                 # paths to diverge.
                 return zipped_list[0][i-1][0]
             else:
-                # If the paths diverge at the first hop, we return the hop IP
-                # of the first hop.
-                return zipped_list[0][i][0]
+                # If the paths diverge at the first hop, we return the unique
+                # hop IP(s) of the first hop(s).
+                # Erlend note: Maybe not correct, as the load balancer
+                # that caused the paths to diverge in this case is the
+                # load balancer with TTL=1
+                return tuple({zipped_list[0][i][0], zipped_list[0][i][0]})
+                # return zipped_list[0][i][0]
                 # return (zipped_list[0][i-1][0], zipped_list[0][i-1][0])
     # If we got this far, the lists are equal
     return None
