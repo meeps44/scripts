@@ -4,6 +4,7 @@ import time
 import pytest
 import pandas as pd
 from os.path import expanduser
+import matplotlib.pyplot as plt
 
 home = expanduser("~")
 # db_name = "sample-200.csv"
@@ -12,6 +13,14 @@ home = expanduser("~")
 
 db_path = "/home/erlend/db-storage/large-data/" + Databases.ams
 data: pd.DataFrame = load_single(db_path)
+
+
+def get_all_unique_hop_ip_addresses(df: pd.DataFrame) -> set:
+    unique_hop_ip_addresses = set()
+    for row in df.itertuples():
+        hop_ip_addresses = set(row[10].split())
+        unique_hop_ip_addresses.update(hop_ip_addresses)
+    return unique_hop_ip_addresses
 
 
 def test_count_cycles(hop_ip_addresses: tuple) -> int:
@@ -133,6 +142,7 @@ def get_cycle_rows(df: pd.DataFrame) -> list:
                 i += 1
     return cycle_indices
 
+
     # print("Counting cycles")
     # num_cycles = count_cycles(data)
     # print(f"Num cycles: {num_cycles}")
@@ -162,22 +172,19 @@ print(
 # print(f"number of cycle rows that also contain a loop: {len(cycle_hashes)}")
 # print(f"number of cycle rows that don't contain a loop: {len(cycle_hashes)}")
 
-print(f"Which IP-addresses loop?")
-print(f"How many IP-addresses loop?")
-print(f"Which IP-addresses cycle?")
-print(f"How many IP-addresses cycle?")
-
 
 def get_loop_addresses(df: pd.DataFrame) -> list:
     loop_addresses = list()
     for row in df.itertuples():
         hop_ip_addresses = tuple(row[10].split())
         length = len(hop_ip_addresses)
+        checked_addresses = list()
         for idx, ip in enumerate(hop_ip_addresses):
             i = idx
             i += 1
             while i < length:
-                if ip == hop_ip_addresses[i]:
+                if ip == hop_ip_addresses[i] and (i, ip) not in checked_addresses:
+                    checked_addresses.append((i, ip))
                     loop_addresses.append(ip)
                 i += 1
     return loop_addresses
@@ -198,6 +205,29 @@ def get_cycle_addresses(df: pd.DataFrame) -> list:
                     break
                 i += 1
     return cycle_addresses
+
+
+# print(f"Which IP-addresses loop?")
+looping_addresses = get_loop_addresses(data)
+# print(f"{looping_addresses}")
+# plt.hist(looping_addresses)
+# plt.show()
+print(f"How many IP-addresses loop?")
+print(f"{len(looping_addresses)}")
+print(f"How many unique IP-addresses loop?")
+print(f"{len(set(looping_addresses))}")
+
+cycling_addresses = get_cycle_addresses(data)
+# print(f"Which IP-addresses cycle?")
+# print(f"{cycling_addresses}")
+# plt.hist(cycling_addresses)
+# plt.show()
+print(f"How many IP-addresses cycle?")
+print(f"{len(cycling_addresses)}")
+print(f"How many unique IP-addresses cycle?")
+print(f"{len(set(cycling_addresses))}")
+print(f"How many unique hop IP-addresses are there in total?")
+print(f"{len(get_all_unique_hop_ip_addresses(data))}")
 
 # unique_hashes = data["PATH_HASH"].unique()
 # print(f"total number of unique hashes in the dataset: {len(unique_hashes)}")
