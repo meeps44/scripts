@@ -15,19 +15,37 @@ db_path = "/home/erlend/db-storage/large-data/" + Databases.ams
 data: pd.DataFrame = load_single(db_path)
 
 
-def get_unique_routers_where_a_path_change_occurred(df: pd.DataFrame) -> list:
-    """
-    Return a list of all routers (IP-addresses) where a change in path
-    was detected.
-    """
-    unique_destination_addresses: list = get_unique_destination_addresses(df)
-    for dst in unique_destination_addresses:
-        dst_df = df[(df["SOURCE_FLOW_LABEL"] == flow_label)
-                    & (df["DESTINATION_IP"] == dst)]
+# def get_unique_routers_where_a_path_change_occurred(df: pd.DataFrame) -> list:
+# """
+# Note: Essentially the same function as get_divergence_hop_ip().
+# Return a list of all routers (IP-addresses) where a change in path
+# was detected.
+# """
+# unique_destination_addresses: list = get_unique_destination_addresses(df)
+# for dst in unique_destination_addresses:
+# dst_df = df[(df["SOURCE_FLOW_LABEL"] == flow_label)
+# & (df["DESTINATION_IP"] == dst)]
 
 
-def get_divergence_hop_number(df: pd.DataFrame) -> str:
-    pass
+def get_divergence_hop_number(df: pd.DataFrame, flow_label, destination_ip) -> str:
+    dst_df = df[(df["SOURCE_FLOW_LABEL"] == flow_label)
+                & (df["DESTINATION_IP"] == destination_ip)]
+
+    # Setup: creating the combined columns, represented as a list of tuples
+    zipped_list = list()
+    for row in dst_df.itertuples():
+        hop_ip_addresses = row[10].split()
+        hop_numbers = row[11].split()
+        zipped = list(zip(hop_ip_addresses, hop_numbers, strict=True))
+        zipped_list.append(zipped)
+
+    # Compare the items in the two lists and get the hop number
+    longest_list_len = get_length_of_longest_list(zipped_list)
+    for i in range(longest_list_len):
+        if zipped_list[0][i] != zipped_list[1][i]:
+            # Return the first hop number (the smallest one) where
+            # a divergence was detected.
+            return min(zipped_list[0][i-1][1], zipped_list[1][i-1][1])
 
 
 def get_divergence_hop_ip(df: pd.DataFrame) -> str:
