@@ -56,6 +56,18 @@ class VantagePoint:
     tor: str = "tor1"
 
 
+@dataclass
+class VPFullNames:
+    ams: str = "Amsterdam, the Netherlands"
+    blr: str = "Bangalore, India"
+    fra: str = "Frankfurt, Germany"
+    lon: str = "London, United Kingdom"
+    nyc: str = "New York, United States"
+    sfo: str = "San Francisco, United States"
+    sgp: str = "Singapore"
+    tor: str = "Toronto, Canada"
+
+
 # class FlowLabels(IntEnum):
 class FlowLabels():
     FL_0 = 0
