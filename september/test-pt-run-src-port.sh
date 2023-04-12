@@ -112,5 +112,5 @@ test -f /root/time.log || touch /root/time.log
 echo "Start time: $(date)" >>/root/time.log
 main
 echo "End time: $(date)" >>/root/time.log
-transfer_db
+#transfer_db
 echo "All done!"
