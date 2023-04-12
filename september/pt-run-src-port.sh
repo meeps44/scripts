@@ -11,7 +11,7 @@ DB_FILENAME="db-$HOSTNAME-$DATE.db"
 TAR_FILENAME="tar-$HOSTNAME-$DATE.tar.gz"
 
 # Port definitions:
-SRC_PORT=30000
+SRC_PORT=33456
 TRACEROUTE_DEFAULT_PORT=33434
 HTTP_PORT=80
 HTTPS_PORT=443
@@ -82,7 +82,7 @@ pt_run() {
     local l_SRC_PORT="$4"
 
     # Start Paris traceroute #
-    sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -p $l_DESTINATION_PORT $START_TIME $LOCALHOST_IP $DB_FILEPATH$DB_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
+    sudo /root/git/libparistraceroute/paris-traceroute/paris-traceroute --num-queries=1 -T -s $l_SRC_PORT -p $l_DESTINATION_PORT $START_TIME $LOCALHOST_IP $DB_FILEPATH$DB_FILENAME $l_FLOW_LABEL $l_DESTINATION_ADDR >/dev/null
     echo "Paris traceroute finished. Output saved to $DB_FILEPATH$DB_FILENAME."
 }
 
@@ -99,9 +99,9 @@ main() {
                     pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" "$SRC_PORT" &
                     ((SRC_PORT=SRC_PORT+1))
                 done
-                SRC_PORT=30000
             done
             wait
+            SRC_PORT=30000
             let N=$N+$N_PARALLEL
             let M=$M+$N_PARALLEL
         done
