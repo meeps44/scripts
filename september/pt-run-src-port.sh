@@ -88,9 +88,9 @@ pt_run() {
 
 main() {
     HITLIST_LENGTH=$(wc -l <$HITLIST)
-    N=1
-    M=$N_PARALLEL
     for FLOW_LABEL in "${FLOW_LABELS[@]}"; do
+        N=1
+        M=$N_PARALLEL
         while [ $N -lt $HITLIST_LENGTH ]; do
             readarray -t ip_array < <(sed -n "${N},${M}p" $HITLIST)
             for ADDRESS in ${ip_array[@]}; do
