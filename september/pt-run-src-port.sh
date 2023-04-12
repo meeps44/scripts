@@ -93,8 +93,8 @@ main() {
         M=$N_PARALLEL
         while [ $N -lt $HITLIST_LENGTH ]; do
             readarray -t ip_array < <(sed -n "${N},${M}p" $HITLIST)
+            START_TIME=$(date '+%s')
             for ADDRESS in ${ip_array[@]}; do
-                START_TIME=$(date '+%s')
                 for DESTINATION_PORT in "${DESTINATION_PORTS[@]}"; do
                     pt_run "$ADDRESS" "$DESTINATION_PORT" "$FLOW_LABEL" "$SRC_PORT" &
                     ((SRC_PORT=SRC_PORT+1))
