@@ -34,6 +34,18 @@ class SourceIPAddresses:
 
 @dataclass
 class Databases:
+    ams: str = "db-ubuntu-ams3-0-2023-04-12T19_33_26Z.db"
+    blr: str = "db-ubuntu-blr1-0-2023-04-12T19_33_26Z.db"
+    fra: str = "db-ubuntu-fra1-0-2023-04-12T19_33_26Z.db"
+    lon: str = "db-ubuntu-lon1-0-2023-04-12T19_33_26Z.db"
+    nyc: str = "db-ubuntu-nyc1-0-2023-04-12T19_33_26Z.db"
+    sfo: str = "db-ubuntu-sfo3-0-2023-04-12T19_33_26Z.db"
+    sgp: str = "db-ubuntu-sgp1-0-2023-04-12T19_33_26Z.db"
+    tor: str = "db-ubuntu-tor1-0-2023-04-12T19_33_26Z.db"
+
+
+@dataclass
+class OldDatabases:
     ams: str = "db-ubuntu-ams3-0-2023-01-19T23_00_25Z.db"
     blr: str = "db-ubuntu-blr1-0-2023-01-19T23_00_25Z.db"
     fra: str = "db-ubuntu-fra1-0-2023-01-19T23_00_25Z.db"
