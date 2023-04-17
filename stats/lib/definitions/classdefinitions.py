@@ -18,7 +18,34 @@ class TracerouteStatistics:
 
 
 @dataclass
+class DefaultGateways:
+    ams3: str = "2a03:b0c0:2:d0::1"
+    blr1: str = "2400:6180:100:d0::1"
+    fra1: str = "2a03:b0c0:3:d0::1"
+    lon1: str = "2a03:b0c0:1:d0::1"
+    nyc1: str = "2604:a880:400:d0::1"
+    sfo3: str = "2604:a880:4:1d0::1"
+    sgp1: str = "2400:6180:0:d0::1"
+    tor1: str = "2604:a880:cad:d0::1"
+
+
+@dataclass
 class SourceIPAddresses:
+    ams3: str = "2a03:b0c0:2:d0::4b5:6001/64"
+    blr1: str = "2400:6180:100:d0::9e8:9001/64"
+    fra1: str = "a03:b0c0:3:d0::128f:c001/64"
+    lon1: str = "2a03:b0c0:1:d0::127f:9001/64"
+    nyc1: str = "2604:a880:400:d0::1ce4:b001/64"
+    sfo3: str = "2604:a880:4:1d0::6bb:e000/64"
+    sgp1: str = "2400:6180:0:d0::fb5:d001/64"
+    tor1: str = "2604:a880:cad:d0::f06:4001/64"
+
+    def to_dict(self):
+        return {k: str(v) for k, v in asdict(self).items()}
+
+
+@dataclass
+class OldSourceIPAddresses:
     ams3: str = "2a03:b0c0:2:d0::dd6:f001"
     blr1: str = "2400:6180:100:d0::896:a001"
     fra1: str = "2a03:b0c0:3:d0::1771:d001"
