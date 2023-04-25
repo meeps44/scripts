@@ -30,6 +30,18 @@ class DefaultGateways:
 
 
 @dataclass
+class DefaultGatewayASN:
+    ams3: str = "14061"
+    blr1: str = "14061"
+    fra1: str = "14061"
+    lon1: str = "14061"
+    nyc1: str = "14061"
+    sfo3: str = "14061"
+    sgp1: str = "14061"
+    tor1: str = "14061"
+
+
+@dataclass
 class SourceIPAddresses:
     ams3: str = "2a03:b0c0:2:d0::4b5:6001/64"
     blr1: str = "2400:6180:100:d0::9e8:9001/64"
