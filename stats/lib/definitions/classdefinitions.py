@@ -19,26 +19,26 @@ class TracerouteStatistics:
 
 @dataclass
 class DefaultGateways:
-    ams3: str = "2a03:b0c0:2:d0::1"
-    blr1: str = "2400:6180:100:d0::1"
-    fra1: str = "2a03:b0c0:3:d0::1"
-    lon1: str = "2a03:b0c0:1:d0::1"
-    nyc1: str = "2604:a880:400:d0::1"
-    sfo3: str = "2604:a880:4:1d0::1"
-    sgp1: str = "2400:6180:0:d0::1"
-    tor1: str = "2604:a880:cad:d0::1"
+    ams: str = "2a03:b0c0:2:d0::1"
+    blr: str = "2400:6180:100:d0::1"
+    fra: str = "2a03:b0c0:3:d0::1"
+    lon: str = "2a03:b0c0:1:d0::1"
+    nyc: str = "2604:a880:400:d0::1"
+    sfo: str = "2604:a880:4:1d0::1"
+    sgp: str = "2400:6180:0:d0::1"
+    tor: str = "2604:a880:cad:d0::1"
 
 
 @dataclass
 class DefaultGatewayASN:
-    ams3: str = "14061"
-    blr1: str = "14061"
-    fra1: str = "14061"
-    lon1: str = "14061"
-    nyc1: str = "14061"
-    sfo3: str = "14061"
-    sgp1: str = "14061"
-    tor1: str = "14061"
+    ams: str = "14061"
+    blr: str = "14061"
+    fra: str = "14061"
+    lon: str = "14061"
+    nyc: str = "14061"
+    sfo: str = "14061"
+    sgp: str = "14061"
+    tor: str = "14061"
 
 
 @dataclass
